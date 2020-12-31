@@ -6,55 +6,60 @@
 #include "RoR2.h"
 #include "Items.h"
 #include "Characters.h"
+#include "ItemList.h"
 
 // Use move semantics heavily!
 using namespace RoR2;
-Items testItem;
+using namespace ItemList;
+WhiteItems white;
+GreenItems green;
+RedItems red;
+LunarItems lunar;
+Equipment equipment;
 
 // Prototypes
+void RoR2Main(Characters &character);
 void CommonChest(Characters &character);
 void RareChest(Characters &character);
-void LunarPod(Characters &character, Items &item);
-void EquipmentChest(Characters &character, Items &item);
-void Scrapper(Characters &character, Items &item, std::string input); // Figure out effective way to call
-void Scrapper(Characters &character, Items &item, short input);
+void LunarPod(Characters &character);
+void EquipmentChest(Characters &character);
+void Scrapper(Characters &character, std::string input);
+void Scrapper(Characters &character, short input);
 
 // Calculate rarity using Coeffcient, alter range size for rarity
+// Add to player inventory
 void CalculateItem(Characters *character) {
     character->itemTotal++;
     if(rarityCoeffcient >= 0 && rarityCoeffcient <= 5) { // White Items
         srand(time(0));
-        testItem.m_RandomItem = std::rand() % 6;
-        character->playerInventory.push_back(testItem.whiteItems[testItem.m_RandomItem]);
+        itemMod = std::rand() % 6;
     }
     else if(rarityCoeffcient > 5 && rarityCoeffcient <= 8) { // Green Items
         srand(time(0));
-        testItem.m_RandomItem = std::rand() % 6;
-        character->playerInventory.push_back(testItem.greenItems[testItem.m_RandomItem]);
+        itemMod = std::rand() % 6;
     }
     else if(rarityCoeffcient > 8) { // Red items
         srand(time(0));
-        testItem.m_RandomItem = std::rand() % 6;
-        character->playerInventory.push_back(testItem.redItems[testItem.m_RandomItem]);
+        itemMod = std::rand() % 6;
     }
     std::cout << "WAIT!"; std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    system("cls");
-    PrintOptions();
+    RoR2Main(*character);
 }
 
 // Requires a lot of work
 void StatCalculation(Characters *character) { // | Too slow | Use Map
     for(int i = 0; i < character->playerInventory.size(); i++) {
-        if(character->playerInventory[i] == "Soldiers Syringe")
-            character->attackSpeed + 10;
-        else if(character->playerInventory[i] == "Tougher Times")
-            character->hitChance - 10;
-        else if(character->playerInventory[i] == "Lens Maker Glasses")
-            character->critChance + 10;
+        if(character->playerInventory[i].m_ItemName == "Soldiers Syringe")
+            character->m_AttackSpeed += 10;
+        else if(character->playerInventory[i].m_ItemName == "Tougher Times")
+            character->m_HitChance -= 10;
+        else if(character->playerInventory[i].m_ItemName == "Lens Maker Glasses")
+            character->m_CritChance += 10;
     }
 }
 
 void RoR2Main(Characters &character) {
+    system("cls");
     PrintOptions();
     while(!gameOver) {
         std::cin >> userInput;
@@ -64,11 +69,11 @@ void RoR2Main(Characters &character) {
         case 2:
             RareChest(character); break;
         case 3:
-            LunarPod(character, testItem); break;
+            LunarPod(character); break;
         case 4:
-            EquipmentChest(character, testItem);  break;
+            EquipmentChest(character);  break;
         case 5:
-            Scrapper(character, testItem, userInput); break;
+            Scrapper(character, userInput); break;
         case 6:
             character.PrintItems(); break;
         case 7:

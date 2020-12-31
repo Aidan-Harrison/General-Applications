@@ -41,5 +41,8 @@
     <ClInclude Include="RoR2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ItemList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
