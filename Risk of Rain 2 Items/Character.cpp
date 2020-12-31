@@ -31,7 +31,7 @@ int Characters::StackItems() { // Prevent multiples of the same item from appear
             if(playerInventory[i]->m_ItemName == playerInventory[j]->m_ItemName) {
                 stackCount++;
                 playerInventory.erase(playerInventory.begin() + j);
-                i--; // Adjust for overflow, check!
+                i--; // Adjust for overflow
             }
         }
     }

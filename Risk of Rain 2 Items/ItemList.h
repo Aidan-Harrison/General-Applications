@@ -7,7 +7,7 @@
 // Sort deletion, auto_ptr
 namespace ItemList {
 	struct WhiteItems {
-		Items *Soldiers_Syringe = new Items(1, "Soliders Syringe");
+		Items *Soldiers_Syringe = new Items(1, "Soldiers Syringe");
 		Items *Tougher_Times = new Items(2, "Tougher Times");
 		Items *Lens_Maker_Glasses = new Items(3, "Lens Maker Glasses");
 		Items *Topaz_Brooch = new Items(4, "Topaz Brooch");

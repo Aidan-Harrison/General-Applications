@@ -17,8 +17,10 @@ RedItems red;
 LunarItems lunar;
 Equipment equipment;
 
-// Prototypes
+// Internal Prototypes
 void RoR2Main(Characters &character);
+void StatCalculation(Characters *character);
+// External Prototypes
 void CommonChest(Characters &character);
 void RareChest(Characters &character);
 void LunarPod(Characters &character);
@@ -33,6 +35,7 @@ void CalculateItem(Characters *character) {
     if(rarityCoeffcient >= 0 && rarityCoeffcient <= 5) { // White Items
         srand(time(0));
         itemMod = std::rand() % 6;
+        character->playerInventory.push_back(white.Soldiers_Syringe);
         character->playerInventory.push_back(white.whiteItemsArray[itemMod]);
     }
     else if(rarityCoeffcient > 5 && rarityCoeffcient <= 8) { // Green Items
@@ -45,6 +48,7 @@ void CalculateItem(Characters *character) {
         itemMod = std::rand() % 6;
         character->playerInventory.push_back(green.greenItemsArray[itemMod]);
     }
+    StatCalculation(character);
     std::cout << "WAIT!"; std::this_thread::sleep_for(std::chrono::milliseconds(500));
     RoR2Main(*character);
 }
