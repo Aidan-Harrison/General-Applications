@@ -10,8 +10,8 @@ Characters::Characters(short health, short moveSpeed, short attackSpeed, short c
 }
 
 void Characters::PrintItems() {
-    for(unsigned int i = 0; i < playerInventory.size(); i++)
-        std::cout << playerInventory[i].m_ItemName << ", " << itemStacks[i]; // Check!
+    for (unsigned int i = 0; i < playerInventory.size(); i++)
+        std::cout << playerInventory[i]->m_ItemName << ", "; // Add item stacks
 }
 
 void Characters::PrintStats() {
@@ -28,7 +28,7 @@ void Characters::PrintStats() {
 int Characters::StackItems() { // Prevent multiples of the same item from appearing more than once, increase stack count instead
     for(unsigned int i = 0; i < playerInventory.size(); i++) {
         for(unsigned int j = 1; j < playerInventory.size(); j++) {
-            if(playerInventory[i].m_ItemName == playerInventory[j].m_ItemName) {
+            if(playerInventory[i]->m_ItemName == playerInventory[j]->m_ItemName) {
                 stackCount++;
                 playerInventory.erase(playerInventory.begin() + j);
                 i--; // Adjust for overflow, check!

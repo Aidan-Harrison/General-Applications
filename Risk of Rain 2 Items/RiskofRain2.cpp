@@ -33,14 +33,17 @@ void CalculateItem(Characters *character) {
     if(rarityCoeffcient >= 0 && rarityCoeffcient <= 5) { // White Items
         srand(time(0));
         itemMod = std::rand() % 6;
+        character->playerInventory.push_back(white.whiteItemsArray[itemMod]);
     }
     else if(rarityCoeffcient > 5 && rarityCoeffcient <= 8) { // Green Items
         srand(time(0));
         itemMod = std::rand() % 6;
+        character->playerInventory.push_back(red.redItemsArray[itemMod]);
     }
     else if(rarityCoeffcient > 8) { // Red items
         srand(time(0));
         itemMod = std::rand() % 6;
+        character->playerInventory.push_back(green.greenItemsArray[itemMod]);
     }
     std::cout << "WAIT!"; std::this_thread::sleep_for(std::chrono::milliseconds(500));
     RoR2Main(*character);
@@ -49,11 +52,11 @@ void CalculateItem(Characters *character) {
 // Requires a lot of work
 void StatCalculation(Characters *character) { // | Too slow | Use Map
     for(int i = 0; i < character->playerInventory.size(); i++) {
-        if(character->playerInventory[i].m_ItemName == "Soldiers Syringe")
+        if(character->playerInventory[i]->m_ItemName == "Soldiers Syringe")
             character->m_AttackSpeed += 10;
-        else if(character->playerInventory[i].m_ItemName == "Tougher Times")
+        else if(character->playerInventory[i]->m_ItemName == "Tougher Times")
             character->m_HitChance -= 10;
-        else if(character->playerInventory[i].m_ItemName == "Lens Maker Glasses")
+        else if(character->playerInventory[i]->m_ItemName == "Lens Maker Glasses")
             character->m_CritChance += 10;
     }
 }

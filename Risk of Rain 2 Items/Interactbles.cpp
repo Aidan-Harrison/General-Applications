@@ -30,7 +30,7 @@ void Scrapper(Characters &character, std::string input) { // Deletes specified i
     }
     std::cout << "Select item to delete:\n";
     for(unsigned int i = 0; i < character.playerInventory.size(); i++)
-        if(character.playerInventory[i].m_ItemName == input) {
+        if(character.playerInventory[i]->m_ItemName == input) {
             character.playerInventory.erase(character.playerInventory.begin() + i);
             i--; // Adjust for overflow
         }
