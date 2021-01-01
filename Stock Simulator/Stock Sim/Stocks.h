@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string> // For conversion
-#include "StockSimulator.h"
+#include "StockSim.h"
 
 struct Stocks { // Struct for now
     std::vector<std::string> continents{ "North America", "South America", "Europe", "Asia", "Oceania", "Africa" }; // Antartica is invalid

@@ -18,15 +18,16 @@ public:
     // Then when getting the names refer to current element and pass that to the stock vector
     std::vector<bool> currentInvestmentsInt{};
 
-    inline int friend GetBalance(); // Check order of return
+    int GetBalance() const { return m_AccountBalance; }
     void DeleteAccount();
     int TakeLoan();
     void Invest(std::vector<Stocks>& stocks, Stocks& stock);
     void CurInvestments(std::vector<Stocks>& stocks);
 };
 
-Account::Account(short accountBalance) {
-    m_AccountBalance = accountBalance;
+Account::Account(short accountBalance)
+    :m_AccountBalance(accountBalance)
+{
 }
 
 #endif

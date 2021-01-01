@@ -35,7 +35,6 @@ void CalculateItem(Characters *character) {
     if(rarityCoeffcient >= 0 && rarityCoeffcient <= 5) { // White Items
         srand(time(0));
         itemMod = std::rand() % 6;
-        character->playerInventory.push_back(white.Soldiers_Syringe);
         character->playerInventory.push_back(white.whiteItemsArray[itemMod]);
     }
     else if(rarityCoeffcient > 5 && rarityCoeffcient <= 8) { // Green Items
@@ -53,15 +52,53 @@ void CalculateItem(Characters *character) {
     RoR2Main(*character);
 }
 
-// Requires a lot of work
-void StatCalculation(Characters *character) { // | Too slow | Use Map
+void StatCalculation(Characters *character) { // Too slow | Use Map
     for(int i = 0; i < character->playerInventory.size(); i++) {
-        if(character->playerInventory[i]->m_ItemName == "Soldiers Syringe")
+        if (character->playerInventory[i]->m_ItemName == "Soldiers Syringe")
             character->m_AttackSpeed += 10;
-        else if(character->playerInventory[i]->m_ItemName == "Tougher Times")
+        else if (character->playerInventory[i]->m_ItemName == "Tougher Times")
             character->m_HitChance -= 10;
-        else if(character->playerInventory[i]->m_ItemName == "Lens Maker Glasses")
+        else if (character->playerInventory[i]->m_ItemName == "Lens Maker Glasses")
             character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Topaz Brooch")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Crowbar")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Bustling Fungus")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "ATG Missle MK.2")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Ukele")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Predators Instinct")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Red Whip")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Infusion")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Will-O-Wisp")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Brilliant Behemoth")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Soulbound Catalyst")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Aegis")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "57 Leaf Clover")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Rejuvanation Rack")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Resonance Disc")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Shaped Glass") {
+            character->m_CritChance *= 2;
+            character->m_Health /= 2;
+        }
+        else if (character->playerInventory[i]->m_ItemName == "Beads of Fealty")
+            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "Transcendence")
+            character->m_CritChance += 10;
+        // Add equipment
     }
 }
 
@@ -90,5 +127,8 @@ void RoR2Main(Characters &character) {
         }
     }
     std::cout << "Ended!"; std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    DeleteItem(character) {
+
+    }
     return;
 }

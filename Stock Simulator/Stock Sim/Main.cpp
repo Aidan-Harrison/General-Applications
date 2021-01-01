@@ -3,36 +3,29 @@
 #include <ctime>
 #include <thread>
 #include <chrono>
-// Possibly add file stream to do loggin or import a bunch of data
+// Possibly add file streaming
 
-#include "StockSimulator.h"
 #include "Stocks.h"
 #include "StockSetup.h"
+#include "StockSim.h"
 
 using namespace StockSim;
 
 // To-Do-List:
     // Check if close to event, redefine range, inform user
-    // Account
-    // Possibly incorporate std::cerr
 
 // Prototypes
 int SetupStock(int ID);
 int Simulate(int GDP);
-void CurrentStock(); // Prints header of program, add userInput without interupting simulation, seperate thread?
+void CurrentStock();
 void Menu();
 void AccountMenu(std::vector<Stocks>& stocks, Stocks& stock);
-
-void printStocks() { // Unified printing function | Move to be available globally
-    for (int i = 0; i < stock.allStocks.size(); i++) // should not really start from 1 but leave for now
-        std::cout << i + 1 << ") " << stock.allStocks[i].companyName << '\n';
-}
 
 int Stocks::profitCalc(std::vector<int>& company) { // Pass in via stock ID
     int maxProfit = 0;
     int minPrice = INT_MAX;
     // Get current investments
-    for (int i = 0; i < company.size(); i++)
+    for (unsigned int i = 0; i < company.size(); i++)
         if (company[i] < minPrice)
             minPrice = company[i];
         else if (company[i] - minPrice > maxProfit)
@@ -41,10 +34,10 @@ int Stocks::profitCalc(std::vector<int>& company) { // Pass in via stock ID
     return maxProfit;
 }
 
-void Stocks::AddStocks() { // Use seperate setup function? | Adds to vector but does not add all data. Hence why only companyName is partially working
+void Stocks::AddStocks() {
     Stocks* newStock = new Stocks;
     std::cout << "Enter company name: "; std::cin >> newStock->companyName;
-    for (int i = 0; i < continents.size(); i++)
+    for (unsigned int i = 0; i < continents.size(); i++)
         std::cout << i + 1 << ") " << continents[i] << '\n';
     std::cout << "Pick a location: "; std::cin >> userInput;
     switch (userInput) {
@@ -61,7 +54,7 @@ void Stocks::AddStocks() { // Use seperate setup function? | Adds to vector but 
     case 6:
         newStock->location = continents[5]; break;
     }
-    std::cout << "Enter company value: "; std::cin >> newStock->stockValue; // Not working!
+    std::cout << "Enter company value: "; std::cin >> newStock->stockValue; // Check!
     allStocks.push_back(*newStock); // Working
     numberOfCompanies++;
     Menu();
@@ -70,15 +63,14 @@ void Stocks::AddStocks() { // Use seperate setup function? | Adds to vector but 
 void Stocks::RemoveStocks() {
     std::string stock;
     std::cout << "Enter stock name: "; std::cin >> stock;
-    for (int i = 0; i < allStocks.size(); i++) {
+    for (unsigned int i = 0; i < allStocks.size(); i++) {
         if (stock == allStocks[i].companyName) {
             allStocks.erase(allStocks.begin() + i);
             numberOfCompanies--;
         }
     }
-    for (int i = 0; i < allStocks.size(); i++) { // Adjust for erase
-        allStocks[i].stockID -= 1;
-    }
+    for (unsigned int i = 0; i < allStocks.size(); i++) // Check!
+        allStocks[i].stockID -= 1; // Adjust for overflow
     Menu();
 }
 
@@ -94,7 +86,7 @@ menu:
     std::cout << "Input: "; std::cin >> userInput;
     switch (userInput) {
     case 1:
-        printStocks(); std::this_thread::sleep_for(std::chrono::seconds(5)); goto menu;
+        PrintStocks(); std::this_thread::sleep_for(std::chrono::seconds(5)); goto menu;
     case 2:
         stock.RemoveStocks(); break;
     case 3:
@@ -111,10 +103,10 @@ void Menu() {
     system("cls");
     std::cout << "What stock would you like to check?\n";
     std::cout << "Options:\n";
-    printStocks();
+    PrintStocks();
     std::cout << "OR\n";
-    std::cout << stock.numberOfCompanies + 1 << " ) " << "Global Market\n"; // Always move one above total stock size
-    std::cout << stock.numberOfCompanies + 2 << " ) " << "Account\n"; // Always move one above total stock size
+    std::cout << stock.numberOfCompanies + 1 << ") " << "Global Market\n"; // Always move one above total stock size
+    std::cout << stock.numberOfCompanies + 2 << ") " << "Account\n";
     std::cin >> userInput;
     if (userInput != stock.numberOfCompanies + 1) {
         Simulate(SetupStock(userInput));
@@ -126,7 +118,7 @@ void Menu() {
 }
 
 int SetupStock(int ID) {
-    for (int i = 0; i < stock.allStocks.size(); i++)
+    for (unsigned int i = 0; i < stock.allStocks.size(); i++)
         if (stock.allStocks[i].stockID == ID) {
             currentStock = stock.allStocks[i].companyName;
             return stock.allStocks[i].stockValue;
@@ -137,9 +129,8 @@ int SetupStock(int ID) {
 void CurrentStock() {
     system("cls");
     std::cout << "-------------" << currentStock << "-------------\n";
-    std::cout << "Years: " << years << "\n";
-    std::cout << "Months: " << months << "\n";
-    std::cout << "Options: 1) Exit | 2) Display Account | 3) Market Interface\n"; // Process userInput somehow, seperate function?
+    std::cout << "Years: " << years << " Months: " << months << '\n';
+    std::cout << "Options: 1) Exit | 2) Display Account | 3) Market Interface\n"; // Process userInput somehow?
 }
 
 // Simulate all stocks at once. Multithread the program or indepently tick through them
@@ -147,7 +138,7 @@ void CurrentStock() {
 int Simulate(int GDP) {
     CurrentStock();
     while (simulating == true) {
-        std::this_thread::sleep_for(std::chrono::seconds(1)); // Delay | change to float
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
         srand(time(0));
         event = rand() % 100; // Randomise events
         // Check events before processing
@@ -171,7 +162,7 @@ int Simulate(int GDP) {
         else if (event == 74) {
             std::cout << "SURGE!";
             for (int i = 0; i <= 5; i++) {
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 trajectory = 1; // Force trajectory, remove randomness momentarily
                 fluctuation = 60;
                 GDP += rand() % fluctuation;
@@ -184,7 +175,7 @@ int Simulate(int GDP) {
         else if (event == 33) {
             std::cout << "CRASH!";
             for (int i = 0; i <= 5; i++) {
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 trajectory = 0;
                 fluctuation = 15; // Loss is not as severe as surge
                 GDP -= rand() % fluctuation;
@@ -210,7 +201,7 @@ int Simulate(int GDP) {
     return GDP;
 }
 
-int main() { // Move this to an entrypoint file??
+int main() { // Move this to an entrypoint file?
     stock.IntitializeStocks();
     std::cout << "WAIT! Setting up...\n";
     std::this_thread::sleep_for(std::chrono::seconds(2));

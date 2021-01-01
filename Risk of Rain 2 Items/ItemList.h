@@ -4,17 +4,20 @@
 #include "Items.h"
 #include <vector>
 
-// Sort deletion, auto_ptr
+// Only create when necessary!
+// Sort deletion!
 namespace ItemList {
-	struct WhiteItems {
-		Items *Soldiers_Syringe = new Items(1, "Soldiers Syringe");
-		Items *Tougher_Times = new Items(2, "Tougher Times");
-		Items *Lens_Maker_Glasses = new Items(3, "Lens Maker Glasses");
-		Items *Topaz_Brooch = new Items(4, "Topaz Brooch");
-		Items *Crowbar = new Items(5, "Crowbar");
-		Items *Bustling_Fungus = new Items(6, "Bustling Fungus");
-		Items *whiteItemsArray[6]{Soldiers_Syringe, Tougher_Times, Lens_Maker_Glasses, Topaz_Brooch, Crowbar, Bustling_Fungus};
-	};
+	void CreateWhiteItems(int index) {
+		struct WhiteItems {
+			Items* Soldiers_Syringe = new Items(1, "Soldiers Syringe");
+			Items* Tougher_Times = new Items(2, "Tougher Times");
+			Items* Lens_Maker_Glasses = new Items(3, "Lens Maker Glasses");
+			Items* Topaz_Brooch = new Items(4, "Topaz Brooch");
+			Items* Crowbar = new Items(5, "Crowbar");
+			Items* Bustling_Fungus = new Items(6, "Bustling Fungus");
+			Items* whiteItemsArray[6]{ Soldiers_Syringe, Tougher_Times, Lens_Maker_Glasses, Topaz_Brooch, Crowbar, Bustling_Fungus };
+		};
+	}
 
 	struct GreenItems {
 		Items *ATG_Missle_MK2 = new Items(7, "ATG Missle MK.2");
@@ -30,8 +33,8 @@ namespace ItemList {
 		Items *Brilliant_Behemoth = new Items(13, "Brilliant Behemoth");
 		Items *Soulbound_Catalyst = new Items(14, "Soulbound Catalyst");
 		Items *Aegis = new Items(15, "Aegis");
-		Items *Leaf_Clover = new Items(16, "Leaf Clover");
-		Items *Rejuvation_Rack = new Items(17, "Rejuvation Rack");
+		Items *Leaf_Clover = new Items(16, "57 Leaf Clover");
+		Items *Rejuvanation_Rack = new Items(17, "Rejuvanation Rack");
 		Items *Resonance_Disc = new Items(18, "Resonance Disc");
 		Items *redItemsArray[6]{Brilliant_Behemoth, Soulbound_Catalyst, Aegis, Leaf_Clover, Rejuvation_Rack, Resonance_Disc};
 	};

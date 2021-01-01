@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "Account.h"
-#include "StockSimulator.h"
+#include "StockSim.h"
 
 using namespace StockSim;
 Account* account = new Account(250); // Construct with balance
@@ -34,12 +34,10 @@ retry:
 
 void Account::Invest(std::vector<Stocks> &stocks, Stocks &stock) {
     std::cout << "What stocks would you like to invest in?\n";
-    // Use universal print function | Possibly put common functions in their own .cpp files
-    for (int i = 0; i < stocks.size(); i++)
-        std::cout << i + 1 << " ) " << stocks[i].companyName << '\n';
+    PrintStocks();
     std::cin >> userInput;
     if (userInput != stock.numberOfCompanies + 1)
-        currentInvestmentsInt[userInput] == stocks[userInput].stockID;
+        currentInvestmentsInt[userInput] = stocks[userInput].stockID; // Check!
     else if (userInput == stock.numberOfCompanies + 1)
         AccountMenu(stocks, stock);
 }
@@ -52,6 +50,7 @@ void Account::CurInvestments(std::vector<Stocks> &stocks) {
 }
 
 void AccountMenu(std::vector<Stocks> &stocks, Stocks &stock) {
+    system("cls");
     std::cout << "Welcome to your account\n";
     std::cout << "1) Take loan\n";
     std::cout << "2) Delete account\n";

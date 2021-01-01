@@ -27,7 +27,12 @@ void PickCharacter(int choice) { // Decides base stats | Ensure deletion using a
 int main() {
     std::cout << "Pick a character to start:\n";
     RoR2::PrintCharacters();
+retry:
     std::cin >> RoR2::userInput;
-    PickCharacter(RoR2::userInput);
+    if (RoR2::userInput != 1 && RoR2::userInput != 2 && RoR2::userInput != 3 && RoR2::userInput != 4 && RoR2::userInput != 5
+        && RoR2::userInput != 6)
+        goto retry;
+    else
+        PickCharacter(RoR2::userInput);
     return 0;
 }
