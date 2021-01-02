@@ -11,11 +11,6 @@
 // Use move semantics heavily!
 using namespace RoR2;
 using namespace ItemList;
-WhiteItems white;
-GreenItems green;
-RedItems red;
-LunarItems lunar;
-Equipment equipment;
 
 // Internal Prototypes
 void RoR2Main(Characters &character);
@@ -23,7 +18,7 @@ void StatCalculation(Characters *character);
 // External Prototypes
 void CommonChest(Characters &character);
 void RareChest(Characters &character);
-void LunarPod(Characters &character);
+void LunarPod(Characters *character);
 void EquipmentChest(Characters &character);
 void Scrapper(Characters &character, std::string input);
 void Scrapper(Characters &character, short input);
@@ -35,17 +30,17 @@ void CalculateItem(Characters *character) {
     if(rarityCoeffcient >= 0 && rarityCoeffcient <= 5) { // White Items
         srand(time(0));
         itemMod = std::rand() % 6;
-        character->playerInventory.push_back(white.whiteItemsArray[itemMod]);
+        character->playerInventory.push_back(CreateWhiteItem(itemMod));
     }
     else if(rarityCoeffcient > 5 && rarityCoeffcient <= 8) { // Green Items
         srand(time(0));
         itemMod = std::rand() % 6;
-        character->playerInventory.push_back(red.redItemsArray[itemMod]);
+        character->playerInventory.push_back(CreateGreenItem(itemMod));
     }
     else if(rarityCoeffcient > 8) { // Red items
         srand(time(0));
         itemMod = std::rand() % 6;
-        character->playerInventory.push_back(green.greenItemsArray[itemMod]);
+        character->playerInventory.push_back(CreateRedItem(itemMod));
     }
     StatCalculation(character);
     std::cout << "WAIT!"; std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -53,7 +48,7 @@ void CalculateItem(Characters *character) {
 }
 
 void StatCalculation(Characters *character) { // Too slow | Use Map
-    for(int i = 0; i < character->playerInventory.size(); i++) {
+    for(unsigned int i = 0; i < character->playerInventory.size(); i++) {
         if (character->playerInventory[i]->m_ItemName == "Soldiers Syringe")
             character->m_AttackSpeed += 10;
         else if (character->playerInventory[i]->m_ItemName == "Tougher Times")
@@ -79,25 +74,30 @@ void StatCalculation(Characters *character) { // Too slow | Use Map
         else if (character->playerInventory[i]->m_ItemName == "Will-O-Wisp")
             character->m_CritChance += 10;
         else if (character->playerInventory[i]->m_ItemName == "Brilliant Behemoth")
-            character->m_CritChance += 10;
+            character->m_Damage += 50;
         else if (character->playerInventory[i]->m_ItemName == "Soulbound Catalyst")
             character->m_CritChance += 10;
         else if (character->playerInventory[i]->m_ItemName == "Aegis")
             character->m_CritChance += 10;
-        else if (character->playerInventory[i]->m_ItemName == "57 Leaf Clover")
-            character->m_CritChance += 10;
+        else if (character->playerInventory[i]->m_ItemName == "57 Leaf Clover") {
+            character->m_Luck = 2;
+            character->m_CritChance *= character->m_Luck;
+            character->m_HitChance /= character->m_Luck;
+        }
         else if (character->playerInventory[i]->m_ItemName == "Rejuvanation Rack")
             character->m_CritChance += 10;
         else if (character->playerInventory[i]->m_ItemName == "Resonance Disc")
             character->m_CritChance += 10;
         else if (character->playerInventory[i]->m_ItemName == "Shaped Glass") {
-            character->m_CritChance *= 2;
+            character->m_Damage *= 2;
             character->m_Health /= 2;
         }
         else if (character->playerInventory[i]->m_ItemName == "Beads of Fealty")
-            character->m_CritChance += 10;
-        else if (character->playerInventory[i]->m_ItemName == "Transcendence")
-            character->m_CritChance += 10;
+            character->toSecret = true;
+        else if (character->playerInventory[i]->m_ItemName == "Transcendence") {
+            character->m_Shield = character->m_Health;
+            character->m_Health = 0;
+        }
         // Add equipment
     }
 }
@@ -113,7 +113,7 @@ void RoR2Main(Characters &character) {
         case 2:
             RareChest(character); break;
         case 3:
-            LunarPod(character); break;
+            LunarPod(&character); break;
         case 4:
             EquipmentChest(character);  break;
         case 5:
@@ -127,8 +127,6 @@ void RoR2Main(Characters &character) {
         }
     }
     std::cout << "Ended!"; std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    DeleteItem(character) {
-
-    }
+    // Add deletion when game over!
     return;
 }

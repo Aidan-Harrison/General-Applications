@@ -2,9 +2,11 @@
 #include <ctime>
 
 #include "RoR2.h"
+#include "ItemList.h"
 #include "Characters.h"
 #include "Items.h"
 
+using namespace ItemList;
 using namespace RoR2;
 
 // Prototypes
@@ -40,16 +42,17 @@ void Scrapper(Characters &character, short input) { // Overload, ID based
     std::cout << "Selection item to delete:\n";
 }
 
-void LunarPod(Characters &character) {
+// Check pointer vs reference!
+void LunarPod(Characters *character) {
     srand(time(0));
     itemMod = std::rand() % 3;
-    // character.playerInventory.push_back(item.lunarItems[item.m_RandomItem]);
-    character.StackItems();
+    character->playerInventory.push_back(CreateLunarItem(itemMod));
+    character->StackItems();
 }
 
 void EquipmentChest(Characters &character) {
     srand(time(0));
     itemMod = std::rand() % 4;
-    // character.playerInventory.push_back(item.equipment[item.m_RandomItem]);
+    character.playerInventory.push_back(CreateEquipment(itemMod));
     character.StackItems();
 }

@@ -4,55 +4,47 @@
 #include "Items.h"
 #include <vector>
 
-// Only create when necessary!
-// Sort deletion!
+// Resolve all control paths
 namespace ItemList {
-	void CreateWhiteItems(int index) {
-		struct WhiteItems {
-			Items* Soldiers_Syringe = new Items(1, "Soldiers Syringe");
-			Items* Tougher_Times = new Items(2, "Tougher Times");
-			Items* Lens_Maker_Glasses = new Items(3, "Lens Maker Glasses");
-			Items* Topaz_Brooch = new Items(4, "Topaz Brooch");
-			Items* Crowbar = new Items(5, "Crowbar");
-			Items* Bustling_Fungus = new Items(6, "Bustling Fungus");
-			Items* whiteItemsArray[6]{ Soldiers_Syringe, Tougher_Times, Lens_Maker_Glasses, Topaz_Brooch, Crowbar, Bustling_Fungus };
-		};
+	Items* CreateWhiteItem(int index) { // Use rvalue references?
+		if(index == 1) { Items Soldiers_Syringe{ 1, "Soldiers Syringe" }; return &Soldiers_Syringe; }
+		else if (index == 2) { Items Tougher_Times{ 2, "Tougher Times" }; return &Tougher_Times; }
+		else if (index == 3) { Items Lens_Maker_Glasses{ 3, "Lens Maker Glasses" }; return &Lens_Maker_Glasses; }
+		else if (index == 4) { Items Topaz_Brooch{ 4, "Topaz Brooch" }; return &Topaz_Brooch; }
+		else if (index == 5) { Items Crowbar{ 5, "Crowbar" }; return &Crowbar; }
+		else if (index == 6) { Items Bustling_Fungus{6, "Bustling Fungus"}; return &Bustling_Fungus; }
 	}
 
-	struct GreenItems {
-		Items *ATG_Missle_MK2 = new Items(7, "ATG Missle MK.2");
-		Items *Ukele = new Items(8, "Ukele");
-		Items *Preadator_Instinct = new Items(9, "Predators Instinct");
-		Items *Red_Whip = new Items(10, "Red Whip");
-		Items *Infusion = new Items(11, "Infusion");
-		Items *Will_O_Wisp = new Items(12, "Will-O-Wisp");
-		Items *greenItemsArray[6]{ATG_Missle_MK2, Ukele, Preadator_Instinct, Red_Whip, Infusion, Will_O_Wisp};
-	};
+	Items* CreateGreenItem(int index) {
+		if (index == 1) { Items ATG_Mssile_MK2{ 7, "ATG Missle MK.2" }; return &ATG_Mssile_MK2; }
+		else if (index == 2) { Items Ukele{ 8, "Ukele" }; return &Ukele; }
+		else if (index == 3) { Items Predator_Instinct{ 9, "Predators Instinct" }; return &Predator_Instinct; }
+		else if (index == 4) { Items Red_Whip{ 10, "Red Whip" }; return &Red_Whip; }
+		else if (index == 5) { Items Infusion{ 11, "Infusion" }; return &Infusion; }
+		else if (index == 6) { Items Will_O_Wisp{ 12, "Will-O-Wisp" }; return &Will_O_Wisp; }
+	}
 
-	struct RedItems {
-		Items *Brilliant_Behemoth = new Items(13, "Brilliant Behemoth");
-		Items *Soulbound_Catalyst = new Items(14, "Soulbound Catalyst");
-		Items *Aegis = new Items(15, "Aegis");
-		Items *Leaf_Clover = new Items(16, "57 Leaf Clover");
-		Items *Rejuvanation_Rack = new Items(17, "Rejuvanation Rack");
-		Items *Resonance_Disc = new Items(18, "Resonance Disc");
-		Items *redItemsArray[6]{Brilliant_Behemoth, Soulbound_Catalyst, Aegis, Leaf_Clover, Rejuvation_Rack, Resonance_Disc};
-	};
+	Items* CreateRedItem(int index) {
+		if (index == 1) { Items Brilliant_Behemoth{ 13, "Brilliant Behemoth" }; return &Brilliant_Behemoth; }
+		else if (index == 2) { Items Soulbound_Catalyst{ 14, "Soulbound Catalyst" }; return &Soulbound_Catalyst; }
+		else if (index == 3) { Items Aegis{ 15, "Aegis" }; return &Aegis; }
+		else if (index == 4) { Items Leaf_Clover{ 16, "57 Leaf Clover" }; return &Leaf_Clover; }
+		else if (index == 5) { Items Rejuvanation_Rack{ 17, "Rejuvanation Rack" }; return &Rejuvanation_Rack; }
+		else if (index == 6) { Items Resonance_Disc{ 18, "Resonance Disc" }; &Resonance_Disc; }
+	}
 
-	struct LunarItems {
-		Items *Shaped_Glass = new Items(19, "Shaped Glass");
-		Items *Beads_of_Fealty = new Items(20, "Beads of Fealty");
-		Items *Transcendence = new Items(21, "Transcendence");
-		Items *lunarItemsArray[3]{Shaped_Glass, Beads_of_Fealty, Transcendence};
-	};
+	Items* CreateLunarItem(int index) {
+		if (index == 1) { Items Shaped_Glass{ 19, "Shaped Glass" }; return &Shaped_Glass; }
+		else if (index == 2) { Items Beads_Of_Fealty{ 20, "Beads of Fealty" }; return &Beads_Of_Fealty; }
+		else if (index == 3) { Items Transcendence{ 21, "Transcendence" }; return &Transcendence; }
+	}
 
-	struct Equipment {
-		Items *Sawmerang = new Items(22, "Sawmerang");
-		Items *Primordial_Cube = new Items(23, "Primordial Cube");
-		Items *Royal_Capacitor = new Items(24, "Royal Capacitor");
-		Items *Preon_Accumulator = new Items(25, "Preon Accumulator");
-		Items *equipmentArray[4]{Sawmerang, Primordial_Cube, Royal_Capacitor, Preon_Accumulator};
-	};
+	Items* CreateEquipment(int index) {
+		if (index == 1) { Items Sawmerang{ 22, "Sawmerang" }; return &Sawmerang; }
+		else if (index == 2) { Items Primordial_Cube{ 23, "Primordial Cube" }; return &Primordial_Cube; }
+		else if (index == 3) { Items Royal_Capacitor{ 24, "Royal Capacitor" }; return &Royal_Capacitor; }
+		else if (index == 4) { Items Preon_Accumulator{ 25, "Preon Accumulator" }; return &Preon_Accumulator; }
+	}
 }
 
 #endif

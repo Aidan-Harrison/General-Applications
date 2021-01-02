@@ -1,9 +1,10 @@
 #include "Characters.h"
 
-Characters::Characters(short health, short moveSpeed, short attackSpeed, short crit, short hit, std::string name) {
+Characters::Characters(short health, short moveSpeed, short attackSpeed, short damage, short crit, short hit, std::string name) {
     m_Health = health;
     m_MoveSpeed = moveSpeed;
     m_AttackSpeed = attackSpeed;
+    m_Damage = damage;
     m_CritChance = crit;
     m_HitChance = hit;
     m_Name = name;
