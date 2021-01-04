@@ -8,6 +8,7 @@ namespace RoR2 {
     extern int itemMod;
     extern bool gameOver;
     extern int userInput;
+    extern std::string stringInput;
 
     extern void PrintCharacters();
     extern void PrintOptions();

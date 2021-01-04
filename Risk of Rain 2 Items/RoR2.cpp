@@ -6,6 +6,7 @@ namespace RoR2 {
     int itemMod = 0;
     bool gameOver = false;
     int userInput = 0;
+    std::string stringInput = "";
 
     void PrintCharacters() {
         std::cout << "Characters:\n";
@@ -21,7 +22,7 @@ namespace RoR2 {
     }
 
     void DeleteItem(Characters &character) {
-        for (int i = 0; i < character.playerInventory.size(); i++)
+        for(int i = 0; i < character.playerInventory.size(); i++)
             delete character.playerInventory[i];
     }
 }
