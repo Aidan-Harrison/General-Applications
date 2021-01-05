@@ -9,7 +9,8 @@ class Items {
 private:
     int m_ItemIndex; // Unique only | Possibly not needed
 public:
-    int m_RandomItem = 0; std::string m_ItemName = "";
+    int m_RandomItem = 0; 
+    std::string m_ItemName = "", m_ItemType = "";
     //Stats
     
     Items() = default;

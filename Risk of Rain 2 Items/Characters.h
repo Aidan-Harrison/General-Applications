@@ -16,17 +16,18 @@ public:
     ~Characters() = default;
     // Stats
     float m_Health, m_MoveSpeed, m_AttackSpeed, m_Damage, m_CritChance, m_HitChance, m_Shield = 0, m_Luck = 1;
-    int itemTotal = 0, stackCount = 0, numberOfLives = 1;
+    int itemTotal = 0, numberOfLives = 1;
     // Character Extra
     bool toSecret = false;
     // Inventory
-    std::vector<Items*> playerInventory{};
-    std::vector<int> itemStacks{}; // Print next to invent
+    std::vector<Items> playerInventory{};
+    std::vector<int> itemStacks{}; // Initialize as 0 when an item is added?
     
     std::string GetName() const { return m_Name; }
     void PrintItems();
-    void PrintStats();
-    int StackItems();
+    void PrintStats(Characters &character);
+    void StackItems();
+    void DeleteItem(Characters &character);
 };
 
 #endif

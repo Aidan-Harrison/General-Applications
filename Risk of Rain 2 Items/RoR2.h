@@ -12,7 +12,6 @@ namespace RoR2 {
 
     extern void PrintCharacters();
     extern void PrintOptions();
-    extern void DeleteItem(Characters &character);
 }
 
 #endif

@@ -17,12 +17,7 @@ namespace RoR2 {
     void PrintOptions() {
         std::cout << "Enter Option:\n";
         std::cout << "1) Common Chest " << "2) Rare Chest " << "3) Lunar Pod\n";
-        std::cout << "4) Equipment Chest " << "5) Scrapper(String based) " << "6) Scrapper(ID Based)\n";
-        std::cout << "6) Print Items " << "7) Print Stats " << "8) End\n";
-    }
-
-    void DeleteItem(Characters &character) {
-        for(int i = 0; i < character.playerInventory.size(); i++)
-            delete character.playerInventory[i];
+        std::cout << "4) Equipment Chest " << "5) Scrapper\n";
+        std::cout << "6) Print Items " << "7) Print Stats " << "8) Delete Items\n" << "9) End\n";
     }
 }
