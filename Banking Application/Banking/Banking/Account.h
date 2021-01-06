@@ -5,30 +5,39 @@
 #include <vector>
 #include "Global.h"
 
+using namespace BankGlobal;
+
 class Account {
 private:
-    int m_Accountbalance, m_Pin;
+    std::string m_AccountName;
+    int m_Accountbalance = 0;
 public:
+    int m_Pin = 0, cashOnHand = 100;
     bool loggedIn = false;
-    int cashOnHand = 100;
     Account() = default;
     ~Account() = default;
-    Account(int accountBalance, short pin)
-        :m_Accountbalance(accountBalance), m_Pin(pin)
+    Account(std::string name, short pin, int accountBalance)
+        :m_AccountName(name), m_Pin(pin), m_Accountbalance(accountBalance)
     {
     }
 
-    void View();
+    int GetBalance() const { return m_Accountbalance; }
+    void View(Account &account);
     int Deposit(Bank &bank);
     void Withdraw(Bank &bank);
-    std::vector<std::string> Statement();
+    std::vector<std::string> Statement(Bank &bank);
 };
+
+void Account::View(Account &account) {
+    std::cout << "Your account:\n";
+    std::cout << "Balance: " << GetBalance();
+}
 
 int Account::Deposit(Bank &bank) { // Possibly add amount as arugment, same for withdraw()
 retry:
     std::cout << "How much would you like to deposit?\n";
     std::cin >> userInput;
-    if (userInput <= 250 && userInput > 0 && cashInHand > 0 && userInput < cashInHand) {
+    if (userInput <= 250 && userInput > 0 && cashOnHand > 0 && userInput < cashOnHand) {
         bank.bankAmount += userInput;
         std::cout << "Depositied " << userInput;
     }
@@ -51,7 +60,7 @@ void Account::Withdraw(Bank &bank) {
 }
 
 // Randomize transactions
-std::vector<std::string> Account::Statement() {
+std::vector<std::string> Account::Statement(Bank &bank) {
     std::vector<std::string> transactions{};
     int amount = 0; // Random value associated with transaction
     int transSize = 0;
@@ -64,6 +73,5 @@ std::vector<std::string> Account::Statement() {
         std::cout << transactions[i] << '\n';
     return transactions;
 }
-
 
 #endif
