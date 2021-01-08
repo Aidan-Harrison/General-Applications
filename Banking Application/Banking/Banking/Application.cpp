@@ -7,8 +7,10 @@
 using namespace BankGlobal;
 Bank bank;
 Account account;
+Account eAccount1{"Kaiba", 8567, 15000};
 
-void Application() {
+void Application(Account &account) {
+    system("cls");
     account.loggedIn = true;
     std::cout << "Select an option:\n";
     std::cout << "1) View 2) Deposit\n";
@@ -16,11 +18,11 @@ void Application() {
     std::cout << "5) Exit\n";
     std::cout << "Option: "; std::cin >> userInput;
     switch(userInput) {
-    case 1: account.View(account);   break;
-    case 2: account.Deposit(bank);   break;
-    case 3: account.Withdraw(bank);  break;
-    case 4: account.Statement(bank); break;
-    case 5:                          return;
+    case 1: account.View(account);            break;
+    case 2: account.Deposit(bank, account);   break;
+    case 3: account.Withdraw(bank, account);  break;
+    case 4: account.Statement(bank, account); break;
+    case 5:                                   return;
     }
 }
 
@@ -36,14 +38,15 @@ retry:
             std::cout << "Enter pin: "; std::cin >> userInput;
         attempt:
             if(userInput == account.m_Pin) // Make equal to pin
-                Application();
+                Application(account);
             else {
                 std::cout << "Try Again!\n";
                 loginAttempts++;
                 goto attempt;
             }
         }
-        else if(userInput == 2) return;
+        else if(userInput == 2) 
+            return;
         else {
             std::cout << "Invalid input";
             goto retry;
@@ -55,7 +58,9 @@ retry:
 void CreateAccount(std::string name = "", short pin = 1111, int accountBalance = 1000) {
     std::cout << "Create an account\n";
 retry:
-    std::cin >> name >> pin >> accountBalance;
+    std::cout << "Account Name: "; std::cin >> name;
+    std::cout << "PIN: "; std::cin >> pin;
+    std::cout << "Account Balance: "; std::cin >> accountBalance;
     if(std::to_string(pin).length() != 4) { // See how this works with default parameters
         std::cout << "Pin must consist of 4 numbers, you have entered an invalid amount!\n";
         goto retry; // Seperate inputs like life sim
@@ -65,6 +70,12 @@ retry:
 }
 
 int main() {
-    CreateAccount();
+    std::cout << "Choose an option:\n";
+    std::cout << "1) Use existing account 2) Create account"; // Possibly have user made accounts appear here
+    std::cin >> userInput;
+    if (userInput == 1)
+        Application(eAccount1);
+    else
+        CreateAccount();
     return 0;
 }

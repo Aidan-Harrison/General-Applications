@@ -11,6 +11,7 @@ public:
     Bank() = default;
     ~Bank() = default;
     std::vector<std::string> companies{ "Amazon", "Steam", "GOG", "Epic", "Apple", "Subway" };
+    inline int GetBankAmount() const { return bankAmount; }
 };
 
 #endif
