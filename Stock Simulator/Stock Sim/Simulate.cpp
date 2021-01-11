@@ -13,7 +13,7 @@ void CurrentStock() {
 }
 
 // Simulate all stocks at once. Multithread the program or indepently tick through them
-// Move to seperate file
+// Heavily overview this
 int Simulate(int GDP) {
     CurrentStock();
     while (simulating == true) {

@@ -25,21 +25,21 @@ int Stocks::profitCalc(std::vector<int>& company) { // Pass in via stock ID
 }
 
 void Stocks::AddStocks() {
-    Stocks* newStock = new Stocks;
-    std::cout << "Enter company name: "; std::cin >> newStock->companyName;
+    Stocks newStock;
+    std::cout << "Enter company name: "; std::cin >> newStock.companyName;
     for (unsigned int i = 0; i < continents.size(); i++)
         std::cout << i + 1 << ") " << continents[i] << '\n';
     std::cout << "Pick a location: "; std::cin >> userInput;
     switch (userInput) {
-    case 1: newStock->location = continents[0]; break;
-    case 2: newStock->location = continents[1]; break;
-    case 3: newStock->location = continents[2]; break;
-    case 4: newStock->location = continents[3]; break;
-    case 5: newStock->location = continents[4]; break;
-    case 6: newStock->location = continents[5]; break;
+    case 1: newStock.m_Location = continents[0]; break;
+    case 2: newStock.m_Location = continents[1]; break;
+    case 3: newStock.m_Location = continents[2]; break;
+    case 4: newStock.m_Location = continents[3]; break;
+    case 5: newStock.m_Location = continents[4]; break;
+    case 6: newStock.m_Location = continents[5]; break;
     }
-    std::cout << "Enter company value: "; std::cin >> newStock->stockValue; // Check!
-    allStocks.push_back(*newStock); // Working
+    std::cout << "Enter company value: "; std::cin >> newStock.m_StockValue; // Check!
+    allStocks.push_back(newStock); // Working
     numberOfCompanies++;
     Menu();
 }
@@ -54,7 +54,7 @@ void Stocks::RemoveStocks() {
         }
     }
     for (unsigned int i = 0; i < allStocks.size(); i++) // Check!
-        allStocks[i].stockID -= 1; // Adjust for overflow
+        allStocks[i].m_StockID -= 1; // Adjust for overflow
     Menu();
 }
 

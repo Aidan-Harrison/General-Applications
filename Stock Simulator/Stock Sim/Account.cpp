@@ -4,15 +4,7 @@
 #include "StockSim.h"
 
 using namespace StockSim;
-
 Account* account = new Account(250); // Construct with balance
-
-// Prototypes
-void AccountMenu(std::vector<Stocks> &stocks, Stocks &stock);
-
-void Account::DeleteAccount() {
-    delete account;
-}
 
 int Account::TakeLoan() {
     static int loanAmount = 1000; // Cannot take anymore than this
@@ -33,24 +25,24 @@ retry:
     return account->m_AccountBalance;
 }
 
-void Account::Invest(std::vector<Stocks> &stocks, Stocks &stock) {
+void Account::Invest(Stocks &stock) {
     std::cout << "What stocks would you like to invest in?\n";
     stock.PrintStocks();
     std::cin >> userInput;
     if (userInput != stock.numberOfCompanies + 1)
-        currentInvestmentsInt[userInput] = stocks[userInput].stockID; // Check!
+        currentInvestmentsInt[userInput] = stock.allStocks[userInput].m_StockID; // Check!
     else if (userInput == stock.numberOfCompanies + 1)
-        AccountMenu(stocks, stock);
+        AccountMenu(stock);
 }
 
 void Account::CurInvestments(std::vector<Stocks> &stocks) {
     // Mark which stocks are being invested in before doing anything
-    for (int i = 0; i < stocks.size(); i++)
-        if (currentInvestmentsInt[i] == stocks[i].stockID)
+    for (unsigned int i = 0; i < stocks.size(); i++)
+        if (currentInvestmentsInt[i] == stocks[i].m_StockID)
             std::cout << stocks[i].companyName;
 }
 
-void AccountMenu(std::vector<Stocks> &stocks, Stocks &stock) {
+void Account::AccountMenu(Stocks &stock) {
     system("cls");
     std::cout << "Welcome to your account\n";
     std::cout << "1) Take loan\n";
@@ -59,7 +51,9 @@ void AccountMenu(std::vector<Stocks> &stocks, Stocks &stock) {
     switch (userInput) {
     case 1: account->TakeLoan();            break;
     case 2: account->DeleteAccount();       break;
-    case 3: account->Invest(stocks, stock); break;
+    case 3: account->Invest(stock);         break;
     default: return;
     }
 }
+
+void Account::DeleteAccount() { delete account; }

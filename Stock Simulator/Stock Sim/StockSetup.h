@@ -2,49 +2,22 @@
 #define StockSetup_h
 
 #include "Stocks.h"
+#include "Account.h"
 
 Stocks stock; // Instance of stocks for intialisation | Allows call to 'Stocks' functions
+Account account;
 
-// Comapanies | Change this, refer to Risk of Rain 2
-Stocks TSLA;
-Stocks APPL;
-Stocks AMD;
-Stocks Intel;
-Stocks Nvidia;
-Stocks TSMC;
+// Comapanies
+            // Name, ID, Value, Location
+Stocks TSLA  {"Tesla", 1, 600, "North America"};
+Stocks APPL  {"Apple.inc", 2, 300, "North America"};
+Stocks AMD   {"AMD (Advanced Micro Devices)", 3, 80, "North America"};
+Stocks Intel {"Intel", 4, 35, "North America"};
+Stocks Nvidia{"Nvidia", 5, 500, "Nvidia"};
+Stocks TSMC  {"Taiwan Semiconductor Manufacturing Company", 6, 1500, "Asia"};
 
 Stocks* Stocks::IntitializeStocks() {
-    // Names
-    TSLA.companyName =   "Tesla";
-    APPL.companyName =   "Apple.inc";
-    AMD.companyName =    "AMD (Advanced Micro Devices)";
-    Intel.companyName =  "Intel";
-    Nvidia.companyName = "Nvidia";
-    TSMC.companyName =   "Taiwan Semiconductor Manufacturing Company";
-    // ID | Could automate this one?
-    TSLA.stockID =   1;
-    APPL.stockID =   2;
-    AMD.stockID =    3;
-    Intel.stockID =  4;
-    Nvidia.stockID = 5;
-    TSMC.stockID =   6;
-    // Market
-    TSLA.stockValue =   600;
-    APPL.stockValue =   300;
-    AMD.stockValue =     80;
-    Intel.stockValue =   35;
-    Nvidia.stockValue = 500;
-    TSMC.stockValue =  1500;
-    // Location (NA)
-    TSLA.location =   stock.continents[0];
-    APPL.location =   stock.continents[0];
-    AMD.location =    stock.continents[0];
-    Intel.location =  stock.continents[0];
-    Nvidia.location = stock.continents[0];
-    // Location (Asia)
-    TSMC.location =   stock.continents[3];
-
-    // Push stocks to object vector | Automate this part
+        // Push stocks to object vector | Automate this part
     allStocks.push_back(TSLA);
     allStocks.push_back(APPL);
     allStocks.push_back(AMD);
@@ -55,7 +28,7 @@ Stocks* Stocks::IntitializeStocks() {
     // Finally update total companies
     numberOfCompanies = allStocks.size();
 
-    return &stock;
+    return &stock; // Check!
 }
 
 #endif

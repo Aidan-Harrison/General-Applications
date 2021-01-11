@@ -19,7 +19,6 @@ int SetupStock(int ID);
 int Simulate(int GDP);
 void CurrentStock();
 void Menu();
-void AccountMenu(std::vector<Stocks>& stocks, Stocks& stock);
 
 void Menu() {
     system("cls");
@@ -34,15 +33,15 @@ void Menu() {
         Simulate(SetupStock(userInput));
     else if (userInput == stock.numberOfCompanies + 1)
         stock.GlobalMarket();
-    else if (userInput == stock.numberOfCompanies + 2)
-        AccountMenu(stock.allStocks, stock);
+    else if (userInput == stock.numberOfCompanies + 2) // Check!
+        account.AccountMenu(stock);
 }
 
 int SetupStock(int ID) {
     for (unsigned int i = 0; i < stock.allStocks.size(); i++)
-        if (stock.allStocks[i].stockID == ID) {
+        if (stock.allStocks[i].m_StockID == ID) {
             currentStock = stock.allStocks[i].companyName;
-            return stock.allStocks[i].stockValue;
+            return stock.allStocks[i].m_StockValue;
         }
     return -1; // Failed
 }

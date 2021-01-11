@@ -22,9 +22,10 @@ public:
     std::vector<bool> currentInvestmentsInt{};
 
     int GetBalance() const { return m_AccountBalance; }
+    void AccountMenu(Stocks &stock);
     void DeleteAccount();
     int TakeLoan();
-    void Invest(std::vector<Stocks>& stocks, Stocks& stock);
+    void Invest(Stocks& stock);
     void CurInvestments(std::vector<Stocks>& stocks);
 };
 
