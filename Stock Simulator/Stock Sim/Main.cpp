@@ -29,7 +29,7 @@ void Menu() {
     std::cout << stock.numberOfCompanies + 1 << ") " << "Global Market\n"; // Always move one above total stock size
     std::cout << stock.numberOfCompanies + 2 << ") " << "Account\n";
     std::cin >> userInput;
-    if (userInput != stock.numberOfCompanies + 1)
+    if (userInput != stock.numberOfCompanies + 1 && userInput != stock.numberOfCompanies + 2)
         Simulate(SetupStock(userInput));
     else if (userInput == stock.numberOfCompanies + 1)
         stock.GlobalMarket();
