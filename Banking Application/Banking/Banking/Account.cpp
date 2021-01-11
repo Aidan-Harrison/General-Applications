@@ -1,4 +1,7 @@
+#include "Global.h"
 #include "Account.h"
+
+using namespace BankGlobal;
 
 void Application(Account &account);
 
@@ -10,7 +13,7 @@ void Account::View(Account &account) {
     Application(account);
 }
 
-void Account::Deposit(Bank& bank, Account &account) { // Possibly add amount as arugment, same for withdraw()
+void Account::Deposit(Bank& bank, Account &account) {
 retry:
     std::cout << "How much would you like to deposit?\n";
     std::cin >> userInput;
@@ -50,7 +53,7 @@ void Account::Statement(Bank& bank, Account &account) const {
         Application(account);
     }
     std::cout << "Statement:\n";
-    for (unsigned int i = 0; i < transSize; i++) {
+    for (int i = 0; i < transSize; i++) {
         transactionAmount = rand() % 20;
         totalTransaction += transactionAmount;
         std::cout << bank.companies[i] << " | " << transactionAmount + 1 << '\n'; // '+1' prevents it from being 0, and sets max to 20

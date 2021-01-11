@@ -4,9 +4,6 @@
 #include <iostream>
 #include <vector>
 #include "Bank.h"
-#include "Global.h"
-
-using namespace BankGlobal;
 
 class Account {
 private:
@@ -15,6 +12,7 @@ private:
 public:
     int m_Pin = 0, cashOnHand = 100;
     bool loggedIn = false;
+    std::vector<Account> accounts{};
     Account() = default;
     ~Account() = default;
     Account(std::string name, short pin, int accountBalance)
@@ -23,10 +21,10 @@ public:
     }
 
     inline int GetBalance() const { return m_Accountbalance; }
-    void View(Account &account);
-    void Deposit(Bank &bank, Account &account);
-    void Withdraw(Bank &bank, Account &account);
-    void Statement(Bank &bank, Account &account) const;
+    void View(Account& account);
+    void Deposit(Bank& bank, Account& account);
+    void Withdraw(Bank& bank, Account& account);
+    void Statement(Bank& bank, Account& account) const;
 };
 
 #endif

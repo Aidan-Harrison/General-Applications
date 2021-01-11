@@ -141,6 +141,8 @@
   <ItemGroup>
     <ClCompile Include="Account.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Simulate.cpp" />
+    <ClCompile Include="Stocks.cpp" />
     <ClCompile Include="StockSim.cpp" />
   </ItemGroup>
   <ItemGroup>

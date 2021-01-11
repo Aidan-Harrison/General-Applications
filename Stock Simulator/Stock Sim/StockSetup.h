@@ -3,9 +3,9 @@
 
 #include "Stocks.h"
 
-Stocks stock; // Instance of stocks for intialisation | Allows call to 'Stocks' functions | Heap allocate
+Stocks stock; // Instance of stocks for intialisation | Allows call to 'Stocks' functions
 
-// Comapanies
+// Comapanies | Change this, refer to Risk of Rain 2
 Stocks TSLA;
 Stocks APPL;
 Stocks AMD;
@@ -15,34 +15,34 @@ Stocks TSMC;
 
 Stocks* Stocks::IntitializeStocks() {
     // Names
-    TSLA.companyName = "Tesla";
-    APPL.companyName = "Apple.inc";
-    AMD.companyName = "AMD (Advanced Micro Devices)";
-    Intel.companyName = "Intel";
+    TSLA.companyName =   "Tesla";
+    APPL.companyName =   "Apple.inc";
+    AMD.companyName =    "AMD (Advanced Micro Devices)";
+    Intel.companyName =  "Intel";
     Nvidia.companyName = "Nvidia";
-    TSMC.companyName = "Taiwan Semiconductor Manufacturing Company";
+    TSMC.companyName =   "Taiwan Semiconductor Manufacturing Company";
     // ID | Could automate this one?
-    TSLA.stockID = 1;
-    APPL.stockID = 2;
-    AMD.stockID = 3;
-    Intel.stockID = 4;
+    TSLA.stockID =   1;
+    APPL.stockID =   2;
+    AMD.stockID =    3;
+    Intel.stockID =  4;
     Nvidia.stockID = 5;
-    TSMC.stockID = 6;
+    TSMC.stockID =   6;
     // Market
-    TSLA.stockValue = 600;
-    APPL.stockValue = 300;
-    AMD.stockValue = 80;
-    Intel.stockValue = 35;
+    TSLA.stockValue =   600;
+    APPL.stockValue =   300;
+    AMD.stockValue =     80;
+    Intel.stockValue =   35;
     Nvidia.stockValue = 500;
-    TSMC.stockValue = 1500;
+    TSMC.stockValue =  1500;
     // Location (NA)
-    TSLA.location = stock.continents[0];
-    APPL.location = stock.continents[0];
-    AMD.location = stock.continents[0];
-    Intel.location = stock.continents[0];
+    TSLA.location =   stock.continents[0];
+    APPL.location =   stock.continents[0];
+    AMD.location =    stock.continents[0];
+    Intel.location =  stock.continents[0];
     Nvidia.location = stock.continents[0];
     // Location (Asia)
-    TSMC.location = stock.continents[3];
+    TSMC.location =   stock.continents[3];
 
     // Push stocks to object vector | Automate this part
     allStocks.push_back(TSLA);

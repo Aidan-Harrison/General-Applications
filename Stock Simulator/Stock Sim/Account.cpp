@@ -4,6 +4,7 @@
 #include "StockSim.h"
 
 using namespace StockSim;
+
 Account* account = new Account(250); // Construct with balance
 
 // Prototypes
@@ -34,7 +35,7 @@ retry:
 
 void Account::Invest(std::vector<Stocks> &stocks, Stocks &stock) {
     std::cout << "What stocks would you like to invest in?\n";
-    PrintStocks();
+    stock.PrintStocks();
     std::cin >> userInput;
     if (userInput != stock.numberOfCompanies + 1)
         currentInvestmentsInt[userInput] = stocks[userInput].stockID; // Check!
@@ -55,15 +56,10 @@ void AccountMenu(std::vector<Stocks> &stocks, Stocks &stock) {
     std::cout << "1) Take loan\n";
     std::cout << "2) Delete account\n";
     std::cin >> userInput;
-    switch (userInput)
-    {
-    case 1:
-        account->TakeLoan(); break;
-    case 2:
-        account->DeleteAccount(); break;
-    case 3:
-        account->Invest(stocks, stock); break;
-    default:
-        return;
+    switch (userInput) {
+    case 1: account->TakeLoan();            break;
+    case 2: account->DeleteAccount();       break;
+    case 3: account->Invest(stocks, stock); break;
+    default: return;
     }
 }

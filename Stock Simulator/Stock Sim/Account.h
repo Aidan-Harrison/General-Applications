@@ -11,7 +11,10 @@ private:
     int m_AccountBalance = 0;
 public:
     Account() = default;
-    Account(short accountBalance);
+    Account(short accountBalance)
+        :m_AccountBalance(accountBalance)
+    {
+    }
     ~Account() = default;
     std::vector<bool> currentInvestments{}; // Company names, access member variables
     // Use bool and assign each element of index equal to stock vector. True if investing, false otherwise
@@ -24,10 +27,5 @@ public:
     void Invest(std::vector<Stocks>& stocks, Stocks& stock);
     void CurInvestments(std::vector<Stocks>& stocks);
 };
-
-Account::Account(short accountBalance)
-    :m_AccountBalance(accountBalance)
-{
-}
 
 #endif

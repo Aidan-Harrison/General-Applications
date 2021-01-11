@@ -24,11 +24,14 @@
     <ClCompile Include="StockSim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Simulate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Stocks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Stocks.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Account.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StockSim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stocks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

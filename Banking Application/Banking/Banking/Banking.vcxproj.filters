@@ -22,17 +22,17 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Global.cpp">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Account.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Bank.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Account.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
