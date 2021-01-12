@@ -17,7 +17,7 @@ Characters::Characters(short health, short moveSpeed, short attackSpeed, short d
 void Characters::PrintItems() {
     std::cout << "Inventory Size: " << playerInventory.size() << '\n';
     for(unsigned int i = 0; i < playerInventory.size(); i++)
-        std::cout << i + 1 << ") " << playerInventory[i].m_ItemName << " | "<< '\n'; // Add item stacks
+        std::cout << i + 1 << ") " << playerInventory[i].m_ItemName << '\n';
 }
 
 void Characters::PrintStats(Characters &character) {
@@ -43,6 +43,8 @@ void Characters::StackItems() { // Prevent multiples of the same item from appea
             if(playerInventory[i].m_ItemName == playerInventory[j].m_ItemName) {
                 playerInventory.erase(playerInventory.begin() + j);
                 i--; j--;
+                itemStacks.push_back(0); // Incorrect
+                itemStacks[i]++;
             }
         }
     }

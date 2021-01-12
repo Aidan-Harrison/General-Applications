@@ -56,13 +56,8 @@ void RareChest(Characters &character) {
 void Scrapper(Characters &character) { // Deletes specified item and adds scrap based on rarity
     if(character.playerInventory.empty() == true) { std::cout << "You have no items to scrap!\n"; }
     character.PrintItems();
-    std::cout << "Select item to delete:\n"; std::cin >> stringInput;
-    for(unsigned int i = 0; i < character.playerInventory.size(); i++) {
-        if(character.playerInventory[i].m_ItemName == stringInput) {
-            character.playerInventory.erase(character.playerInventory.begin() + i);
-            i--;
-        }
-    }
+    std::cout << "Select item to delete:\n"; std::cin >> userInput;
+    character.playerInventory.erase(character.playerInventory.begin() + userInput);
     RoR2Main(character);
 }
 

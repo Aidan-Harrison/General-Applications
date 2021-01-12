@@ -66,7 +66,7 @@ retry:
         goto retry; // Seperate inputs like life sim
     }
     Account account{name, pin, accountBalance};
-        // bank.accounts.push_back(account);
+    account.accounts.push_back(account);
     Banking(account);
 }
 
