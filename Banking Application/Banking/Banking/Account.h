@@ -7,9 +7,9 @@
 
 class Account {
 private:
-    std::string m_AccountName;
     int m_Accountbalance = 0;
 public:
+    std::string m_AccountName;
     int m_Pin = 0, cashOnHand = 100;
     bool loggedIn = false;
     std::vector<Account> accounts{};

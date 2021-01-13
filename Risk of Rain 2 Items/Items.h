@@ -14,8 +14,9 @@ public:
     //Stats
     
     Items() = default;
-    Items(short itemIndex, std::string itemName) {
+    Items(short itemIndex, std::string itemType, std::string itemName) {
         m_ItemIndex = itemIndex;
+        m_ItemType = itemType;
         m_ItemName = itemName;
     }
    ~Items() = default;

@@ -14,7 +14,7 @@ public:
     std::string m_Location = ""; // Makes easier but not needed
     int m_StockID = 0; // Used for indexing | Change to static and properly increment
     int m_StockValue = 0; // Total amount of money in circulation | Possibly make static
-    int numberOfCompanies = 0;
+    short numberOfCompanies = 0;
 
     std::vector<Stocks> allStocks{};
 

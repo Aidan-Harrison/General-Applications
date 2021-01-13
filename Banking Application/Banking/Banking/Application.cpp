@@ -7,7 +7,9 @@
 using namespace BankGlobal;
 Bank bank;
 Account account;
-Account eAccount1{"Kaiba", 8567, 15000};
+
+void Choose();
+void Setup();
 
 void Application(Account &account) {
     system("cls");
@@ -26,23 +28,23 @@ void Application(Account &account) {
     }
 }
 
+// Remove goto statements
 void Banking(Account &account) {
+retry:
     std::cout << "WELCOME TO THE BANK\n";
     std::cout << "Enter option:\n";
     std::cout << "1) Login \t 2) Exit\n";
     if(!account.loggedIn && loginAttempts <= 3) {
-retry:
         std::cin >> userInput;
         if(userInput == 1) {
             system("cls");
             std::cout << "Enter pin: "; std::cin >> userInput;
-        attempt:
-            if(userInput == account.m_Pin) // Make equal to pin
+            if(userInput == account.m_Pin)
                 Application(account);
             else {
                 std::cout << "Try Again!\n";
                 loginAttempts++;
-                goto attempt;
+                goto retry;
             }
         }
         else if(userInput == 2) 
@@ -52,31 +54,55 @@ retry:
             goto retry;
         }
     }
+    else if (!account.loggedIn && loginAttempts > 3) {
+        std::cout << "You have made to many attempts!\n EXITING....";
+        // Terminate program here
+    }
     return;
 }
 
-void CreateAccount(std::string name = "", short pin = 1111, int accountBalance = 1000) {
+void CreateAccount() {
+    std::string name = "";
+    short pin = 0;
+    int accountBalance = 0;
+    system("cls");
     std::cout << "Create an account\n";
-retry:
     std::cout << "Account Name: "; std::cin >> name;
     std::cout << "PIN: "; std::cin >> pin;
     std::cout << "Account Balance: "; std::cin >> accountBalance;
-    if(std::to_string(pin).length() != 4) { // See how this works with default parameters
-        std::cout << "Pin must consist of 4 numbers, you have entered an invalid amount!\n";
-        goto retry; // Seperate inputs like life sim
+    if(std::to_string(pin).length() != 4) {
+        std::cout << "Pin must consist of 4 numbers, you have entered an invalid amount!\n Try Again: ";
+        std::cin >> pin; // Fix
     }
-    Account account{name, pin, accountBalance};
+    Account account{ name, pin, accountBalance };
     account.accounts.push_back(account);
-    Banking(account);
+    Choose();
+}
+
+void Choose() {
+    std::cout << "Choose an option:\n";
+    std::cout << "1) Use existing account \t 2) Create account\n";
+    std::cin >> userInput;
+    if (userInput == 1) {
+        system("cls");
+        for (unsigned int i = 0; i < account.accounts.size(); i++)
+            std::cout << i << " ) " << account.accounts[i].m_AccountName << '\n';
+        std::cin >> userInput;
+        Banking(account.accounts[userInput]);
+    }
+    else
+        CreateAccount();
 }
 
 int main() {
-    std::cout << "Choose an option:\n";
-    std::cout << "1) Use existing account 2) Create account"; // Possibly have user made accounts appear here
-    std::cin >> userInput;
-    if (userInput == 1)
-        Application(eAccount1);
-    else
-        CreateAccount();
+    Setup();
     return 0;
+}
+
+void Setup() {
+    Account eAccount1{ "Kaiba", 8567, 15000 };
+    Account eAccount2{ "Yugi", 6650, 2000 };
+    account.accounts.push_back(eAccount1);
+    account.accounts.push_back(eAccount2);
+    Choose();
 }

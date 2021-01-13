@@ -35,8 +35,8 @@ remain:
         RoR2Main(character);
 }
 
-// Removes said item without affecting stats
 // Also have stack count independent. Currently increases on an all item basis
+// Change duplicate finding algorithm so it works on any state of the inventory
 void Characters::StackItems() { // Prevent multiples of the same item from appearing more than once, increase stack count instead
     for(unsigned int i = 0; i < playerInventory.size(); i++) {
         for(unsigned int j = 1; j < playerInventory.size(); j++) {

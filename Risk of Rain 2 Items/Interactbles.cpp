@@ -57,7 +57,15 @@ void Scrapper(Characters &character) { // Deletes specified item and adds scrap 
     if(character.playerInventory.empty() == true) { std::cout << "You have no items to scrap!\n"; }
     character.PrintItems();
     std::cout << "Select item to delete:\n"; std::cin >> userInput;
-    character.playerInventory.erase(character.playerInventory.begin() + userInput);
+    character.playerInventory.erase(character.playerInventory.begin() + userInput - 1);
+    if (character.playerInventory[userInput].m_ItemType == "White")
+        character.playerInventory.push_back(CreateScrap("white"));
+    else if (character.playerInventory[userInput].m_ItemType == "Green")
+        character.playerInventory.push_back(CreateScrap("green"));
+    else if (character.playerInventory[userInput].m_ItemType == "Red")
+        character.playerInventory.push_back(CreateScrap("red"));
+    else
+        std::cout << "You cannot scrap Lunar or Equipment!\n";
     RoR2Main(character);
 }
 
@@ -65,7 +73,7 @@ void LunarPod(Characters &character) {
     srand(time(0));
     itemMod = std::rand() % 3;
     character.playerInventory.push_back(CreateLunarItem(itemMod));
-    character.StackItems();
+    // character.StackItems();
     RoR2Main(character);
 }
 
@@ -73,6 +81,6 @@ void EquipmentChest(Characters &character) {
     srand(time(0));
     itemMod = std::rand() % 4;
     character.playerInventory.push_back(CreateEquipment(itemMod));
-    character.StackItems();
+    // character.StackItems();
     RoR2Main(character);
 }
