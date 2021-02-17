@@ -1,2 +1,2 @@
 # General-Applications
- A list full of some general apps created using C/C++. These apps range from video game mechanics, simulators, calculators etc.
+ A list of general apps created using C/C++. These apps range from video game mechanics, simulators, calculators etc.
