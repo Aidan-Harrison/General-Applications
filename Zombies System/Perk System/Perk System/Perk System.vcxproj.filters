@@ -27,6 +27,9 @@
     <ClInclude Include="Setup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -36,6 +39,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Setup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapons.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Perks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

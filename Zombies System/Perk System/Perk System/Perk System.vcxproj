@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="gum.h" />
     <ClInclude Include="Perks.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Setup.h" />
@@ -146,8 +147,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Perks.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Setup.cpp" />
+    <ClCompile Include="Weapons.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
