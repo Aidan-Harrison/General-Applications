@@ -9,17 +9,18 @@ void RollPerk() {
 	short input = 0;
 	std::cout << "Current Points: " << player.points << '\n';
 	std::cout << "Pick a perk:\n" <<
-				 "1) Juggernaut(2500)  2) Speed-Cola(3000)  3) Double-Tap(2000)  4) Mule-Kick(4000)";
+				 "1) Quick-Revive(500)  2) Juggernaut(2500)  3) Speed-Cola(3000)  4) Double-Tap(2000)  5) Mule-Kick(4000)  6) Widows-Wine(3500)  7) Stamina-Up(2500)";
 	std::cin >> input;
-	if(input == 1 && player.points >= 2500)		 player.AddPerk(1);
-	else if(input == 2 && player.points >= 2000) player.AddPerk(2);
-	else if(input == 3 && player.points >= 3000) player.AddPerk(3);
-	else if(input == 4 && player.points >= 4000) player.AddPerk(4);
-	else if(input == 5 && player.points >= 1000) player.AddPerk(5);
-	else if(input == 6 && player.points >= 2000) player.AddPerk(6);
+	if(input == 1 && player.points >= 500)		 player.AddPerk(1);
+	else if(input == 2 && player.points >= 2500) player.AddPerk(2);
+	else if(input == 3 && player.points >= 2000) player.AddPerk(3);
+	else if(input == 4 && player.points >= 3000) player.AddPerk(4);
+	else if(input == 5 && player.points >= 4000) player.AddPerk(5);
+	else if(input == 6 && player.points >= 3500) player.AddPerk(6);
+	else if(input == 7 && player.points >= 2500) player.AddPerk(6);
 	else std::cout << "You do not have enough points for "; // Add perk name
-	for (unsigned int i = 0; i < player.perkInventory.size(); i++) {
-		if(player.perkInventory[i].perkName == "Quick Revive")	   player.canSelfRevive = true;
+	for(unsigned int i = 0; i < player.perkInventory.size(); i++) {
+		if(player.perkInventory[i].perkName == "Quick Revive")	  player.canSelfRevive = true;
 		else if(player.perkInventory[i].perkName == "Juggernaut") player.m_Health * 2;
 		else if(player.perkInventory[i].perkName == "Double-Tap") player.m_Damage * 2;
 		else if(player.perkInventory[i].perkName == "Speed-Cola") player.m_ReloadSpeed * 2;
@@ -37,7 +38,6 @@ void MysteryBox() {
 		int weapon = 0;
 		weapon = rand() % 5;
 		player.AddWeapon(weapon);
-		std::cout << "You got a " << player.weaponInventory[0].wepName;
 	}
 	else std::cout << "You don't have enough points or you are already at max weapons!";
 	std::cin.get();

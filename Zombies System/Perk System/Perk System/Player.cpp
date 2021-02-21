@@ -3,14 +3,17 @@ using namespace PerkSetup;
 using namespace WeaponSetup;
 using namespace GumSetup;
 
+void Interface();
+
 void Player::AddPerk(short perk) {
 	switch(perk) {
-		case 1: perkInventory.push_back(Juggernaut);  break;
-		case 2: perkInventory.push_back(DoubleTap);   break;
-		case 3: perkInventory.push_back(SpeedCola);   break;
-		case 4: perkInventory.push_back(MuleKick);    break;
-		case 5: perkInventory.push_back(QuickRevive); break;
-		case 6: perkInventory.push_back(StaminaUp);   break;
+		case 1: perkInventory.push_back(QuickRevive); break;
+		case 2: perkInventory.push_back(Juggernaut);  break;
+		case 3: perkInventory.push_back(DoubleTap);   break;
+		case 4: perkInventory.push_back(SpeedCola);   break;
+		case 5: perkInventory.push_back(MuleKick);    break;
+		case 6: perkInventory.push_back(WidowsWine);  break;
+		case 7: perkInventory.push_back(StaminaUp);   break;
 	}
 }
 void Player::AddWeapon(short weapon) {
@@ -52,6 +55,9 @@ void Player::PrintStats() {
 		std::cout << gumInventory[i].m_Name << " | " <<
 					 gumInventory[i].m_Rarity;
 	}
+	std::cin.get();
+	std::cin.get();
+	Interface();
 }
 void Player::DeletePlayer(Player *p) {
 	delete p;

@@ -1,0 +1,8 @@
+Unemployed
+Freelancer
+Construction Worker
+Engineer
+Scientist
+Software Engineer
+Retail Manager
+Stock Trader

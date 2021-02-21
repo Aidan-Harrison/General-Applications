@@ -8,7 +8,7 @@ namespace PerkSetup {
 	Perks SpeedCola  ("Speed-Cola", 3000,   0,  0, false);
 	Perks MuleKick   ("Mule-Kick",  4000,   0,  0, true);
 	Perks WidowsWine ("WidowsWine", 3500,   0,  0, true);
-	Perks StaminaUp  ("Stamina-Up", 2000,   0,  0, false);
+	Perks StaminaUp  ("Stamina-Up", 2500,   0,  0, false);
 };
 // Name | Damage | Range | Weight | Ammo | Unique
 namespace WeaponSetup {
