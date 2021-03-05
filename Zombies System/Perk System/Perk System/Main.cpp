@@ -61,7 +61,7 @@ void PackAPunch() {
 				newWeapon.wepName = "Pack-A-Punched " + player.weaponInventory[i].wepName;
 				newWeapon.m_Damage = player.weaponInventory[i].m_Damage * 2;
 				newWeapon.m_Ammo = player.weaponInventory[i].m_Ammo * 2;
-				// player.weaponInventory[i].DeleteWeapon(&player.weaponInventory[i]);
+				player.weaponInventory[i].DeleteWeapon(&player.weaponInventory[i]);
 			}
 		}
 		player.weaponInventory.push_back(newWeapon);
@@ -75,8 +75,9 @@ void GobbleGum() {
 	gum = rand() % 3;
 	player.AddGum(gum);
 	for(unsigned int i = 0; i < player.gumInventory.size(); i++) {
-		if(player.gumInventory[i].m_Name == "Perk-A-Holic")    player.m_MaxPerkCount = 7;
-		else if(player.gumInventory[i].m_Name == "Fast-Hands") player.m_ReloadSpeed = 20;
+		if (player.gumInventory[i].m_Name == "Perk-A-Holic")       player.m_MaxPerkCount = 7;
+		else if (player.gumInventory[i].m_Name == "Fast-Hands")    player.m_ReloadSpeed = 20;
+		else if (player.gumInventory[i].m_Name == "Avoid-Zombies") player.isInvisible = true;
 	}
 	Interface();
 }

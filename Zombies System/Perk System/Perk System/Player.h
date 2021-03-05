@@ -7,7 +7,7 @@
 struct Player {
 	short points = 500, maxWeapons = 3;
 	short m_Health, m_Stamina, m_Damage, m_ReloadSpeed, m_MaxPerkCount = 4;
-	bool canSelfRevive = false;
+	bool canSelfRevive = false, isInvisible = false;
 	std::vector<Perks> perkInventory{};
 	std::vector<Weapon> weaponInventory{};
 	std::vector<Gum> gumInventory{};

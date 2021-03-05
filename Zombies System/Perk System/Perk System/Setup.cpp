@@ -20,7 +20,7 @@ namespace WeaponSetup {
 };
 // Name
 namespace GumSetup {
-	Gum PerkAHolic   ("Perk-A-Holic", 3);
-	Gum FastHands    ("Fast-Hands", 1);
-	Gum AvoidZombies ("Avoid-Zombies", 1);
+	Gum PerkAHolic   ("Perk-A-Holic",  3, "Legendary");
+	Gum FastHands    ("Fast-Hands",    1, "Common");
+	Gum AvoidZombies ("Avoid-Zombies", 1, "Common");
 };

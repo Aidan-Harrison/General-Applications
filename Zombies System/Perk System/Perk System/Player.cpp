@@ -53,7 +53,8 @@ void Player::PrintStats() {
 	std::cout << "Gums:\n";
 	for (unsigned int i = 0; i < gumInventory.size(); i++) {
 		std::cout << gumInventory[i].m_Name << " | " <<
-					 gumInventory[i].m_Rarity;
+			gumInventory[i].m_Rarity << '|' <<
+			gumInventory[i].rarityName;
 	}
 	std::cin.get();
 	std::cin.get();
