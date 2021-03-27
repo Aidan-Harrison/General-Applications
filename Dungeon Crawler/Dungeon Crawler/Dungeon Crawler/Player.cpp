@@ -19,9 +19,9 @@ void Player::Input() {
 void Player::Logic() {
 	switch (dir) {
 		case Player::STOP:			   break;
-		case Player::UP: playerY--;    break;
-		case Player::DOWN: playerY++;  break;
-		case Player::LEFT: playerX--;  break;
+		case Player::UP:    playerY--; break;
+		case Player::DOWN:  playerY++; break;
+		case Player::LEFT:  playerX--; break;
 		case Player::RIGHT: playerX++; break;
 	}
 }

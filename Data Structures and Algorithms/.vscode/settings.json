@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "lambdalinearsearch": "cpp",
+        "vector": "cpp",
+        "algorithm": "cpp"
+    }
+}

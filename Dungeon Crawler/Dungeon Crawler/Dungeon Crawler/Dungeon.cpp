@@ -16,7 +16,7 @@ void Dungeon::Draw(std::vector<std::vector<char>> &room, Player &player, Chest &
 			else std::cout << room[i][j];
 			newLine++;
 		}
-		if (newLine == roomWidth) {
+		if(newLine == roomWidth) {
 			std::cout << '\n';
 			newLine = 0;
 		}

@@ -13,6 +13,7 @@ public:
 	short numOfRooms = 3;
 	short roomWidth = 0, roomHeight = 0;
 	short doorX, doorY;
+	std::wstring maps[3];
 	Dungeon();
 	std::vector<std::vector<char>> Room1 = {
 		{'='},{'='},{'='},{'='},{'='},{'='},{'='},{'='},{'='},{'='},{'='},{'='},{'='},{'='},{'='},{'='},{'='},{'='},
