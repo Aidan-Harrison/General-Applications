@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DOTA", "DOTA\DOTA.vcxproj", "{48CDF47D-D554-47DD-A387-1A87E6E0456E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48CDF47D-D554-47DD-A387-1A87E6E0456E}.Debug|x64.ActiveCfg = Debug|x64
+		{48CDF47D-D554-47DD-A387-1A87E6E0456E}.Debug|x64.Build.0 = Debug|x64
+		{48CDF47D-D554-47DD-A387-1A87E6E0456E}.Debug|x86.ActiveCfg = Debug|Win32
+		{48CDF47D-D554-47DD-A387-1A87E6E0456E}.Debug|x86.Build.0 = Debug|Win32
+		{48CDF47D-D554-47DD-A387-1A87E6E0456E}.Release|x64.ActiveCfg = Release|x64
+		{48CDF47D-D554-47DD-A387-1A87E6E0456E}.Release|x64.Build.0 = Release|x64
+		{48CDF47D-D554-47DD-A387-1A87E6E0456E}.Release|x86.ActiveCfg = Release|Win32
+		{48CDF47D-D554-47DD-A387-1A87E6E0456E}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FB849D85-AF40-42D7-8F00-2D68183BEF14}
+	EndGlobalSection
+EndGlobal

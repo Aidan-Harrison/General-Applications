@@ -24,6 +24,9 @@ std::vector<int> BubbleSort(std::vector<int> &arr) {
     return arr;
 }
 
+// Quick Sort:
+
+
 int main() {
     std::vector<int> array{5,3,2,1,4,6,9,7,8};
     BubbleSort(array);
