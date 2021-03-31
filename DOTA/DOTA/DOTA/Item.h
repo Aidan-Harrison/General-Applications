@@ -8,12 +8,12 @@ class Item {
 private:
 public:
 	enum type {STRENGTH, AGILITY, INTELLIGENCE};
-	const std::string m_ItemName = " ", m_ToolTip = " ";
+	const std::string m_ItemName = " ", m_ToolTip = " ", m_ActiveName = " ", m_ActiveTooltip = " ";
 	int m_Cost = 0;
-	bool canBeSold = true;
+	bool canBeSold = true, m_isActive = false;
 	Item() = default;
-	Item(const char* name, int cost, std::string toolTip)
-		:m_ItemName(name), m_Cost(cost), m_ToolTip(toolTip)
+	Item(const char* name, int cost, std::string toolTip, bool isActive, std::string activeName = " ", std::string activeDesc = " ")
+		:m_ItemName(name), m_Cost(cost), m_ToolTip(toolTip), m_isActive(isActive), m_ActiveName(activeName), m_ActiveTooltip(activeDesc)
 	{
 		assert(m_ItemName != " " && m_Cost != 0);
 	}
@@ -32,4 +32,9 @@ struct PostHaste : Item { // Do constructor
 	float coolDown = 30.0f;
 };
 
-#endif Item_h
+class NeutralItem {
+private:
+public:
+};
+
+#endif
