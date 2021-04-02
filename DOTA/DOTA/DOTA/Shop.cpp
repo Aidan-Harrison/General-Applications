@@ -10,13 +10,13 @@ void Game(Player &p, Map &m);
 
 namespace Shop {
 	// Basic ============================================
-	Item observerWard{"Observer Ward", 75, "Reveals an area in a given range (Affected by time of day!)", true, "Place Ward", "Places a ward at the target location" };
-	Item revalationWard{"Revalation Ward", 75, "Reveals other wards + invisible heroes in a given range (Affected by time of day!)", true, "Place Ward", "Places a ward at the target location"};
+	Item observerWard{"Observer Ward", 75, "Reveals an area in a given range (Affected by time of day!)", true, "Place Ward", "Places a ward at the target location", false};
+	Item revalationWard{"Revalation Ward", 75, "Reveals other wards + invisible heroes in a given range (Affected by time of day!)", true, "Place Ward", "Places a ward at the target location", false};
 	// Boots ============================================
 	Item boots{ "Boots",350,"Increases movement speed",false};
 	// Main ============================================
-	Item mantaStyle{ "Manta Style", 2750, "Allows you to spawn clones", true, "Summon Clones", "Summon two copies of yourself"};
-	Item blinkDagger{ "Blink Dagger", 2500, "Allows you to blink to a location", true, "Blink", "Teleports character to the target location"};
+	Item mantaStyle{ "Manta Style", 2750, "Allows you to spawn clones", true, "Summon Clones", "Summon two copies of yourself", false};
+	Item blinkDagger{ "Blink Dagger", 2500, "Allows you to blink to a location", true, "Blink", "Teleports character to the target location", false};
 }
 
 std::vector<Item> itemList = { // Remove once map is solved
@@ -53,6 +53,7 @@ void ShopInterface(Player &p) { // Give user choice to back out whenever
 	std::cout << "===SHOP===\n";
 	std::cout << "Wards:============\n";
 	std::cout << "Movement Items:============\n";
+	std::cout << "Neutral Items:============\n";
 	std::cout << "Extra:\n";
 	std::cout << "S) Search  P) Purchase  B) Exit\n";
 	std::cin >> choice;

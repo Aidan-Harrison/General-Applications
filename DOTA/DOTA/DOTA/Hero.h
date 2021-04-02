@@ -32,10 +32,10 @@ public:
 	enum Abilities {Q = 1, W, E, R};
 	enum Type {STRENGTH, AGILITY, INTELLIGENCE};
 	enum Team {RADIANT, DIRE}; // Check need! | Check against player team!
-	short m_Health = 450, m_Mana = 200, m_Damage = 50, m_MoveSpeed = 250, m_AttackRange = 300;
+	short m_Health = 450, m_Mana = 200, m_Damage = 50, m_MoveSpeed = 250, m_AttackRange = 300, m_AttackChance = 0;
 	bool m_Dead = false, m_Invis = false, m_HasAghs = false;
 	const std::string m_Name = " ";
-	int type = 0, gold = 500, team = 0, level = 1, experience = 0; // Defaults to strength
+	int type = 0, gold = 500, team = 0, level = 1, experience = 0, respawnTime = 20; // Type defaults to strength | Have respawn time scale
 	std::vector<Ability> abilities = {};
 	Item m_Inventory[6]; // Possibly combine with backpack!? Const?
 	Item m_Backpack[3];
@@ -50,7 +50,7 @@ public:
 	// Main
 	void AddAbilities(std::vector<Ability> &abilList);
 	int UseAbility(const char key);
-	void AutoAttack(); // Universal, also takes into account items
+	short AutoAttack(); // Universal, also takes into account items
 	void UseItem(Item &item);
 	// General
 	inline std::string GetName() const { return m_Name; } // Check need for inline!?
@@ -58,6 +58,7 @@ public:
 	void PrintAbilities() const;
 	void PrintInventory() const;
 	void PrintStash() const;
+	void PrintAll() const;
 	int GetTeam() const { return team; } // Check, use enum!
 };
 
@@ -70,6 +71,8 @@ public:
 class Nightstalker : Hero {
 private:
 public:
+	bool isEmpowered = false;
+	void CheckNight(); // Check!
 };
 
 #endif

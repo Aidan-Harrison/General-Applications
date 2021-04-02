@@ -16,7 +16,7 @@ void Game(Player& p, Map& m);
 Map map;
 Player player;
 
-void PlayerSetup() { // Possibly convert to a single loop | Print in alphabetical order!
+void PlayerSetup() { // Possibly convert to a single loop | Sort and print in alphabetical order!
 	short choice = 0, team = 0, index = 1;
 	std::cout << "List of heroes:\n" << "Total: " << heroes.size() << '\n';
 	std::cout << "Strength:\n";
@@ -54,7 +54,7 @@ void PlayerSetup() { // Possibly convert to a single loop | Print in alphabetica
 	std::cin.get();
 }
 
-// Add team compositions
+// Add team compositions | Move to map setup!?
 void TeamSetup() {
 	srand(time(0));
 	int membersToAdd = 0;

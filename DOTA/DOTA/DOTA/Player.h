@@ -7,13 +7,15 @@
 
 struct Player {
 	enum team {DIRE = 1, RADIANT}; // Pointless!?
-	int teamID = 0;
+	int teamID = 0, creepsKilled = 0;
+	short chanceToAttack = 0;
+	bool fighting = false;
 	std::string currentTeam = " ";
 	char choice = ' ';
 	Hero *currentHero;
 	std::vector<Hero> teamMembers;
 	Player() = default;
-	Player(int team)
+	Player(int team) // Do initialisation!
 	{
 	}
 	~Player() = default;

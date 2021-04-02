@@ -26,7 +26,18 @@ void Hero::PrintInventory() const {
 }
 
 void Hero::PrintStash() const {
-	for (unsigned int i = 0; i < 8; i++) std::cout << m_Stash[i].m_ItemName << '\n';
+	for(unsigned int i = 0; i < 8; i++) std::cout << m_Stash[i].m_ItemName << '\n';
+}
+
+void Hero::PrintAll() const {
+	putchar('\n');
+	PrintStats();
+	putchar('\n');
+	PrintAbilities();
+	putchar('\n');
+	PrintInventory();
+	putchar('\n');
+	PrintStash();
 }
 
 void Hero::AddAbilities(std::vector<Ability> &abiList) { // Do move semantics
@@ -35,7 +46,7 @@ void Hero::AddAbilities(std::vector<Ability> &abiList) { // Do move semantics
 }
 
 // Probably not the best method, seperate functions per hero????
-int Hero::UseAbility(const char key) { // Returns damage, if any, other effects are calculated within function and based on the entitiy being attacked
+int Hero::UseAbility(const char key) { // Returns damage, if any, other effects are calculated within function and based on the entitiy being attacked | Check return!
 	std::tolower(key); // Check!
 	if(key == 'q') {
 		if(!abilities[0].passive) { // Possibly optimise to one check?
@@ -68,13 +79,22 @@ int Hero::UseAbility(const char key) { // Returns damage, if any, other effects 
 	return 0; // Control path (Change?)
 }
 
-void Hero::AutoAttack() { // Add chances/items! | Possibly convert to combat encounter????
-	return;
+short Hero::AutoAttack() { // Add chances/items! | Returns damage
+	m_AttackChance = rand() % 5; // Convert to rand singleton | Change size of range with items
+	if (m_AttackChance > 2) {
+		return m_Damage;
+		std::cout << "You dealt"; // ?
+	}
+	else {
+		std::cout << "Miss!\n";
+		return 0;
+	}
+	return 0;
 	// Do, take into account everything else
 }
 
 void Hero::UseItem(Item &item) { // Only pass in useable items
-	if(!item.m_Active) {
+	if(!item.m_isActive) {
 		std::cout << "Item cannot is not active!\n";
 		return; // Go back to game
 	}

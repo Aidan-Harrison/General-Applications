@@ -5,14 +5,14 @@
 #include "Item.h"
 
 struct JungleCreep {
-	short m_Health = 0, damage = 0, magicRes = 10, armour = 10;
+	short m_Health = 0, m_Damage = 0, magicRes = 10, armour = 10;
 	bool isDead = false, canDrop = false;
-	Item item;
+	Item *m_NeutralItem;
 	JungleCreep() = default;
-	JungleCreep(short health) // Itialise with item??
-		:m_Health(health)
+	JungleCreep(short health, const short damage) // Itialise with item??
+		:m_Health(health), m_Damage(damage)
 	{
-		assert(health != 0);
+		assert(health != 0 && damage != 0);
 	}
 	~JungleCreep() = default;
 };

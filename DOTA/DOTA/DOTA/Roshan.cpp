@@ -7,12 +7,14 @@
 #include "Random.h"
 #include "Player.h"
 
-Random randomGen;
+void Game(Player& p, Map& m);
+
+Random randomGen; // Move semantics
 
 void Roshan(std::vector<Hero>& team, Map& m, Player &p) { // Randomize amount of members in pit
 	system("cls");
 	if(m.m_RoshUp) {
-		short chanceToAttack = 0, health = 5000 * m.timeOfDay / 10, damage = 100 * m.timeOfDay / 25; // Randomize damage in a given ranage
+		short chanceToAttack = 0, health = 5000 * m.minutes / 3, damage = 100 * m.minutes / 25; // Randomize damage in a given ranage
 		bool dead = false;
 		std::vector<Hero> teamPit = {}; // Unoptimized! Don't need another vector???
 		for(unsigned int i = 0; i < team.size(); i++) {
@@ -21,8 +23,8 @@ void Roshan(std::vector<Hero>& team, Map& m, Player &p) { // Randomize amount of
 		std::cout << "Team members in pit:\n";
 		for(unsigned int i = 0; i < teamPit.size(); i++)
 			std::cout << teamPit[i].m_Name << '\n';
-		Item Aegis{"Aegis of Immortal", 0, "Revives you once", false};
-		if(m.timeOfDay > 30)
+		Item Aegis{"Aegis of the Immortal", 0, "Revives you once", false};
+		if(m.minutes > 30) // Change?
 			Item Cheese{"Cheese", 0, "Restores health and mana to full instantly", true};
 		std::cout << "ROSHAN FIGHT!\n";
 		std::cout << "Rosh Health: " << health;
@@ -47,7 +49,9 @@ void Roshan(std::vector<Hero>& team, Map& m, Player &p) { // Randomize amount of
 			}
 			// Check for team members and player health
 		}
-		std::cout << "Roshan has been killed!\n";
+		std::cout << "Roshan has fallen to the: \n"; // Add team
+		std::cout << "Roshan dropped: " <<
+					  Aegis.m_ItemName;
 	}
 	else {
 		std::cout << "Roshan has not spawned!\n";
