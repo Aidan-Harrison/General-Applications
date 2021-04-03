@@ -13,7 +13,7 @@ void ShopSetup(); // In shop.cpp
 void Game(Player& p, Map& m);
 
 // Remove these from global!
-Map map;
+Map map{2};
 Player player;
 
 void PlayerSetup() { // Possibly convert to a single loop | Sort and print in alphabetical order!
@@ -78,14 +78,14 @@ int main() {
 	ShopSetup();
 	// Fix this | string issue
 	std::cout << "Radiant Team:\n"; 
-	for(int i = 0; i < 2; i++) {
+	for(unsigned int i = 0; i < 1; i++) {
 		std::cout << map.radiantTeam[i].m_Name;
 		if(player.currentHero->m_Name == map.radiantTeam[i].m_Name)
 			std::cout << "(YOU)\n";
 		putchar('\n');
 	}
 	std::cout << "Dire Team:\n";    
-	for(int i = 0; i < 2; i++) {
+	for(unsigned int i = 0; i < 1; i++) {
 		std::cout << map.direTeam[i].m_Name;
 		if(player.currentHero->m_Name == map.direTeam[i].m_Name)
 			std::cout << "(YOU)\n";

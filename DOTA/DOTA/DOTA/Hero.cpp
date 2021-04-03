@@ -81,7 +81,7 @@ int Hero::UseAbility(const char key) { // Returns damage, if any, other effects 
 
 short Hero::AutoAttack() { // Add chances/items! | Returns damage
 	m_AttackChance = rand() % 5; // Convert to rand singleton | Change size of range with items
-	if (m_AttackChance > 2) {
+	if (m_AttackChance > 1) {
 		return m_Damage;
 		std::cout << "You dealt"; // ?
 	}

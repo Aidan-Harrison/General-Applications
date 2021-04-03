@@ -8,7 +8,7 @@
 class Random {
 private:
 	// Internal generators
-	int IInt(int range) {
+	static int IInt(int range) { // Check static!?
 		srand(time(0)); // Possibly replace
 		int value;
 		value = rand() % range;
@@ -22,7 +22,7 @@ private:
 	}
 public:
 	Random() {}; // Private constructor | Causing errors (RE-DO)
-	int GetInt(int range) { return IInt(range); }
+	static int GetInt(int range) { return IInt(range); }
 	float GetFloat(int range) { return IFloat(range); } // Check!
 };
 

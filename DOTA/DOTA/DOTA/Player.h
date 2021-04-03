@@ -6,16 +6,15 @@
 #include "Item.h"
 
 struct Player {
-	enum team {DIRE = 1, RADIANT}; // Pointless!?
 	int teamID = 0, creepsKilled = 0;
 	short chanceToAttack = 0;
 	bool fighting = false;
 	std::string currentTeam = " ";
 	char choice = ' ';
-	Hero *currentHero;
+	Hero *currentHero; // Initialise!
 	std::vector<Hero> teamMembers;
 	Player() = default;
-	Player(int team) // Do initialisation!
+	Player(int team = 1) // Do initialisation!
 	{
 	}
 	~Player() = default;

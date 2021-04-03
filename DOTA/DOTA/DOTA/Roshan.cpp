@@ -6,18 +6,21 @@
 #include "Map.h"
 #include "Random.h"
 #include "Player.h"
+#include "JungleCreep.h"
 
 void Game(Player& p, Map& m);
 
 Random randomGen; // Move semantics
 
-void Roshan(std::vector<Hero>& team, Map& m, Player &p) { // Randomize amount of members in pit
+void RoshanFight(std::vector<Hero>& team, Map& m, Player &p) { // Randomize amount of members in pit
 	system("cls");
 	if(m.m_RoshUp) {
-		short chanceToAttack = 0, health = 5000 * m.minutes / 3, damage = 100 * m.minutes / 25; // Randomize damage in a given ranage
-		bool dead = false;
-		std::vector<Hero> teamPit = {}; // Unoptimized! Don't need another vector???
-		for(unsigned int i = 0; i < team.size(); i++) {
+		Roshan rosh;
+		srand(time(0));
+		short teamAmount = 0;
+		std::vector<Hero> teamPit = {};
+		teamAmount = rand() % 5;
+		for(unsigned int i = 0; i < teamAmount; i++) {
 			teamPit.push_back(team[i]);
 		}
 		std::cout << "Team members in pit:\n";
@@ -26,36 +29,27 @@ void Roshan(std::vector<Hero>& team, Map& m, Player &p) { // Randomize amount of
 		Item Aegis{"Aegis of the Immortal", 0, "Revives you once", false};
 		if(m.minutes > 30) // Change?
 			Item Cheese{"Cheese", 0, "Restores health and mana to full instantly", true};
-		std::cout << "ROSHAN FIGHT!\n";
-		std::cout << "Rosh Health: " << health;
-		while(!dead) {
-			// Roshan
-			// chanceToAttack = rand() % 10;
-			chanceToAttack = randomGen.GetInt(10); // Check!
-			if(chanceToAttack > 5) {
-				std::cout << "Rosh Swing!\n";
-				chanceToAttack = rand() % team.size();
-				team[chanceToAttack].m_Health -= damage; // Calculate damage reduction, randomize damage between range! | Add player
-				std::cout << "You took: " << damage << " damage\n";
-			}
-			else {
-				std::cout << "Roshan misses!\n";
-			}
+		while(!rosh.isDead) {
+			system("cls");
+			std::cout << "ROSHAN FIGHT!\n Rosh Health: " << std::string("/" + rosh.m_Health) 
+					  << "Player Health: \n" << std::string("/" + p.currentHero->m_Health / 10)
+					  << "Player Mana: \n"   << std::string("/" + p.currentHero->m_Mana / 10); // Possibly convert to functions via header
+			p.currentHero->m_Health = rosh.AutoAttack(); // Fix!
 			// Player
-			chanceToAttack = randomGen.GetInt(10);
-			if(chanceToAttack > 5) {
-				chanceToAttack = randomGen.GetInt(5);
-				std::cout << "hit Roshan for: "; // Do team part
-			}
+			short temp = rosh.m_Health;
+			rosh.m_Health -= p.currentHero->AutoAttack();
+			std::cout << "hit Roshan for: " << temp - rosh.m_Health << " damage"; // Do team part
 			// Check for team members and player health
 		}
 		std::cout << "Roshan has fallen to the: \n"; // Add team
-		std::cout << "Roshan dropped: " <<
+		std::cout << "Roshan dropped: " << // Re-do
 					  Aegis.m_ItemName;
 	}
 	else {
-		std::cout << "Roshan has not spawned!\n";
-		return; // Go back to game
+		std::cout << "Roshan has not spawned!\n" << "Press ENTER to continue ";
+		std::cin.get();
+		std::cin.get();
+		Game(p, m);
 	}
 	return;
 }

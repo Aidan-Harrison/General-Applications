@@ -19,7 +19,7 @@ namespace Shop {
 	Item blinkDagger{ "Blink Dagger", 2500, "Allows you to blink to a location", true, "Blink", "Teleports character to the target location", false};
 }
 
-std::vector<Item> itemList = { // Remove once map is solved
+std::vector<Item> itemList = { // Remove once map(hash table) is solved | Shouldn't be in global
 		// Basic
 	Shop::observerWard, 
 	Shop::revalationWard, // Get colours/Intellisense on namespaces
@@ -32,7 +32,7 @@ std::vector<Item> itemList = { // Remove once map is solved
 
 std::map<short,Item> items; // Push items to map, search via key | Avoid pushing in the first place, direct insert into map!!!!!!
 void ShopSetup() { // Run initially
-	for(short i = 0; i < itemList.size(); i++) {
+	for(unsigned int i = 0; i < itemList.size(); i++) {
 		items.insert (std::pair<short, Item>(i, itemList[i]) ); // Check!
 	}
 }

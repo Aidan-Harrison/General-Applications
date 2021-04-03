@@ -12,7 +12,7 @@ public:
 	int m_Cost = 0;
 	bool canBeSold = true, m_isActive = false, m_IsNeutral = false;
 	Item() = default;
-	Item(const char* name, int cost, std::string toolTip, bool isActive, std::string activeName = " ", std::string activeDesc = " ", bool isNeutral = false)
+	Item(const char* name, int cost, const char* toolTip, bool isActive, const char* activeName = " ", const char* activeDesc = " ", bool isNeutral = false)
 		:m_ItemName(name), m_Cost(cost), m_ToolTip(toolTip), m_isActive(isActive), m_ActiveName(activeName), m_ActiveTooltip(activeDesc), m_IsNeutral(isNeutral)
 	{
 		assert(m_ItemName != " " && m_Cost != 0);
