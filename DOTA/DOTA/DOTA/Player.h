@@ -7,16 +7,13 @@
 
 struct Player {
 	int teamID = 0, creepsKilled = 0;
+	char choice = ' ';
 	short chanceToAttack = 0;
 	bool fighting = false;
 	std::string currentTeam = " ";
-	char choice = ' ';
 	Hero *currentHero; // Initialise!
 	std::vector<Hero> teamMembers;
 	Player() = default;
-	Player(int team = 1) // Do initialisation!
-	{
-	}
 	~Player() = default;
 };
 

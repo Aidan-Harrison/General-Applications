@@ -4,6 +4,6 @@ void Base::InitialiseBase() {
 	
 }
 
-void Base::checkBarracks() {
+void Base::checkBarracks(MeleeBarracks& m, RangedBarracks& r) {
 
 }

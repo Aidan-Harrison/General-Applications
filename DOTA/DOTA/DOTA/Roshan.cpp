@@ -34,6 +34,31 @@ void RoshanFight(std::vector<Hero>& team, Map& m, Player &p) { // Randomize amou
 			std::cout << "ROSHAN FIGHT!\n Rosh Health: " << std::string("/" + rosh.m_Health) 
 					  << "Player Health: \n" << std::string("/" + p.currentHero->m_Health / 10)
 					  << "Player Mana: \n"   << std::string("/" + p.currentHero->m_Mana / 10); // Possibly convert to functions via header
+			// Player condition
+			if(p.currentHero->m_Health == 0) { // Move to function within player
+				std::cout << "You have fallen to Roshan!\n";
+				p.fighting = false; // Check fighting var!!!!??
+				break;
+			}
+			if(p.currentHero->m_Health < 100) {
+				std::cout << "Your health is low, consider leaving?\n Would you like to leave? "
+					<< "y/n \t"; std::cin >> p.choice;
+				std::tolower(p.choice);
+				switch (p.choice) {
+				case 'y': Game(p, m);
+				case 'n': continue;
+				}
+				if (p.choice != 'y' && p.choice != 'n') {
+					std::cout << "You have entered an incorrect value. Try again!\n";
+				}
+			}
+			// Team condition
+			for (unsigned int i = 0; i < teamPit.size(); i++) {
+				std::cout << teamPit[i].m_Name;
+				std::cout << "Health: " << std::string("/" + teamPit[i].m_Health) << " | " << teamPit[i].m_Health;
+				std::cout << "Mana: " << std::string("/" + teamPit[i].m_Mana) << " | " << teamPit[i].m_Mana;
+				std::cout << "=============================================================\n";
+			}
 			p.currentHero->m_Health = rosh.AutoAttack(); // Fix!
 			// Player
 			short temp = rosh.m_Health;

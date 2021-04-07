@@ -8,12 +8,13 @@
 #include <ctime>
 #include <cctype>
 #include <algorithm>
+#include <fstream>
 
 void ShopSetup(); // In shop.cpp
 void Game(Player& p, Map& m);
 
 // Remove these from global!
-Map map{2};
+Map map;
 Player player;
 
 void PlayerSetup() { // Possibly convert to a single loop | Sort and print in alphabetical order!
@@ -42,14 +43,11 @@ void PlayerSetup() { // Possibly convert to a single loop | Sort and print in al
 	}
 	// Do hero ban!
 	std::cout << "Pick your hero: "; std::cin >> choice;
-	// Check!
-	//switch(choice) {
-		//case 1: player.currentHero = heroes[choice]; break;
-	//}
+	player.currentHero = &heroes[choice]; // Fix!
 	player.teamID = rand() % 3;
 	player.teamID++;
 	player.teamID == 1 ? player.currentTeam = "Radiant" : player.currentTeam = "Dire"; // Check!
-	std::cout << "You are playing as " << heroes[choice].m_Name << " and are on team: " << player.currentTeam;
+	std::cout << "You are playing as " << player.currentHero->m_Name << " and are on team: " << player.currentTeam;
 	std::cin.get();
 	std::cin.get();
 }
@@ -76,22 +74,37 @@ int main() {
 	PlayerSetup();
 	TeamSetup();
 	ShopSetup();
+	// DOTA LOGO
+	std::fstream file;
+	std::string line = " ";
+	file.open("Res/Art/DOTALogo.txt"); // Get path working | (Add 'Res'???) | Convert to PNG when SFML implemented!
+	if (file.fail()) {
+		std::cerr << "Failed to open file!\n";
+	}
+	else {
+		while(!file.eof()) {
+			file >> line;
+			std::cout << line << '\n';
+		}
+	}
+	file.close();
 	// Fix this | string issue
-	std::cout << "Radiant Team:\n"; 
-	for(unsigned int i = 0; i < 1; i++) {
-		std::cout << map.radiantTeam[i].m_Name;
-		if(player.currentHero->m_Name == map.radiantTeam[i].m_Name)
-			std::cout << "(YOU)\n";
-		putchar('\n');
-	}
-	std::cout << "Dire Team:\n";    
-	for(unsigned int i = 0; i < 1; i++) {
-		std::cout << map.direTeam[i].m_Name;
-		if(player.currentHero->m_Name == map.direTeam[i].m_Name)
-			std::cout << "(YOU)\n";
-		putchar('\n');
-	}
-	std::cin.get();
+	/*
+		std::cout << "Radiant Team:\n"; 
+		for(unsigned int i = 0; i < 1; i++) {
+			std::cout << map.radiantTeam[i].m_Name;
+			if(player.currentHero->m_Name == map.radiantTeam[i].m_Name)
+				std::cout << " (YOU)\n";
+			putchar('\n');
+		}
+		std::cout << "Dire Team:\n";    
+		for(unsigned int i = 0; i < 1; i++) {
+			std::cout << map.direTeam[i].m_Name;
+			if(player.currentHero->m_Name == map.direTeam[i].m_Name)
+				std::cout << " (YOU)\n";
+			putchar('\n');
+		}
+	*/
 	std::cin.get();
 	Game(player, map);
 

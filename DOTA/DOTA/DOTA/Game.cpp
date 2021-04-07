@@ -4,9 +4,9 @@
 
 #include "Player.h"
 #include "Map.h"
+#include "NeutralItems.h"
 #include "JungleCreep.h"
-
-// using namespace NeutralItems;
+#include "LaneCreep.h"
 
 void ShopInterface(Player &p);
 void RoshanFight(std::vector<Hero>& team, Map& m, Player& p);
@@ -56,9 +56,10 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 			creeps.push_back(j1);
 		}
 		while (p.fighting) {
+			std::cout << "======JUNGLE======\n";
 			// Main ============================================
 			std::cout << "Health: " << p.currentHero->m_Health;
-			for (unsigned int i = 0; i < creeps.size(); i++) { std::cout << "Creep Health: " << std::string("/" + creeps[i].m_Health / 10); }
+			for (unsigned int i = 0; i < creeps.size(); i++) { std::cout << "Creep Health: " << std::string("/" + creeps[i].m_Health / 10) << " | " << creeps[i].m_Health; }
 			if (p.currentHero->m_Health == 0) { // Move to function within player
 				std::cout << "You died!\n";
 				p.fighting = false;
@@ -67,9 +68,12 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 				std::cout << "Your health is low, consider leaving the jungle?\n Would you like to leave? "	
 						  << "y/n \t"; std::cin >> p.choice;
 				std::tolower(p.choice);
-				switch (p.choice) { // Handle incorrect input!!
+				switch (p.choice) {
 					case 'y': Game(p, m);
 					case 'n': continue;
+				}
+				if(p.choice != 'y' && p.choice != 'n') {
+					std::cout << "You have entered an incorrect value. Try again!\n";
 				}
 			}
 			std::cout << "What would you like to do: \nS) Keep fighting  L) Leave\n"; std::cin >> p.choice;
@@ -80,29 +84,37 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 				creeps[jungleCamp].m_Health -= p.currentHero->AutoAttack(); // Check '->'
 				std::cout << "You dealt " << temp - creeps[jungleCamp].m_Health << " damage\n"; // Possibly move into auto attack function
 				// Jungle creep
-				temp = p.currentHero->m_Health;
+				temp = p.currentHero->m_Health; // Possibly '->' instead?
 				p.currentHero->m_Health -= creeps[jungleCamp].AutoAttack();
 				std::cout << "You took " << temp - p.currentHero->m_Health << " damage\n";
 				// Check camp health
 				for (unsigned int i = 0; i < creeps.size(); i++) {
 					if (creeps[i].m_Health == 0) { // Do neutral item
+						bool hasDropped = creeps[i].KillCreep(neutralItems); // Check!
 						amountKilled++;
-						std::cout << "Jungle creep killed!\n";
-						// Neutral Items:
-						// jungleCamp = rand() % neutralItems.size(); // Convert to rand singleton
-						std::cout << "Jungle creep dropped item: " << "\nTake it? y/n"; std::cin >> p.choice;
-						if (p.choice == 'y') // Handle incorrect input
-							break;
-						else if (p.choice == 'n')
-							break;
-						// creeps[i].m_NeutralItem = &neutralItems[jungleCamp]; // Check!
+						if(hasDropped) {
+							std::cout << "Jungle creep dropped item: " << "\nTake it? y/n"; std::cin >> p.choice;
+							if(p.choice == 'y') {
+								return;
+								//p.currentHero->m_Inventory[0] = creeps[i].GetItem(); // Fix!
+								//p.currentHero.m_Inventory.push_back(creeps[i].m_NeutralItem); // Check! | C-Stlye array, do push via C method, not vector | REPLACE WITH VECTOR, WRITE WRAPPER
+							}
+							else if (p.choice == 'n') {
+								// Delete jungle item?
+								break;
+							}
+							else {
+								std::cout << "You have entered an incorrect value. Try again!\n";
+							}
+						}
 							// Erase from vector | Fix!
-							// creeps.erase(creeps[i]);
 					}
 				}
 				if(amountKilled == creeps.size()) { // Do fight summary
 					hasSpawned = false;
-					std::cout << "Camp killed!\n";
+					std::cout << "Camp killed!\n Press ENTER to leave";
+					std::cin.get();
+					std::cin.get();
 					Game(p, m);
 				}
 			}
@@ -113,6 +125,22 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 	}
 }
 
+void Laning(Player &p, Map &m) { // Add teams
+	system("cls");
+	std::cout << "======LANE======\n";
+	p.currentHero->PrintStats();
+	if(p.currentHero->m_Health < 100) {
+		std::cout << "Your health is low, consider leaving!\n";
+	}
+	std::vector<LaneCreep> creeps{};
+	for(unsigned int i = 0; i < 6; i++) {
+		std::cout << "Creep created!\n";
+	}
+	std::cin.get();
+	std::cin.get();
+	Game(p, m);
+}
+
 short ChangeTick(Map &m) { // Check return!
 	std::cout << "Current tick rate (Milliseconds): " << m.tickRate << '\n' 
 			  << "What would you like the tick rate to be (Avoid going below 200 miliiseconds): "; std::cin >> m.tickRate;
@@ -121,7 +149,9 @@ short ChangeTick(Map &m) { // Check return!
 
 void Scoreboard(Player &p, Map &m) {
 	std::cout << "Radiant Team:\n";
+	for (unsigned int i = 0; i < 5; i++) std::cout << m.radiantTeam[i].m_Name << " | ";
 	std::cout << "Dire Team:\n";
+	for (unsigned int i = 0; i < 5; i++) std::cout << m.direTeam[i].m_Name << " | ";
 	std::cout << "Player: =================\n";
 	p.currentHero->PrintStats();
 	std::cout << "=========================\n"; // Possibly adapt length to max length of said functions
@@ -136,11 +166,13 @@ void Scoreboard(Player &p, Map &m) {
 	Game(p, m);
 }
 
+// Simulates game, gives player option per tick
 void Game(Player& p, Map& m) {
 	bool gameRunning = true;
 	while(gameRunning) {
+		std::cout << "======GAME======\n";
 		system("cls");
-		std::cout << "Time: " << m.minutes << " : " << m.seconds;
+		std::cout << "  Time: " << m.minutes << " : " << m.seconds << '\n';
 		m.GetTime(); // Implement properly into game
 		if(m.bases[0]->ancientHealth == 0) {
 			std::cout << "The Radiant's ancient has fallen!\n  -DIRE VICTORY-";
@@ -152,22 +184,22 @@ void Game(Player& p, Map& m) {
 			gameRunning = false;
 			break;
 		}
-		// Simulates game, gives player option per tick
-		std::cout << "\nRadiant Ancient: " << std::string("/" + m.bases[0]->ancientHealth) << m.bases[0]->ancientHealth 
-				  << "\nDire Ancient: "    << std::string("/" + m.bases[1]->ancientHealth) << m.bases[1]->ancientHealth;
-		std::cout << "\nRadiant Team\n";
-		for(unsigned int i = 0; i < 5; i++) std::cout << m.radiantTeam[i].m_Name << ", ";
-		std::cout << "\nDire Team\n";
-		for(unsigned int i = 0; i < 5; i++) std::cout << m.direTeam[i].m_Name << ", ";
+		std::cout << m.bases[0]->ancientHealth; // Fix!!!!!!!!!!!!!!!!!
+		std::cout << "\nRadiant Ancient: " << std::string("/" + m.bases[0]->ancientHealth / 100) << " | " << m.bases[0]->ancientHealth 
+				  << "\nDire Ancient: "    << std::string("/" + m.bases[1]->ancientHealth / 100) << " | " << m.bases[1]->ancientHealth;
+		std::cout << "\nRadiant Team:\n";
+		for(unsigned int i = 0; i < 5; i++) std::cout << m.radiantTeam[i].m_Name << " | ";
+		std::cout << "\nDire Team:\n";
+		for(unsigned int i = 0; i < 5; i++) std::cout << m.direTeam[i].m_Name << " | ";
 		// Player
-		std::cout << "Player Health: \n" << std::string("/" + p.currentHero->m_Health / 10) 
-				  << "Player Mana: \n"   << std::string("/" + p.currentHero->m_Mana / 10); // Possibly convert to functions via header
-		std::cout << "What would you like to do?\n";
-		std::cout << "P) Shop  J) Jungle  R) Roshan  S) Scoreboard  C) Continue  T) Change tick rate  X) End game\n";
+		p.currentHero->PrintStats();
+		std::cout << "\nWhat would you like to do?\n";
+		std::cout << "P) Shop  L) Laning  J) Jungle  R) Roshan  S) Scoreboard  C) Continue  T) Change tick rate  X) End game\n";
 		std::cin >> p.choice;
 		std::tolower(p.choice); // Check!
 		switch (p.choice) { // Always have tick happen!!!!
 			case 'p': ShopInterface(p);
+			case 'l': Laning(p, m);
 			case 'j': Jungle(p, m);
 			case 'r': RoshanFight(p.teamMembers, m, p); // Do team better
 			case 's': Scoreboard(p, m);
@@ -175,7 +207,7 @@ void Game(Player& p, Map& m) {
 			case 't': m.tickRate = ChangeTick(m); // Do this!, avoid passing the player around!
 			case 'x': exit(1);
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(m.tickRate)); // Add speed modifier
+		std::this_thread::sleep_for(std::chrono::milliseconds(m.tickRate)); // Add speed modifier | Have tick regardless of input!!! (Multi thread?)
 		m.seconds++;
 		if(m.seconds == 60) {
 			m.minutes++;

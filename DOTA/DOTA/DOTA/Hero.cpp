@@ -1,12 +1,12 @@
 #include "Hero.h"
 
-void Hero::PrintStats() const {
-	std::cout << "\nName: " << m_Name << '\n'
-		<< "Health: " << m_Health << '\n'
-		<< "Mana: " << m_Mana << '\n'
-		<< "Damage: " << m_Damage << '\n'
-		<< "MoveSpeed: " << m_MoveSpeed << '\n'
-		<< "Team: " << team << '\n'; // Conver to string
+void Hero::PrintStats() const { // Check const!
+	std::cout << "\nName: " << m_Name
+		<< "\nHealth: " << std::string("/" + m_Health) << " | " << m_Health // Fix!
+		<< "\nMana: " << std::string("/" + m_Mana) << " | " <<  m_Mana
+		<< "\nDamage: " << m_Damage
+		<< "\nMoveSpeed: " << m_MoveSpeed
+		<< "\nTeam: " << team << '\n'; // Conver to string
 }
 
 void Hero::PrintAbilities() const {
