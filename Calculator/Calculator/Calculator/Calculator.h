@@ -6,8 +6,10 @@
 #include <vector>
 // Use Babbage
 
-struct Calculator {
+class Calculator {
+private:
 	float m_A, m_B;
+public:
 	int userInput = 0;
 	float Custom();
 	void FetchHistory();

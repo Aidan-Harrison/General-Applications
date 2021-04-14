@@ -8,7 +8,7 @@
 
 class Account {
 private:
-    int m_AccountBalance = 0;
+    int m_AccountBalance = 0, m_Loss = 0; // Amount of profit which could have been made
 public:
     Account() = default;
     Account(short accountBalance)
@@ -22,11 +22,13 @@ public:
     std::vector<int> currentInvestmentsInt{};
 
     int GetBalance() const { return m_AccountBalance; }
+    int GetLoss() const { return m_Loss; }
     void AccountMenu(Stocks &stock);
     void DeleteAccount();
     int TakeLoan();
     void Invest(Stocks& stock);
     void CurInvestments(Stocks &stock);
+    void ProfitCalc(Stocks &s);
 };
 
 #endif

@@ -24,7 +24,8 @@ struct Map {
 	}
 	~Map() = default;
 	void MapSetup(); // Run on object creation
-	void GetTime();
+	void PrintTime();
+	int GetTime();
 };
 
 #endif

@@ -6,9 +6,11 @@
 #include "Item.h"
 #include "Base.h"
 
-struct LaneCreep {
-	// Add pathing?
+// Add pathing once SFML is implemented
+class LaneCreep {
+private:
 	short health = 100, m_exp = 25, m_Damage = 30, goldToGive = 35;
+public:
 	bool dead = false, isMega = false;
 	LaneCreep() {
 		assert(health != 0 && m_exp != 0 && m_Damage != 0);

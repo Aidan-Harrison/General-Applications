@@ -15,7 +15,7 @@ public:
     Characters(short health, short moveSpeed, short attackSpeed, short damage, short crit, short hit, std::string name);
     ~Characters() = default;
     // Stats
-    float m_Health, m_MoveSpeed, m_AttackSpeed, m_Damage, m_CritChance, m_HitChance, m_Shield = 0, m_Luck = 1;
+    float m_Health, m_MoveSpeed, m_AttackSpeed, m_Damage, m_CritChance, m_HitChance, m_Shield = 0, m_Luck = 1; // Possibly move to private
     int itemTotal = 0, numberOfLives = 1;
     // Character Extra
     bool toSecret = false;

@@ -8,7 +8,7 @@ namespace StockSim {
     extern const int marketCap; // Stocks cannot go higher than this
     extern int fluctuation, trajectory, event, days, months, years, timeCounter; // Have chance of event happen in certain range, then lock to that range
     extern std::string currentStock;
-    extern int userInput;
+    extern int userInput, amountToPayBack;
 }
 
 #endif

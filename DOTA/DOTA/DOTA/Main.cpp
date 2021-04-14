@@ -48,6 +48,7 @@ void PlayerSetup() { // Possibly convert to a single loop | Sort and print in al
 	player.teamID++;
 	player.teamID == 1 ? player.currentTeam = "Radiant" : player.currentTeam = "Dire"; // Check!
 	std::cout << "You are playing as " << player.currentHero->m_Name << " and are on team: " << player.currentTeam;
+	std::cout << "Your health is" << player.currentHero->GetHealth();
 	std::cin.get();
 	std::cin.get();
 }
@@ -77,7 +78,7 @@ int main() {
 	// DOTA LOGO
 	std::fstream file;
 	std::string line = " ";
-	file.open("Res/Art/DOTALogo.txt"); // Get path working | (Add 'Res'???) | Convert to PNG when SFML implemented!
+	file.open("Res/Art/DOTALogo.txt"); // Get path working | Convert to PNG when SFML implemented!
 	if (file.fail()) {
 		std::cerr << "Failed to open file!\n";
 	}

@@ -6,10 +6,10 @@
 
 class Item {
 private:
+	int m_Cost = 0, m_itemID = 0; // Automatically change ID??? Do so in vector
 public:
 	enum type {STRENGTH, AGILITY, INTELLIGENCE};
 	const std::string m_ItemName = " ", m_ToolTip = " ", m_ActiveName = " ", m_ActiveTooltip = " ";
-	int m_Cost = 0, m_itemID = 0; // Automatically change ID??? Do so in vector
 	bool canBeSold = true, m_isActive = false, m_IsNeutral = false;
 	Item() = default;
 	Item(const char* name, int cost = 300, const char* toolTip =  " ", bool isActive = false, const char* activeName = " ", const char* activeDesc = " ", bool isNeutral = false)
@@ -20,6 +20,9 @@ public:
 	~Item() = default;
 	std::string GetName() const { return m_ItemName; }
 	void DeleteItem() { delete this; } // Check!
+	int GetCost() const { return m_Cost; }
+	int GetID() const { return m_itemID; }
+	void SetID(int id) { m_itemID = id; }
 };
 
 struct ObserverWard : Item {

@@ -5,19 +5,7 @@
 
 template<typename T>
 class graph {
-public:
-    struct vertex {
-        T data{0};
-    };
-    struct edge {
-        vertex* vert1, vert2;
-    };
-    short counter = 0;
-    int m_amountOfVerts = 2;
-    bool loops = false, single = false; // Has all vertices connected to one another | Vertices only have 1-2 connections
-    std::vector<vertex> totalVertices = {};
-    std::vector<edge> totalEdges = {};
-    // System Functions:  =================================================================================
+private:
     void SysCreateGraph(int amountOfVerts) {
         return;
     }
@@ -62,14 +50,28 @@ public:
             std::cout << "Edge: " << "{ " << totalEdges[i]->vert1 << " , " << totalEdges[i]->vert2 << " }\n";
         }
     }
-    void DestroyGraph(graph g) {
+    void DestroyGraph() {
         for(unsigned int j = totalEdges.size(); j >= 0; j--) { // Check which method to use!
             delete totalEdges[i]->vert1;
             delete totalEdges[i]->vert2;
             delete totalEdges[i];
         }
-        delete g;
+        delete this;
     }
+public:
+    struct vertex {
+        T data{0};
+    };
+    struct edge {
+        vertex* vert1, vert2;
+    };
+    short counter = 0;
+    int m_amountOfVerts = 2;
+    bool loops = false, single = false; // Has all vertices connected to one another | Vertices only have 1-2 connections
+    std::vector<vertex> totalVertices = {};
+    std::vector<edge> totalEdges = {};
+    // System Functions:  =================================================================================
+
     // User Functions: ==============================================================================
     vertex SearchVert(const short data) const {
         for(unsigned int i = 0; i < totalVertices.size(); i++) {

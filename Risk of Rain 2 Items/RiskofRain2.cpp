@@ -20,6 +20,7 @@ void LunarPod(Characters &character);
 void EquipmentChest(Characters &character);
 void Scrapper(Characters &character);
 
+// Continue this!
 void StatCalculation(Characters &character) { // Too slow | Use Map
     for(unsigned int i = 0; i < character.playerInventory.size(); i++) {
         if(character.playerInventory[i].m_ItemName == "Soldiers Syringe")

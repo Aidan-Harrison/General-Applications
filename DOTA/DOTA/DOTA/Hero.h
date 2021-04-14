@@ -27,8 +27,7 @@ struct Ability {
 
 class Hero {
 private:
-	// Add
-	// Vector wrapper (Constrains vector size to given amount)
+	// Add Vector wrapper (Constrains vector size to given amount)
 	const short inventSize = 6, backSize = 3;
 	void VectorWrap(int maxSize, char type) { // Do!
 		switch(type) {
@@ -50,6 +49,7 @@ public:
 	Item m_Backpack[3];
 	Item m_Stash[8];
 	Hero() = default;
+	// Defaults to Axe
 	Hero(const char* name = "Axe", short health = 500, short mana = 250, short damage = 60, short moveSpeed = 250, short attackRange= 500, int type = 0) // Check type!
 		:m_Name(name), m_Health(health), m_Mana(mana), m_Damage(damage), m_MoveSpeed(moveSpeed), m_AttackRange(attackRange), type(type)
 	{
@@ -63,12 +63,16 @@ public:
 	void UseItem(Item &item);
 	// General
 	inline std::string GetName() const { return m_Name; } // Check need for inline!?
+	inline int GetTeam() const { return team; } // Check, use enum!
+	inline short GetHealth() const { return m_Health; }
+	inline short GetMana() const { return m_Mana; }
+	int GetType() const { return type; }
+	// Printing
 	void PrintStats() const;
 	void PrintAbilities() const;
 	void PrintInventory() const;
 	void PrintStash() const;
 	void PrintAll() const;
-	inline int GetTeam() const { return team; } // Check, use enum!
 };
 
 

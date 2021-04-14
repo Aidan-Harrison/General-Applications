@@ -4,7 +4,7 @@ void Map::MapSetup() {
 	return;
 }
 
-void Map::GetTime() {
+void Map::PrintTime() {
 	if (minutes % 5 == 0)
 		if (!isNight)
 			isNight = true;
@@ -14,4 +14,8 @@ void Map::GetTime() {
 		case false: std::cout << "It is currently DAY\n"; break;
 		case true: std::cout << "It is currently NIGHT\n"; break;
 	}
+}
+
+int Map::GetTime() {
+	return minutes;
 }

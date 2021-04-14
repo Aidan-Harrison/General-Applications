@@ -22,26 +22,26 @@ void Menu();
 
 void Menu() {
     system("cls");
-    std::cout << "What stock would you like to check?\n";
-    std::cout << "Options:\n";
+    std::cout << "What stock would you like to check?\n" <<
+                 "Options:\n";
     stock.PrintStocks();
     std::cout << "OR\n";
-    std::cout << stock.numberOfCompanies + 1 << ") " << "Global Market\n"; // Always move one above total stock size
-    std::cout << stock.numberOfCompanies + 2 << ") " << "Account\n";
-    std::cin >> userInput;
+    std::cout << stock.numberOfCompanies + 1 << ") " << "Global Market\n" << // Always move one above total stock size
+                 stock.numberOfCompanies + 2 << ") " << "Account\n";
+    std::cin >> StockSim::userInput;
     if (userInput != stock.numberOfCompanies + 1 && userInput != stock.numberOfCompanies + 2)
         Simulate(SetupStock(userInput));
-    else if (userInput == stock.numberOfCompanies + 1)
+    else if (StockSim::userInput == stock.numberOfCompanies + 1)
         stock.GlobalMarket();
-    else if (userInput == stock.numberOfCompanies + 2) // Check!
+    else if (StockSim::userInput == stock.numberOfCompanies + 2) // Check!
         account.AccountMenu(stock);
 }
 
 int SetupStock(int ID) {
     for (unsigned int i = 0; i < stock.allStocks.size(); i++)
-        if (stock.allStocks[i].m_StockID == ID) {
-            currentStock = stock.allStocks[i].companyName;
-            return stock.allStocks[i].m_StockValue;
+        if (stock.allStocks[i].GetID() == ID) {
+            currentStock = stock.allStocks[i].GetName(); // Change this, current stock should not be string
+            return stock.allStocks[i].GetValue();
         }
     return -1; // Failed
 }

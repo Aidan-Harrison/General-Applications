@@ -8,23 +8,24 @@ void Application(Account &account);
 void Account::View(Account &account) {
     std::cout << "Your account:\n";
     std::cout << "Balance: " << GetBalance() << '\n';
-    std::cout << "Press a key to go back: "; std::cin.get();
-    std::cin.get();
+    std::cout << "Press a key to go back: "; 
+    std::cin.get(); std::cin.get();
     Application(account);
 }
 
 void Account::Deposit(Bank& bank, Account &account) {
-retry:
     std::cout << "How much would you like to deposit?\n";
-    std::cin >> userInput;
-    if (userInput <= 250 && userInput > 0 && cashOnHand > 0 && userInput < cashOnHand) {
-        bank.bankAmount += userInput;
-        account.m_Accountbalance -= userInput;
-        std::cout << "Depositied " << userInput;
-    }
-    else {
-        std::cout << "That number is invalid, try again\n";
-        goto retry;
+    while (1) {
+        std::cin >> userInput;
+        if (userInput <= 250 && userInput > 0 && cashOnHand > 0 && userInput < cashOnHand) {
+            bank.bankAmount += userInput;
+            account.m_Accountbalance -= userInput;
+            std::cout << "You depositied: " << userInput;
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+        }
+        else {
+            std::cout << "That number is invalid, try again!\n";
+        }
     }
     Application(account);
 }
@@ -32,12 +33,17 @@ retry:
 void Account::Withdraw(Bank& bank, Account &account) {
     std::cout << "How much would you like to withdraw?\n";
     std::cin >> userInput;
-    if (account.m_Accountbalance - userInput <= 0) {
-        std::cout << "That is too much to withdraw\n";
-        std::cin >> userInput;
+    while (1) {
+        if (account.m_Accountbalance - userInput <= 0) {
+            std::cout << "That is too much to withdraw\n";
+            std::cin >> userInput;
+        }
+        else {
+            std::cout << "You withdrew " << userInput;
+            bank.bankAmount -= userInput;
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+        }
     }
-    else
-        bank.bankAmount -= userInput;
     Application(account);
 }
 

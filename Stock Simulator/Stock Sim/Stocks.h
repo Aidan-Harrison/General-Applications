@@ -7,13 +7,14 @@
 #include <thread>
 #include <chrono>
 
-struct Stocks {
+class Stocks {
+private:
+    int m_StockID = 0, m_StockValue = 0; // Total amount of money in circulation | Possibly make static
+    std::string companyName = "";
 public:
     std::vector<std::string> continents{ "North America", "South America", "Europe", "Asia", "Oceania", "Africa" }; // Antartica is invalid
-    std::string companyName = "";
     std::string m_Location = ""; // Makes easier but not needed
-    int m_StockID = 0; // Used for indexing | Change to static and properly increment
-    int m_StockValue = 0; // Total amount of money in circulation | Possibly make static
+    // Used for indexing | Change to static and properly increment
     short numberOfCompanies = 0;
 
     std::vector<Stocks> allStocks{};
@@ -25,10 +26,14 @@ public:
     }
     ~Stocks() = default;
 
+    std::string GetName() const { return companyName; }
+    int GetID() const { return m_StockID; }
+    int GetValue() const { return m_StockValue; }
+
     Stocks* IntitializeStocks();
-    void RemoveStocks(); // Possibly combine with add into one function
+    void RemoveStocks();
     void AddStocks();
-    void PrintStocks();
+    void PrintStocks() const;
 
     // Global Market
     void GlobalMarket(); // User interface

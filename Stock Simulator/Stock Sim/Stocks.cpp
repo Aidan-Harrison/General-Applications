@@ -1,17 +1,16 @@
 #include "Stocks.h"
 #include "StockSim.h"
 
-using namespace StockSim;
-
 // Prototypes
 void Menu();
 
-void Stocks::PrintStocks() { // Unified printing function | Move to be available globally
+void Stocks::PrintStocks() const { // Unified printing function | Move to be available globally
     for (unsigned int i = 0; i < allStocks.size(); i++) // should not really start from 1 but leave for now
         std::cout << i + 1 << ") " << allStocks[i].companyName << '\n';
+    std::cout << "Press enter to return: ";
 }
 
-int Stocks::profitCalc(std::vector<int>& company) { // Pass in via stock ID
+int Stocks::profitCalc(std::vector<int>& company) { // Pass in via stock ID | Check!
     int maxProfit = 0;
     int minPrice = INT_MAX;
     // Get current investments
@@ -31,8 +30,8 @@ void Stocks::AddStocks() {
     std::cout << "Enter company name: "; std::cin >> companyName;
     for (unsigned int i = 0; i < continents.size(); i++)
         std::cout << i + 1 << ") " << continents[i] << '\n';
-    std::cout << "Pick a location: "; std::cin >> userInput;
-    switch (userInput) {
+    std::cout << "Pick a location: "; std::cin >> StockSim::userInput;
+    switch (StockSim::userInput) {
         case 1: location = "North America"; break;
         case 2: location = "South America"; break;
         case 3: location = "Europe";        break;
@@ -62,21 +61,21 @@ void Stocks::RemoveStocks() {
 }
 
 void Stocks::GlobalMarket() {
-menu:
     system("cls");
-    std::cout << "What would you like to do?\n";
-    std::cout << "1) List of Companies\n";
-    std::cout << "2) Remove Stocks\n";
-    std::cout << "3) Add stocks\n";
-    std::cout << "4) Profit Calculator\n";
-    std::cout << "5) Back\n";
-    std::cout << "Input: "; std::cin >> userInput;
-    switch (userInput) {
-    case 1: PrintStocks(); std::this_thread::sleep_for(std::chrono::seconds(5)); goto menu;
-    case 2: RemoveStocks();       break;
-    case 3: AddStocks();          break;
-    case 5: Menu();               break;
-    default:                      return;
+    std::cout << "====GLOBAL MARKET====\n";
+    std::cout << "What would you like to do?\n" <<
+                 "1) List of Companies\n" <<
+                 "2) Remove Stocks\n" <<
+                 "3) Add stocks\n" <<
+                 "4) Back\n";
+    std::cout << "Input: "; 
+    std::cin >> StockSim::userInput; 
+    switch (StockSim::userInput) {
+        case 1: PrintStocks();  break;
+        case 2: RemoveStocks(); break;
+        case 3: AddStocks();    break;
+        case 4: Menu();         break;
+        default: return;
     }
     return;
 }
