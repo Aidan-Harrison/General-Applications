@@ -39,6 +39,8 @@ std::vector<Item> itemList = { // Remove once map(hash table) is solved | Should
 	Shop::tomeOfKnowledge
 };
 
+// Do Neutrals in another vector?
+
 std::map<short,Item> items; // Push items to map, search via key | Avoid pushing in the first place, direct insert into map!!!!!!
 void ShopSetup() { // Run initially
 	for(unsigned int i = 0; i < itemList.size(); i++) {

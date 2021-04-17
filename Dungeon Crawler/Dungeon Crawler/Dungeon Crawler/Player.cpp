@@ -26,6 +26,6 @@ void Player::Logic() {
 	}
 }
 
-void Player::Kill(Player &player) {
-	delete& player;
+void Player::Kill() {
+	delete this;
 }

@@ -21,7 +21,7 @@ void Dungeon::Draw(std::vector<std::vector<char>> &room, Player &player, Chest &
 			newLine = 0;
 		}
 	}
-	std::cout << "Health: " << player.m_Health << '\n' << "Key: " << player.hasKey;
+	std::cout << "Health: " << player.GetHealth() << '\n' << "Key: " << player.hasKey;
 }
 
 std::vector<std::vector<char>> Dungeon::Generate() {
@@ -29,9 +29,12 @@ std::vector<std::vector<char>> Dungeon::Generate() {
 	// Pick room to draw
 	srand(time(0));
 	roomPicked = rand() % numOfRooms;
-	switch(roomPicked) {
-		case 1: roomWidth = 18; roomHeight = 9; doorX = 18, doorY = 10; return Room1; // Check with zeroing
+	if (roomPicked == 1) {
+		roomWidth = 18;
+		roomHeight = 9;
+		doorX = 10;
+		doorY = 10;
+		return Room1;
 	}
-	roomWidth = 18, roomHeight = 9;
 	return Room1;
 }

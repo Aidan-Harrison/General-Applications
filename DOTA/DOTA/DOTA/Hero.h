@@ -45,7 +45,7 @@ public:
 	const std::string m_Name = " ";
 	int type = 0, gold = 500, team = 0, level = 1, experience = 0, respawnTime = 20; // Type defaults to strength | Have respawn time scale
 	std::vector<Ability> abilities = {};
-	Item m_Inventory[6]; // Possibly combine with backpack!? Const?
+	Item m_Inventory[6]; // Possibly combine with backpack!? Const? Only need one?
 	Item m_Backpack[3];
 	Item m_Stash[8];
 	Hero() = default;

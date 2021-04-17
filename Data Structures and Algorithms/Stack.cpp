@@ -1,6 +1,6 @@
 #include <iostream>
 
-int size = 0;
+int size = 0; // For printing purposes
 
 struct stack {
     int items[10];
@@ -12,7 +12,7 @@ void CreateEmptyStack(stack* s) {
 }
 
 bool IsFull(stack *s) {
-    if(s->top == 10 - 1)
+    if(s->top == 10 - 1) // Check!
         return true;
     else
         return false;
@@ -56,11 +56,14 @@ void PrintStack(stack *s) {
 
 int main() {
     stack s;
-    Push(s, 3);
-    Push(s, 1);
-    Push(s, 5);
-    Push(s, 6);
-    PrintStack(s);
+    Push(&s, 3);
+    Push(&s, 1);
+    Push(&s, 5);
+    Push(&s, 6);
+    PrintStack(&s);
+    Pop(&s);
+    putchar('\n');
+    PrintStack(&s);
 
     return 0;
 }
