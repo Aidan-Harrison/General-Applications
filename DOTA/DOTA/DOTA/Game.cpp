@@ -1,4 +1,5 @@
 #include <iostream>
+#include <array>
 #include <thread>
 #include <chrono>
 
@@ -11,14 +12,22 @@
 void ShopInterface(Player &p);
 void RoshanFight(std::vector<Hero>& team, Map& m, Player& p);
 void Game(Player& p, Map& m);
+void EndScreen(Player &p, Map &m);
+void CheckVision();
+
+// Move these!
+bool jungVision = false;
+bool laneVision = false;
 
 // Randomises between a set of predetermined camps | Check!
-void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
+void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference | Add teams
+	jungVision = true;
 	bool hasSpawned = true;
 	short amountKilled = 0;
-	if(!hasSpawned) // Do!
+	if(!hasSpawned)
 		Game(p, m);
 	else {
+		p.fighting = true;
 		short jungleCamp = 0, spawnTime = 10;
 		std::vector<JungleCreep> creeps{};
 		jungleCamp = rand() % 5; // Convert to rand singleton
@@ -55,14 +64,20 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 			JungleCreep j1{ 500, 75 };
 			creeps.push_back(j1);
 		}
-		while (p.fighting) {
+		while(p.fighting) {
+			system("cls");
 			std::cout << "======JUNGLE======\n";
 			// Main ============================================
-			std::cout << "Health: " << p.currentHero->m_Health;
-			for (unsigned int i = 0; i < creeps.size(); i++) { std::cout << "Creep Health: " << std::string("/" + creeps[i].m_Health / 10) << " | " << creeps[i].m_Health; }
-			if (p.currentHero->m_Health == 0) { // Move to function within player
+			p.currentHero->PrintStats();
+			putchar('\n');
+			for (unsigned int i = 0; i < creeps.size(); i++) { 
+				std::cout << i << ") Creep Health: " << std::string(creeps[i].m_Health / 10, ' |') << " : " << creeps[i].m_Health << '\n'; 
+			}
+			if(p.currentHero->m_Health == 0) { // Move to function within player
 				std::cout << "You died!\n";
 				p.fighting = false;
+				p.currentHero->m_Dead = true; // Pointless if below function exists? Depends on how said function turns out
+				p.currentHero->RespawnTime();
 			}
 			if (p.currentHero->m_Health < 100) {
 				std::cout << "Your health is low, consider leaving the jungle?\n Would you like to leave? "	
@@ -76,35 +91,42 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 					std::cout << "You have entered an incorrect value. Try again!\n";
 				}
 			}
-			std::cout << "What would you like to do: \nS) Keep fighting  L) Leave\n"; std::cin >> p.choice;
-			std::tolower(p.choice); // Check (No header!)
+			std::cout << "\nWhat would you like to do: \nS) Keep fighting  L) Leave\n"; std::cin >> p.choice;
+			std::tolower(p.choice);
 			if (p.choice == 's') {
 				jungleCamp = rand() % creeps.size(); // Re-use integer
+				// Player attack
 				short temp = creeps[jungleCamp].m_Health;
-				creeps[jungleCamp].m_Health -= p.currentHero->AutoAttack(); // Check '->'
-				std::cout << "You dealt " << temp - creeps[jungleCamp].m_Health << " damage\n"; // Possibly move into auto attack function
-				// Jungle creep
-				temp = p.currentHero->m_Health; // Possibly '->' instead?
+				creeps[jungleCamp].m_Health -= p.currentHero->AutoAttack();
+				std::cout << "You dealt " << temp - creeps[jungleCamp].m_Health << " damage\n"; // Possibly move into auto attack function, account for miss chance and items
+				// Jungle creep attack | Move to function!
+				temp = p.currentHero->m_Health;
 				p.currentHero->m_Health -= creeps[jungleCamp].AutoAttack();
 				std::cout << "You took " << temp - p.currentHero->m_Health << " damage\n";
 				// Check camp health
 				for (unsigned int i = 0; i < creeps.size(); i++) {
 					if (creeps[i].m_Health == 0) { // Do neutral item
+						neutralItems[jungleCamp]; // Do!
 						bool hasDropped = creeps[i].KillCreep(neutralItems); // Check!
 						amountKilled++;
 						if(hasDropped) {
-							std::cout << "Jungle creep dropped item: " << "\nTake it? y/n"; std::cin >> p.choice;
-							if(p.choice == 'y') {
-								return;
-								//p.currentHero->m_Inventory[0] = creeps[i].GetItem(); // Fix!
-								//p.currentHero.m_Inventory.push_back(creeps[i].m_NeutralItem); // Check! | C-Stlye array, do push via C method, not vector | REPLACE WITH VECTOR, WRITE WRAPPER
-							}
-							else if (p.choice == 'n') {
-								// Delete jungle item?
-								break;
-							}
-							else {
-								std::cout << "You have entered an incorrect value. Try again!\n";
+							while (1) {
+								std::cout << "Jungle creep dropped item: " << "\nTake it? y/n"; std::cin >> p.choice;
+								if (p.choice == 'y') {
+									// 
+									for (unsigned int i = 0; i < p.currentHero->m_Inventory.size(); i++) {
+										//p.currentHero->m_Inventory[i] = creeps[i].GetItem(); // Fix!
+									}
+									break;
+								}
+								else if (p.choice == 'n') {
+									// Delete neutral item
+									break;
+								}
+								else {
+									std::cout << "You have entered an incorrect value. Try again!\n";
+									system("cls"); // Possibly remove?
+								}
 							}
 						}
 							// Erase from vector | Fix!
@@ -125,19 +147,37 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 	}
 }
 
+// Will always run for 3 ticks
 void Laning(Player &p, Map &m) { // Add teams
+	laneVision = true;
+	short ticks = 0;
+	bool laning = false;
+	std::array<LaneCreep, 8> creeps{};
 	system("cls");
 	std::cout << "======LANE======\n";
-	p.currentHero->PrintStats();
-	if(p.currentHero->m_Health < 100) {
-		std::cout << "Your health is low, consider leaving!\n";
+	while(laning) {
+		if(ticks < 3) {
+			p.currentHero->PrintStats();
+			if (p.currentHero->m_Health < 100) {
+				std::cout << "Your health is low, consider leaving!\n";
+			}
+			for (unsigned int i = 0; i < creeps.size(); i++) {
+				std::cout << "Creep created!\n";
+				// Calculate attacks
+
+			}
+			ticks++;
+		}
+		std::cout << "What would you like to do?\n"
+				  << "1)Continue  2)Jungle  3)Back";
+		std::cin >> p.choice;
+		switch(p.choice) {
+			case 1: continue;
+			case 2: Jungle(p, m); break;
+			case 3: laning = false; break;
+		}
+		// Get other team members and enemies
 	}
-	std::vector<LaneCreep> creeps{};
-	for(unsigned int i = 0; i < 6; i++) {
-		std::cout << "Creep created!\n";
-	}
-	std::cin.get();
-	std::cin.get();
 	Game(p, m);
 }
 
@@ -149,9 +189,9 @@ short ChangeTick(Map &m) { // Check return!
 
 void Scoreboard(Player &p, Map &m) {
 	std::cout << "Radiant Team:\n";
-	for (unsigned int i = 0; i < 5; i++) std::cout << m.radiantTeam[i].m_Name << " | ";
+	for (unsigned int i = 0; i < 5; i++) std::cout << m.radiantTeam[i].GetName() << " | ";
 	std::cout << "Dire Team:\n";
-	for (unsigned int i = 0; i < 5; i++) std::cout << m.direTeam[i].m_Name << " | ";
+	for (unsigned int i = 0; i < 5; i++) std::cout << m.direTeam[i].GetName() << " | ";
 	std::cout << "Player: =================\n";
 	p.currentHero->PrintStats();
 	std::cout << "=========================\n"; // Possibly adapt length to max length of said functions
@@ -170,32 +210,45 @@ void Scoreboard(Player &p, Map &m) {
 void Game(Player& p, Map& m) {
 	bool gameRunning = true;
 	while(gameRunning) {
-		std::cout << "======GAME======\n";
 		system("cls");
-		std::cout << "  Time: " << m.minutes << " : " << m.seconds << '\n';
+		std::cout << "======GAME======\n";
+		std::cout << "Time: " << m.minutes << " : " << m.seconds << '\n';
 		m.GetTime(); // Implement properly into game
-		if(m.bases[0]->ancientHealth == 0) {
+		if(m.bases[0].ancientHealth == 0) {
 			std::cout << "The Radiant's ancient has fallen!\n  -DIRE VICTORY-";
 			gameRunning = false;
 			break;
 		}
-		else if(m.bases[1]->ancientHealth == 0) {
+		else if(m.bases[1].ancientHealth == 0) {
 			std::cout << "The Dire's ancient has fallen!\n  -RADIANT VICTORY-";
 			gameRunning = false;
 			break;
 		}
-		std::cout << m.bases[0]->ancientHealth; // Fix!!!!!!!!!!!!!!!!!
-		std::cout << "\nRadiant Ancient: " << std::string("/" + m.bases[0]->ancientHealth / 100) << " | " << m.bases[0]->ancientHealth 
-				  << "\nDire Ancient: "    << std::string("/" + m.bases[1]->ancientHealth / 100) << " | " << m.bases[1]->ancientHealth;
-		std::cout << "\nRadiant Team:\n";
-		for(unsigned int i = 0; i < 5; i++) std::cout << m.radiantTeam[i].m_Name << " | ";
-		std::cout << "\nDire Team:\n";
-		for(unsigned int i = 0; i < 5; i++) std::cout << m.direTeam[i].m_Name << " | ";
+		std::cout << "\nRadiant Ancient: " << std::string(m.bases[0].ancientHealth / 100, '|') << " : " << m.bases[0].ancientHealth 
+				  << "\nDire Ancient: "    << std::string(m.bases[1].ancientHealth / 100, '|') << " : " << m.bases[1].ancientHealth;
+		std::cout << "\nRadiant Team:\n\t";
+		for(unsigned int i = 0; i < 5; i++) std::cout << m.radiantTeam[i].GetName() << " | ";
+		std::cout << "\nDire Team:\n\t";
+		for(unsigned int i = 0; i < 5; i++) std::cout << m.direTeam[i].GetName() << " | ";
 		// Player
+		std::cout << "\n===PLAYER==="; // Add usernames?
 		p.currentHero->PrintStats();
-		std::cout << "\nWhat would you like to do?\n";
+		p.currentHero->PrintInventory();
+
+		// Vision
+		if(jungVision) {
+			std::cout << "You can see jungle:\n";
+			// Check jungle
+		}
+		if (laneVision) {
+			std::cout << "You can see lane:\n";
+			// Check lane
+		}
+
+		std::cout << "\n\nWhat would you like to do?\n";
 		std::cout << "P) Shop  L) Laning  J) Jungle  R) Roshan  S) Scoreboard  C) Continue  T) Change tick rate  X) End game\n";
 		std::cin >> p.choice;
+		system("cls");
 		std::tolower(p.choice); // Check!
 		switch (p.choice) { // Always have tick happen!!!!
 			case 'p': ShopInterface(p);
@@ -214,13 +267,26 @@ void Game(Player& p, Map& m) {
 			m.seconds = 0;
 		}
 	}
+	EndScreen(p, m);
+}
+
+// Extra
+void EndScreen(Player &p, Map &m) {
 	std::cout << "Game has ended!\n" << "Game summary\n";
 	std::cout << "Player Stats\n";
 	std::cout << "Gold: " << p.currentHero->gold << '\n';
 	std::cout << "Creeps killed: " << p.creepsKilled << '\n';
-	// Print team and their stats
-	Scoreboard(p, m); // ?
-		
+	Scoreboard(p, m);
 	std::cin.get();
-	exit(1);
+	exit(0);
+}
+
+void StartScreen() {
+	std::cout << "=====GAME STARTING=====\n";
+	// Print teams, move part of main file to here
+	// Used threads and load?
+}
+
+void CheckVision() {
+	return;
 }

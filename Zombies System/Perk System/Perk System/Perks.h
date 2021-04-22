@@ -4,8 +4,10 @@
 #include <iostream>
 #include <cassert>
 
-struct Perks {
+class Perks {
+private:
 	std::string perkName = "";
+public:
 	short m_Health, m_Damage, m_Cost;
 	bool hasUniqueProp = false; // Dictates whether a perk has something special about it
 	Perks() = default;
@@ -14,6 +16,8 @@ struct Perks {
 	{
 		assert(perkName != " " && m_Cost != 0);
 	}
+	std::string GetName() const { return perkName; }
+
 	void PrintPerk(Perks &p);
 	void DeletePerk(Perks *p);
 	~Perks() = default;

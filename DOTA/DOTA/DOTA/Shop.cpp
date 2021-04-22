@@ -57,8 +57,8 @@ void Search() { // Use map instead
 	std::string search;
 	std::cout << "Search: "; std::cin >> search; // Only shows items which contain said characters
 	for (unsigned int i = 0; i < itemList.size(); i++) {
-		if (items[i].m_ItemName == search)
-			std::cout << "Item: " << items[i].m_ItemName << '\n'; // Properly remove already printed elements and replace
+		if (items[i].GetName() == search)
+			std::cout << "Item: " << items[i].GetName() << '\n'; // Properly remove already printed elements and replace
 	}
 	// Add purchase
 }
@@ -73,7 +73,7 @@ void Purchase(Player &p, const int id) {
 			}
 			// Check inventory size
 			else {
-				std::cout << "You purchased: " << itemList[i].m_ItemName;
+				std::cout << "You purchased: " << itemList[i].GetName();
 			}
 		}
 	}
@@ -89,84 +89,88 @@ void Sell(Player &p) {
 	std::cout << "Choose an item to sell!\n";
 	if (choice == 'i') {
 		p.currentHero->PrintInventory();
-		choice;
-		if(choice > 9) {
-			std::cout << "You must pick a value between 1-9!\n"; // Avoid using goto statement
-		}
-		else if (choice == 1) {
-			p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 2) {
-			p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 3) {
-			p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 4) {
-			p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 5) {
-			p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 6) {
-			p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 7) {
-			p.currentHero->m_Backpack[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 8) {
-			p.currentHero->m_Backpack[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 9) {
-			p.currentHero->m_Backpack[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+		while (1) {
+			std::cin >> choice;
+			if (choice > 9) {
+				std::cout << "You must pick a value between 1-9!\n";
+			}
+			else if (choice == 1) {
+				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 2) {
+				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 3) {
+				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 4) {
+				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 5) {
+				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 6) {
+				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 7) {
+				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 8) {
+				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 9) {
+				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+			}
 		}
 	}
 	else if (choice == 2) {
 		p.currentHero->PrintStash();
-		std::cin >> choice;
-		if (choice > 8) {
-			std::cout << "You must pick a value between 1-9!\n"; // Avoid using goto statement
-		}
-		else if (choice == 1) {
-			p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 2) {
-			p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 3) {
-			p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 4) {
-			p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 5) {
-			p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 6) {
-			p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 7) {
-			p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
-		}
-		else if (choice == 8) {
-			p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
-			p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
+		while (1) {
+			std::cin >> choice;
+			if (choice > 8) {
+				std::cout << "You must pick a value between 1-9!\n";
+			}
+			else if (choice == 1) {
+				p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 2) {
+				p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 3) {
+				p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 4) {
+				p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 5) {
+				p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 6) {
+				p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 7) {
+				p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
+			}
+			else if (choice == 8) {
+				p.currentHero->m_Stash[choice].DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Stash[choice].GetCost() * p.currentHero->level / 2;
+			}
 		}
 	}
 	ShopInterface(p);
@@ -175,16 +179,16 @@ void Sell(Player &p) {
 void ShopInterface(Player &p) { // Give user choice to back out whenever
 	std::cout << "===SHOP===\n"; // Use loops instead
 	std::cout << "Wards:============\n";
-		std::cout << Shop::observerWard.m_ItemName;
-		std::cout << Shop::revalationWard.m_ItemName;
+		std::cout << Shop::observerWard.GetName();
+		std::cout << Shop::revalationWard.GetName();
 	std::cout << "Movement Items:============\n";
-		std::cout << Shop::boots.m_ItemName;
-		std::cout << Shop::phaseBoots.m_ItemName;
+		std::cout << Shop::boots.GetName();
+		std::cout << Shop::phaseBoots.GetName();
 	std::cout << "Neutral Items:============\n";
 		//std::cout << NeutralItems::RoyalJelly.m_ItemName;
 		// std::cout << NeutralItems::PaladinsSword.m_ItemName;
 	std::cout << "Extra:\n";
-		std::cout << Shop::tomeOfKnowledge.m_ItemName;
+		std::cout << Shop::tomeOfKnowledge.GetName();
 
 	std::cout << "\nS) Search  P) Purchase  X) Sell  B) Exit\n";
 	std::cin >> p.choice;
@@ -204,3 +208,4 @@ void ShopInterface(Player &p) { // Give user choice to back out whenever
 		return; // Do exit back to main game
 	}
 }
+

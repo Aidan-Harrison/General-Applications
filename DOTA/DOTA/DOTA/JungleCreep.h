@@ -22,7 +22,7 @@ struct JungleCreep {
 	Item& GetItem();
 };
 
-struct Roshan : public JungleCreep { // Check public!
+struct Roshan : public JungleCreep {
 	short chanceToAttack = 0, chanceToStun = 0;
 	Roshan() = default;
 	Roshan(short health) // Do!

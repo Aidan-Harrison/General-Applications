@@ -20,12 +20,12 @@ void RollPerk() {
 	else if(input == 7 && player.points >= 2500) player.AddPerk(6);
 	else std::cout << "You do not have enough points for "; // Add perk name
 	for(unsigned int i = 0; i < player.perkInventory.size(); i++) {
-		if(player.perkInventory[i].perkName == "Quick Revive")	  player.canSelfRevive = true;
-		else if(player.perkInventory[i].perkName == "Juggernaut") player.m_Health * 2;
-		else if(player.perkInventory[i].perkName == "Double-Tap") player.m_Damage * 2;
-		else if(player.perkInventory[i].perkName == "Speed-Cola") player.m_ReloadSpeed * 2;
-		else if(player.perkInventory[i].perkName == "Mule-Kick")  player.maxWeapons = 3;
-		else if(player.perkInventory[i].perkName == "Stamina-Up") player.m_Stamina * 2;
+		if(player.perkInventory[i].GetName() == "Quick Revive")	  player.canSelfRevive = true;
+		else if(player.perkInventory[i].GetName() == "Juggernaut") player.m_Health * 2;
+		else if(player.perkInventory[i].GetName() == "Double-Tap") player.m_Damage * 2;
+		else if(player.perkInventory[i].GetName() == "Speed-Cola") player.m_ReloadSpeed * 2;
+		else if(player.perkInventory[i].GetName() == "Mule-Kick")  player.maxWeapons = 3;
+		else if(player.perkInventory[i].GetName() == "Stamina-Up") player.m_Stamina * 2;
 	}
 	std::cin.get();
 	Interface();

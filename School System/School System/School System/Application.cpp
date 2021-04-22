@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #include "Student.h"
 #include "StudentList.h"
@@ -52,8 +53,8 @@ void AddStudent() {
 	std::cout << "SurName:"; std::cin >> surname;
 	std::cout << "Age:"; std::cin >> age;
 	std::cout << "Year:"; std::cin >> year;
-	// Do year
-	Student* newStudent = new Student{ firstname, surname, age, 7 }; // Check object name conflict
+	Student* newStudent = new Student{ firstname, surname, age, year}; // Check object name conflict
+	// Modify so constructor is all which is needed
 	while (!newStudent->CheckAge()) {
 		std::cout << "The age's and year do not match, ensure correct data has been entered";
 		std::cout << "Age: "; std::cin >> age;
@@ -62,9 +63,16 @@ void AddStudent() {
 	Interface();
 }
 
+// Custom search function
+void SearchStudent(std::vector<Student> &students) {
+
+}
+
 void RemoveStudent() {
-	std::cout << "Search for student via name: ";
-	// DO map or faster search algorithm (Something which isn't linear)
+	std::string input = ""; // Just have universal? So no need to assign more memory then needed
+	std::cout << "Search for student via name: "; std::cin >> input;
+	// Sort via name
+	// Do binary search
 }
 
 void EditStudent() {
@@ -74,7 +82,16 @@ void EditStudent() {
 
 void SearchStudent() {
 	std::string input = "";
+	std::vector<Student> allStudents{};
 	std::cout << "Search for a specific student by name: "; std::cin >> input;
+	// Inefficient??
+	for(unsigned int i = 0; i < Students::Y7_Students.size(); i++)  allStudents.push_back(Students::Y7_Students[i]);
+	for(unsigned int i = 0; i < Students::Y8_Students.size(); i++)  allStudents.push_back(Students::Y8_Students[i]);
+	for(unsigned int i = 0; i < Students::Y9_Students.size(); i++)  allStudents.push_back(Students::Y9_Students[i]);
+	for(unsigned int i = 0; i < Students::Y10_Students.size(); i++) allStudents.push_back(Students::Y10_Students[i]);
+	for(unsigned int i = 0; i < Students::Y11_Students.size(); i++) allStudents.push_back(Students::Y11_Students[i]);
+	std::sort(allStudents.begin(), allStudents.end()); // Won't work, no data to sort!
+
 	// DO map or faster search algorithm (Something which isn't linear)
 }
 
@@ -129,10 +146,15 @@ void AddStaff() {
 
 void RemoveStaff() {
 	std::cout << "Search for staff via name: ";
+	// Much like the student search, implement a fast searching algorithmn for demonstration purposes.
+	// Check if the staff is on a ciriculum
+	// If so, check with the user.
+	// If user is ok with it, remove from necessary vectors and delete object from memory.
 }
 
 void SwapTeachers() {
-
+	// Teacher subjects must match.
+	// If so, move the ciriculum around so they are swapped
 }
 
 void ManageInterface() {
@@ -164,10 +186,10 @@ void ManageInterface() {
 			"4) RETURN\n";
 		std::cin >> input;
 		switch(input) {
-		case 1: AddStaff();	break;
-		case 2: RemoveStaff(); break;
-		case 3: SwapTeachers(); break;
-		case 4: ManageInterface(); break;
+			case 1: AddStaff();	break;
+			case 2: RemoveStaff(); break;
+			case 3: SwapTeachers(); break;
+			case 4: ManageInterface(); break;
 		}
 	}
 }

@@ -2,11 +2,11 @@
 
 void Hero::PrintStats() const { // Check const!
 	std::cout << "\nName: " << m_Name
-		<< "\nHealth: " << std::string("/" + m_Health) << " | " << m_Health // Fix!
-		<< "\nMana: " << std::string("/" + m_Mana) << " | " <<  m_Mana
+		<< "\nHealth: " << std::string(m_Health / 10, '|') << " : " << m_Health
+		<< "\nMana: " << std::string(m_Mana / 10, '|') << " : " << m_Mana
 		<< "\nDamage: " << m_Damage
 		<< "\nMoveSpeed: " << m_MoveSpeed
-		<< "\nTeam: " << team << '\n'; // Conver to string
+		<< "\nGold: " << gold;
 }
 
 void Hero::PrintAbilities() const {
@@ -19,14 +19,14 @@ void Hero::PrintAbilities() const {
 }
 
 void Hero::PrintInventory() const {
-	std::cout << "Inventory:\n";
-	for(unsigned int i = 0; i < 6; i++) std::cout << m_Inventory[i].m_ItemName << ", ";
-	std::cout << "Backpack:\n";
-	for(unsigned int i = 0; i < 3; i++) std::cout << m_Backpack[i].m_ItemName << ", ";
+	std::cout << "\nInventory:\n\t";
+	for(unsigned int i = 0; i < 6; i++) std::cout << m_Inventory[i].GetName() << ", ";
+	std::cout << "Backpack:\n\t";
+	for(unsigned int i = 7; i < 9; i++) std::cout << m_Inventory[i].GetName() << ", ";
 }
 
 void Hero::PrintStash() const {
-	for(unsigned int i = 0; i < 8; i++) std::cout << m_Stash[i].m_ItemName << '\n';
+	for(unsigned int i = 0; i < 8; i++) std::cout << m_Stash[i].GetName() << '\n';
 }
 
 void Hero::PrintAll() const {
@@ -79,6 +79,32 @@ int Hero::UseAbility(const char key) { // Returns damage, if any, other effects 
 	return 0; // Control path (Change?)
 }
 
+void Hero::ChangeHealth(const short damage, const char type) {
+	if(type == 'p')
+		m_Health -= damage / m_Armor;
+	if(type == 'm')
+		m_Health -= damage / m_MagicRes;
+	if (m_Health == 0) {
+		std::cout << "You are dead!";
+		m_Dead = true;
+		gold -= 250; // Apply scaling
+		RespawnTime(); // Keep in same function?
+	}
+}
+
+void Hero::RespawnTime() {
+	// Do respawn on seperate thread!?
+	respawnTime *= level; // Scale by game time instead?
+	while(m_Dead) {
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+		respawnTime -= 1;
+		std::cout << "Respawn: " << respawnTime;
+		if (respawnTime == 0)
+			m_Dead = false;
+	}
+	// Reset respawn time to correct values
+}
+
 short Hero::AutoAttack() { // Add chances/items! | Returns damage
 	m_AttackChance = rand() % 5; // Convert to rand singleton | Change size of range with items
 	if (m_AttackChance > 1) {
@@ -93,11 +119,24 @@ short Hero::AutoAttack() { // Add chances/items! | Returns damage
 	// Do, take into account everything else
 }
 
+Item Hero::CalcItem(Item &item) {
+	m_Strength += item.GetStrength();
+	m_Agility += item.GetAgility();
+	m_Intelligence += item.GetIntelligence();
+	m_Damage += item.GetDamage();
+	return item; // Do return? Probably not needed?
+}
+
 void Hero::UseItem(Item &item) { // Only pass in useable items
 	if(!item.m_isActive) {
-		std::cout << "Item cannot is not active!\n";
+		std::cout << "Item does not have an active!\n";
 		return; // Go back to game
 	}
 	else {
+		
 	}
 }
+
+// Riki
+
+// Nightstalker

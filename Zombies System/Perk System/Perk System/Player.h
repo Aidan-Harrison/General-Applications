@@ -16,6 +16,7 @@ struct Player {
 	{
 		assert(m_Health != 0 && m_Stamina != 0 && m_Damage != 0 && m_ReloadSpeed != 0);
 	}
+
 	~Player() = default;
 	void AddPerk(short perk);
 	void AddWeapon(short weapon);

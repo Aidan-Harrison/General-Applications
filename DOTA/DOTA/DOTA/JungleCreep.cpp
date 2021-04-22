@@ -1,6 +1,6 @@
 #include "JungleCreep.h"
 
-short JungleCreep::AutoAttack() { // Move to .cpp file? | Return by address?? Would have to modify hero fundamentals
+short JungleCreep::AutoAttack() { // Return by address?? Would have to modify hero fundamentals
 	m_ChanceToAttack = Random::GetInt(5); // Check static on rand, defeats point of singleton???
 	if (m_ChanceToAttack > 2) {
 		std::cout << "A jungle creep successfully attacks!\n";

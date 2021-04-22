@@ -11,7 +11,7 @@ struct Player {
 	short chanceToAttack = 0;
 	bool fighting = false;
 	std::string currentTeam = " ";
-	Hero *currentHero; // Initialise!
+	Hero *currentHero; // Initialise! Axe = default
 	std::vector<Hero> teamMembers;
 	Player() = default;
 	~Player() = default;

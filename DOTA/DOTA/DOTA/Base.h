@@ -3,10 +3,12 @@
 
 #include <iostream>
 #include <cassert>
+#include <array>
 
 class Base {
 private:
-	// Do?
+	std::string baseName = "Radiant Base";
+	bool meleeBuffed = false, rangeBuffed = false, hasMega = false;
 public:
 	// Possibly group together again, change array accordingly
 	struct MeleeBarracks {
@@ -28,19 +30,18 @@ public:
 		Shrine() = default;
 		~Shrine() = default;
 	};
-
-	std::string baseName = "Radiant Base";
-	short ancientHealth = 7000; // Check this value to dictate if game is over or not
-	MeleeBarracks mB[3];
-	RangedBarracks rB[3];
+	short ancientHealth = 5000; // Check this value to dictate if game is over or not
+	std::array<MeleeBarracks, 3>  MeleeBarracksList{};
+	std::array<RangedBarracks, 3> RangedBarracksList{};
 	//Shrine[3];
+	Base() = default;
 	Base(const std::string name, const int health) // Change health depending on gamemode
 		:baseName(name), ancientHealth(health)
 	{
 		assert(ancientHealth != 0);
 	}
 	void InitialiseBase();
-	void checkBarracks(MeleeBarracks &m, RangedBarracks &r); // Check whether mega creeps can spawn | Use array!!!!
+	void checkBarracks(std::array<MeleeBarracks, 3> &m, std::array<RangedBarracks, 3> &r); // Check whether mega creeps can spawn | Use array!!!!
 	~Base() = default;
 };
 

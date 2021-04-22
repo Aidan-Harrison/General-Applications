@@ -3,9 +3,13 @@
 
 #include <iostream>
 #include <cassert>
+#include <thread>
 #include <vector>
 #include <cctype>
+#include <array>
 #include "Item.h"
+
+// This file is becoming hard to read, clean up at a later date
 
 struct Ability {
 	const std::string m_AbilityName = "", m_Description = "";
@@ -27,7 +31,7 @@ struct Ability {
 
 class Hero {
 private:
-	// Add Vector wrapper (Constrains vector size to given amount)
+	// Add Vector wrapper (Constrains vector size to given amount) | Re-do
 	const short inventSize = 6, backSize = 3;
 	void VectorWrap(int maxSize, char type) { // Do!
 		switch(type) {
@@ -35,19 +39,22 @@ private:
 			case 'b': maxSize = backSize;
 		}
 	}
+	const std::string m_Name = " ";
+	short m_Armor = 3, m_MagicRes = 3;
+	short m_Strength = 10, m_Agility = 10, m_Intelligence = 10;
 public:
 	enum Abilities {Q = 1, W, E, R};
 	enum Type {STRENGTH, AGILITY, INTELLIGENCE};
 	enum Team {RADIANT, DIRE}; // Check need! | Check against player team!
 	short m_Health = 450, m_Mana = 200, m_Damage = 50, m_MoveSpeed = 250, m_AttackRange = 300; // Main stats
 	short m_AttackChance = 0, m_StunDuration = 0; // Sub properties | Stun duration referes to the amount of game ticks
-	bool m_Dead = false, m_Invis = false, m_HasAghs = false, m_isStunned = false;
-	const std::string m_Name = " ";
+	short m_HealthRegen = 2.5, m_ManaRegen = 1.5;
+	bool m_Dead = false, m_Invis = false, m_HasAghs = false, m_isStunned = false, m_SpellImune = false;
+	bool isBanned = false;
 	int type = 0, gold = 500, team = 0, level = 1, experience = 0, respawnTime = 20; // Type defaults to strength | Have respawn time scale
 	std::vector<Ability> abilities = {};
-	Item m_Inventory[6]; // Possibly combine with backpack!? Const? Only need one?
-	Item m_Backpack[3];
-	Item m_Stash[8];
+	std::array<Item, 9> m_Inventory{};
+	std::array<Item, 8> m_Stash{};
 	Hero() = default;
 	// Defaults to Axe
 	Hero(const char* name = "Axe", short health = 500, short mana = 250, short damage = 60, short moveSpeed = 250, short attackRange= 500, int type = 0) // Check type!
@@ -56,17 +63,23 @@ public:
 		assert(m_Name != " " && m_Health != 0 && m_Mana != 0 && m_Damage != 0 && m_MoveSpeed != 0);
 	}
 	~Hero() = default;
-	// Main
+	// Main (Gameplay)
 	void AddAbilities(std::vector<Ability> &abilList); // ??
 	int UseAbility(const char key);
 	short AutoAttack(); // Universal, also takes into account items
 	void UseItem(Item &item);
+	void ChangeHealth(const short damage, const char type);
+	Item CalcItem(Item &item); // Calculates item statistics | Change return?
 	// General
-	inline std::string GetName() const { return m_Name; } // Check need for inline!?
-	inline int GetTeam() const { return team; } // Check, use enum!
+	inline std::string GetName() const { return m_Name; }
+	inline int GetTeam() const { return team; } // Check, use enum!?
 	inline short GetHealth() const { return m_Health; }
 	inline short GetMana() const { return m_Mana; }
+	inline short GetArmor() const { return m_Armor; }
+	inline short GetMagicRes() const { return m_MagicRes; }
 	int GetType() const { return type; }
+	void RespawnTime(); // Runs on seperate thread | Change to 'Respawn'?
+	inline void BanHero() { delete this; }
 	// Printing
 	void PrintStats() const;
 	void PrintAbilities() const;
@@ -79,12 +92,14 @@ public:
 class Riki : public Hero { // Check initialiation!?
 private:
 public:
+
 };
 
 class Nightstalker : public Hero {
 private:
 public:
 	bool isEmpowered = false;
+	void CheckTime(); // Check!
 };
 
 #endif
