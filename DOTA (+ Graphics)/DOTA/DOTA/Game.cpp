@@ -101,7 +101,7 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 				std::cout << "You dealt " << temp - creeps[jungleCamp].m_Health << " damage\n"; // Possibly move into auto attack function, account for miss chance and items
 				// Jungle creep attack | Move to function!
 				temp = p.currentHero->m_Health;
-				p.currentHero->m_Health -= creeps[jungleCamp].AutoAttack();
+				creeps[jungleCamp].AutoAttack(*p.currentHero); // Check!
 				std::cout << "You took " << temp - p.currentHero->m_Health << " damage\n";
 				// Check camp health
 				for (unsigned int i = 0; i < creeps.size(); i++) {
@@ -189,9 +189,17 @@ short ChangeTick(Map &m) { // Check return!
 
 void Scoreboard(Player &p, Map &m) {
 	std::cout << "Radiant Team:\n";
-	for (unsigned int i = 0; i < 5; i++) std::cout << m.radiantTeam[i].GetName() << " | ";
+	for (unsigned int i = 0; i < 5; i++) {
+		std::cout << m.radiantTeam[i].GetName() << " | ";
+		m.radiantTeam[i].PrintStats();
+		putchar('\n');
+	}
 	std::cout << "Dire Team:\n";
-	for (unsigned int i = 0; i < 5; i++) std::cout << m.direTeam[i].GetName() << " | ";
+	for (unsigned int i = 0; i < 5; i++) {
+		std::cout << m.direTeam[i].GetName() << " | ";
+		m.direTeam[i].PrintStats();
+		putchar('\n');
+	}
 	std::cout << "Player: =================\n";
 	p.currentHero->PrintStats();
 	std::cout << "=========================\n"; // Possibly adapt length to max length of said functions
@@ -212,7 +220,7 @@ void Game(Player& p, Map& m) {
 	while(gameRunning) {
 		system("cls");
 		std::cout << "======GAME======\n";
-		std::cout << "Time: " << m.minutes << " : " << m.seconds << '\n';
+		std::cout << "TIME: M|" << m.minutes << " : " << "S|" << m.seconds << '\n';
 		m.GetTime(); // Implement properly into game
 		if(m.bases[0].ancientHealth == 0) {
 			std::cout << "The Radiant's ancient has fallen!\n  -DIRE VICTORY-";
@@ -249,16 +257,16 @@ void Game(Player& p, Map& m) {
 		std::cout << "P) Shop  L) Laning  J) Jungle  R) Roshan  S) Scoreboard  C) Continue  T) Change tick rate  X) End game\n";
 		std::cin >> p.choice;
 		system("cls");
-		std::tolower(p.choice); // Check!
-		switch (p.choice) { // Always have tick happen!!!!
+		std::tolower(p.choice);
+		switch (p.choice) { // Always have tick happen!!!!????
 			case 'p': ShopInterface(p);
 			case 'l': Laning(p, m);
 			case 'j': Jungle(p, m);
 			case 'r': RoshanFight(p.teamMembers, m, p); // Do team better
 			case 's': Scoreboard(p, m);
-			case 'c': continue; // Check!
-			case 't': m.tickRate = ChangeTick(m); // Do this!, avoid passing the player around!
-			case 'x': exit(1);
+			case 'c': break;
+			case 't': m.tickRate = ChangeTick(m); continue; // Do this!, avoid passing the player around!
+			case 'x': EndScreen(p, m);
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(m.tickRate)); // Add speed modifier | Have tick regardless of input!!! (Multi thread?)
 		m.seconds++;
@@ -272,12 +280,11 @@ void Game(Player& p, Map& m) {
 
 // Extra
 void EndScreen(Player &p, Map &m) {
-	std::cout << "Game has ended!\n" << "Game summary\n";
-	std::cout << "Player Stats\n";
-	std::cout << "Gold: " << p.currentHero->gold << '\n';
-	std::cout << "Creeps killed: " << p.creepsKilled << '\n';
+	std::cout << "Game has ended!\n" << "Game summary\n"
+			  << "=====Player Stats=====\n"
+			  << "Gold: " << p.currentHero->gold << '\n'
+			  << "Creeps killed: " << p.creepsKilled << '\n';
 	Scoreboard(p, m);
-	std::cin.get();
 	exit(0);
 }
 

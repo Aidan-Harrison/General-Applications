@@ -38,6 +38,12 @@ void Hero::PrintAll() const {
 	PrintInventory();
 	putchar('\n');
 	PrintStash();
+	putchar('\n');
+	PrintKDA();
+}
+
+void Hero::PrintKDA() const {
+	return;
 }
 
 void Hero::AddAbilities(std::vector<Ability> &abiList) { // Do move semantics

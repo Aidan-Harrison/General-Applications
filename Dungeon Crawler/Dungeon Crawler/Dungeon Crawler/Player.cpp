@@ -3,6 +3,7 @@
 Player::Player(short health)
 	:m_Health(health)
 {
+	assert(m_Health != 0);
 }
 
 void Player::Input() {
@@ -24,6 +25,7 @@ void Player::Logic() {
 		case Player::LEFT:  playerX--; break;
 		case Player::RIGHT: playerX++; break;
 	}
+	dir = STOP;
 }
 
 void Player::Kill() {

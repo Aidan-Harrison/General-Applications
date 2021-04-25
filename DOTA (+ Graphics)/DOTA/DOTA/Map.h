@@ -10,7 +10,7 @@
 
 // Singleton | Fix!
 struct Map {
-	short seconds = 0, minutes = 0, tickRate = 1000;
+	short seconds = 0, minutes = 0, tickRate = 400;
 	int m_Test = 0;
 	bool m_RoshUp = true, isNight = true;
 	std::vector<Hero> radiantTeam{}, direTeam{}; // Pointers?

@@ -17,25 +17,26 @@ void RoshanFight(std::vector<Hero>& team, Map& m, Player &p) { // Randomize amou
 	short teamAmount = 0;
 	srand(time(0));
 	system("cls");
-	if(m.m_RoshUp) {
+	if(m.m_RoshUp) { // Do!
 		Roshan rosh;
 		Item Aegis{"Aegis of the Immortal", 0, "Revives you once", false};
 		if(m.minutes > 30)
 			Item Cheese{"Cheese", 0, "Restores health and mana to full instantly", true};
 		teamAmount = rand() % 5;
+		teamAmount++;
 		for(unsigned int i = 0; i < teamAmount; i++) {
 			teamPit.push_back(team[i]);
 		}
 		std::cout << "Team members in pit:\n";
-		for(unsigned int i = 0; i < teamPit.size(); i++)
-			std::cout << teamPit[i].GetName() << '\n';
+		//for(unsigned int i = 0; i < teamPit.size(); i++)
+			//std::cout << teamPit[i].GetName() << '\n';
 		while(!rosh.isDead) {
 			system("cls");
-			std::cout << "ROSHAN FIGHT!\n Rosh Health: " << std::string(rosh.m_Health, '|') << " : " << rosh.m_Health
+			std::cout << "ROSHAN FIGHT!\n Rosh Health: " << std::string(rosh.m_Health / 100, '|') << " : " << rosh.m_Health
 					  << "\nPlayer Health: \n" << std::string(p.currentHero->m_Health / 10, '|')
 					  << "\nPlayer Mana: \n" << std::string(p.currentHero->m_Mana / 10, '|'); // Possibly convert to functions via header
 			// Player condition
-			if(p.currentHero->m_Health == 0) { // Move to function within player
+			if(p.currentHero->m_Health == 0) { // Move to function within player?
 				std::cout << "You have fallen to Roshan!\n";
 				p.fighting = false; // Check fighting var!!!!??
 				break;
@@ -57,16 +58,17 @@ void RoshanFight(std::vector<Hero>& team, Map& m, Player &p) { // Randomize amou
 			// Team condition | Fix!
 			for (unsigned int i = 0; i < teamPit.size(); i++) {
 				std::cout << teamPit[i].GetName();
-				std::cout << "Health: " << std::string(teamPit[i].m_Health, '|') << " : " << teamPit[i].m_Health;
-				std::cout << "Mana: " << std::string(teamPit[i].m_Mana, '|') << " : " << teamPit[i].m_Mana;
+				std::cout << "Health: " << std::string(teamPit[i].m_Health / 10, '|') << " : " << teamPit[i].m_Health;
+				std::cout << "Mana: " << std::string(teamPit[i].m_Mana / 10, '|') << " : " << teamPit[i].m_Mana;
 				std::cout << "=============================================================\n";
 			}
 			// Player | Improve this to take into account everything
-			p.currentHero->ChangeHealth(rosh.AutoAttack(), 'p');
+			p.currentHero->ChangeHealth(rosh.m_Damage, 'p'); // Do stun!
 			short temp = rosh.m_Health;
 			rosh.m_Health -= p.currentHero->AutoAttack();
 			std::cout << "hit Roshan for: " << temp - rosh.m_Health << " damage"; // Do team part
 			// Check for team members and player health
+			// Flush strings!?
 		}
 		rosh.isDead = true;
 		std::cout << "Roshan has fallen to the: \n"; // Add team

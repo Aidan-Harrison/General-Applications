@@ -42,7 +42,9 @@ private:
 	const std::string m_Name = " ";
 	short m_Armor = 3, m_MagicRes = 3;
 	short m_Strength = 10, m_Agility = 10, m_Intelligence = 10;
+	short kills = 0, deaths = 0, assists = 0;
 public:
+	short id = 1;
 	enum Abilities {Q = 1, W, E, R};
 	enum Type {STRENGTH, AGILITY, INTELLIGENCE};
 	enum Team {RADIANT, DIRE}; // Check need! | Check against player team!
@@ -85,6 +87,7 @@ public:
 	void PrintAbilities() const;
 	void PrintInventory() const;
 	void PrintStash() const;
+	void PrintKDA() const;
 	void PrintAll() const;
 };
 

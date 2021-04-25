@@ -67,7 +67,7 @@ void Purchase(Player &p, const int id) {
 	// Do hash table ID search, check against player gold and inventory/backpack
 	for (unsigned int i = 0; i < itemList.size(); i++) {
 		if (id == itemList[i].GetID()) {
-			if(p.currentHero->gold - itemList[i].GetCost() <= 0 || p.currentHero->gold < itemList[i].GetCost()) {
+			if(p.currentHero->gold < itemList[i].GetCost()) {
 				std::cout << "You cannot afford that item!\n";
 				ShopInterface(p);
 			}
@@ -77,12 +77,18 @@ void Purchase(Player &p, const int id) {
 			}
 		}
 	}
+	std::cin.get();
+	std::cin.get();
 	ShopInterface(p);
 }
 
-// Convert this to a for loop, modify inventory to allow!!!!!!!!!!!!!!!!!!!!!!!!!! | Also implement Stash | Scale cost?
+// Convert this to a for loop, modify inventory to allow!!!!!!!!!!!!!!!!!!!!!!!!!! | Scale cost?
 void Sell(Player &p) {
-	// Check if inventory or stash is empty
+	if (p.currentHero->m_Inventory.empty()) { // Check!
+		std::cout << "You have nothing to sell, returning...";
+		std::this_thread::sleep_for(std::chrono::seconds(3));
+		ShopInterface(p);
+	}
 	short choice = 0;
 	std::cout << "Sell from I) Inventory/Backpack  S) Stash\n";
 	std::cin >> choice;
@@ -176,9 +182,10 @@ void Sell(Player &p) {
 	ShopInterface(p);
 }
 
-void ShopInterface(Player &p) { // Give user choice to back out whenever
-	std::cout << "===SHOP===\n"; // Use loops instead
-	std::cout << "Wards:============\n";
+void ShopInterface(Player &p) {
+	std::cout << "===SHOP==="; // Use loops instead
+	p.currentHero->PrintStats();
+	std::cout << "\n\nWards:============\n";
 		std::cout << Shop::observerWard.GetName();
 		std::cout << Shop::revalationWard.GetName();
 	std::cout << "Movement Items:============\n";

@@ -12,7 +12,7 @@ struct Player {
 	bool fighting = false;
 	std::string currentTeam = " ";
 	Hero *currentHero; // Initialise! Axe = default
-	std::vector<Hero> teamMembers;
+	std::vector<Hero> teamMembers{};
 	Player() = default;
 	~Player() = default;
 };

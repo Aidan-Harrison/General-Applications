@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cassert>
 #include <conio.h>
 
 class Player {
@@ -17,7 +18,7 @@ public:
 	Player() = default;
 	Player(short health);
 
-	int GetHealth() const { return m_Health; }
+	inline short GetHealth() const { return m_Health; }
 
 	void Input();
 	void Logic();

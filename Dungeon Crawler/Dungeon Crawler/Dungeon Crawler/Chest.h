@@ -9,6 +9,11 @@ private:
 public:
 	short chestX = 10, chestY = 6;
 	std::vector<std::string> contents{};
+	Chest(short x, short y)
+		:chestX(x), chestY(y)
+	{
+	};
+	~Chest() = default;
 };
 
 #endif

@@ -17,6 +17,13 @@ void Game(Player& p, Map& m);
 Map map;
 Player player;
 
+void SetupAbilities(Hero &h) { // One giant switch statement, may be a better solution although I do not think so
+	switch(h.id) {
+		case 1: h.AddAbilities(Heroes::rikiAbilities); break;   // Riki
+		case 2: h.AddAbilities(Heroes::sniperAbilities); break; // Sniper
+	}
+}
+
 void PlayerSetup() { // Possibly convert to a single loop | Sort and print in alphabetical order!
 	short choice = 0, team = 0, index = 1;
 	std::cout << "List of heroes:\n" << "Total: " << heroes.size() << '\n';
@@ -66,7 +73,7 @@ void PlayerSetup() { // Possibly convert to a single loop | Sort and print in al
 
 	// Hero Pick
 	std::cout << "Pick your hero: "; std::cin >> choice;
-	player.currentHero = &heroes[choice]; // Fix!
+	player.currentHero = &heroes[choice];
 	player.teamID = rand() % 3;
 	player.teamID++;
 	player.teamID == 1 ? player.currentTeam = "Radiant" : player.currentTeam = "Dire"; // Check!
@@ -77,24 +84,41 @@ void PlayerSetup() { // Possibly convert to a single loop | Sort and print in al
 	std::cout << "\nYour magic resistance is: " << player.currentHero->GetMagicRes();
 	std::cin.get();
 	std::cin.get();
+	SetupAbilities(heroes[choice]);
 }
 
-// Add team compositions | Move to map setup!?
+// Add team compositions | Move to map setup!????
 void TeamSetup() {
 	srand(time(0));
 	int membersToAdd = 0;
-	for(unsigned int i = 0; i < 5; i++) { // Do better randomisation!?
-		membersToAdd = rand() & heroes.size() - 1; // Change to custom rand singleton | Prevent subscript range error
-		map.radiantTeam.push_back(heroes[membersToAdd]);
+	if(player.teamID == 1)// Radiant | Add player to respective team, then calcualte rest
+		map.radiantTeam.push_back(*player.currentHero); // Check!
+	else
+		map.direTeam.push_back(*player.currentHero);
+
+	for(unsigned int i = 0; i < 5; i++) {
 		membersToAdd = rand() & heroes.size() - 1; // Change to custom rand singleton
+		map.radiantTeam.push_back(heroes[membersToAdd]);
+		membersToAdd = rand() & heroes.size() - 1;
 		map.direTeam.push_back(heroes[membersToAdd]);
-		//map.radiantTeam[i].AddAbilities(Heroes::rikiAbilities);
 	}
-	//std::cout << "Teams\n";
-	//for(unsigned int i = 0; i < 10; i++) { // Fix overflow
-		//if(i <= 4) std::cout << map.radiantTeam[i].m_Name << '\n';
-		//else if(i > 4) std::cout << map.direTeam[i].m_Name << '\n';
-	//}
+
+	if(map.radiantTeam.size() > 5) map.radiantTeam.pop_back();
+	if(map.direTeam.size() > 5)	map.direTeam.pop_back();
+
+	for (unsigned int i = 0; i < map.radiantTeam.size(); i++)
+		SetupAbilities(map.radiantTeam[i]);
+	for (unsigned int i = 0; i < map.direTeam.size(); i++)
+		SetupAbilities(map.direTeam[i]);
+
+	if (player.teamID == 1) {
+		for (unsigned int i = 0; i < 4; i++)
+			player.teamMembers.push_back(map.radiantTeam[i]);
+	}
+	else {
+		for (unsigned int i = 0; i < 4; i++)
+			player.teamMembers.push_back(map.direTeam[i]);
+	}
 }
 
 int main() {
