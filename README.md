@@ -25,7 +25,7 @@ Generates a person, credentials and interests. All done exclusively through file
 A SFML based trading card game concept. Draw cards and place them on a grid.
 
 | Data Structures and Algorithms:
-Contains raw implementations of a number of data strucutres and algorithms, ranging from Linked-Lists, Binary tree's, binary search etc.
+Contains raw implementations of a number of data strucutres and algorithms, ranging from Stacks and Queues, Linked-Lists, Binary tree's, Binary search, Merge sort etc.
 
 | Recursive Stuff:
 A bunch of problems solved exclusively via recursion.
