@@ -4,7 +4,7 @@
 Noteable Applications:
 ======================
 | DOTA:
-A simplified CTI based version of the video game DOTA. Part playable, part simulation. (GRAPHICS TO BE ADDED). Includes, file streaming to define game properties from a single .txt file.
+A simplified CTI based version of the video game DOTA. Part playable, part simulation. (GRAPHICS TO BE ADDED). Includes file streaming to define game properties from a single .txt file.
 
 | Dungeon Crawler:
 A procedurally generated dungeon crawler with an inventory system, enemies, pickups, puzzles etc.
