@@ -1,5 +1,6 @@
 # General-Applications
-General apps created using C/C++. These apps range from video game mechanics, simulators, data structures, algorithmns, SFML etc.
+C/C++
+A list full of some general applications. These apps range from video game mechanics, simulators, data structures, algorithmns, SFML etc.
 
 Noteable Applications:
 ======================
