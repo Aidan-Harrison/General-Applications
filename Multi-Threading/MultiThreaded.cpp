@@ -21,7 +21,7 @@ void OddAccumulate(int array[], int size) {
             oddValues++;
 }
 
-void AtomicSum() {
+void AtomicSum() { // Always gets the correct value
     std::vector<short> numbers{};
     for(short i = 0; i <= 20000; i++) {
         numbers.push_back(rand());

@@ -15,7 +15,7 @@ public:
 	}
 	~Staff() = default;
 	virtual std::string GetJob() const { return m_Job; }
-	std::string GetName() const { return forename + surname; }
+	std::string GetName() const { return forename + ' ' + surname; }
 };
 
 class Principal : public Staff { // Singeleton! DO
@@ -34,12 +34,13 @@ private:
 	Subject m_Subject{"English", 60}; // Pointer? | Doesn't work with constructor
 	std::vector<Subject> ciriculum{}; // ?
 public:
-	Teacher(const std::string &fName, const std::string &sName, const std::string &job, bool isSub)
+	Teacher(const std::string &fName, const std::string &sName, const std::string &job, bool isSub = false)
 		:Staff(fName, sName, job), isSubstitue(isSub)
 	{
 	};
 	~Teacher() {};
 	std::string GetJob() const { return m_Subject.GetName(); }
+	void GetCiriculum();
 };
 
 #endif

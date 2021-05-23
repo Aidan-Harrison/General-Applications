@@ -24,6 +24,7 @@ public:
 class AfterSchool : public Subject {
 private:
 public:
+	AfterSchool() {};
 	~AfterSchool() {};
 };
 

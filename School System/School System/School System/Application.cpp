@@ -1,29 +1,33 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <thread>
+#include <chrono>
+#include <map>
 
 #include "Student.h"
 #include "StudentList.h"
 #include "TeacherList.h"
 
+// Move to certain staff roles
+std::string profileName = "SarahConnor";
+std::string profilePass = "1990";
+bool hasLoggedin = false;
+
 void Interface();
 void ViewStudentInterface();
 void ViewStaffInterface();
+bool Login();
 
 void PrintStudentsYear() {
-	// Year 7:
 	std::cout << "========YEAR 7========\n";
 	for(int i = 0; i < Students::Y7_Students.size(); i++)  {std::cout << Students::Y7_Students[i].GetName()  << " | Age: " << Students::Y7_Students[i].GetAge()  << '\n';}
-	// Year 8:
 	std::cout << "========YEAR 8========\n";
 	for(int i = 0; i < Students::Y8_Students.size(); i++)  {std::cout << Students::Y8_Students[i].GetName()  << " | Age: " << Students::Y8_Students[i].GetAge()  << '\n';}
-	// Year 9:
 	std::cout << "========YEAR 9========\n";
 	for(int i = 0; i < Students::Y9_Students.size(); i++)  {std::cout << Students::Y9_Students[i].GetName()  << " | Age: " << Students::Y9_Students[i].GetAge()  << '\n';}
-	// Year 10:
 	std::cout << "========YEAR 10========\n";
 	for(int i = 0; i < Students::Y10_Students.size(); i++) {std::cout << Students::Y10_Students[i].GetName() << " | Age: " << Students::Y10_Students[i].GetAge() << '\n';}
-	// Year 11:
 	std::cout << "========YEAR 11========\n";
 	for(int i = 0; i < Students::Y11_Students.size(); i++) {std::cout << Students::Y11_Students[i].GetName() << " | Age: " << Students::Y11_Students[i].GetAge() << '\n';}
 	ViewStaffInterface();
@@ -38,14 +42,15 @@ void PrintStudentsAge() { // Sort by age
 }
 
 void PrintStudentsName() {
-	//for (unsigned int i = 0; i < students.size(); i++) {
-		//std::cout << students[i].GetName() << '\n';
-	//}
+	for (unsigned int i = 0; i < Students::allStudents.size(); i++) {
+		std::cout << Students::allStudents[0][i].GetName() << '\n';
+	}
+	std::cin.get();
+	std::cin.get();
 	ViewStudentInterface();
 }
 
-// Move these?
-void AddStudent() {
+void AddStudent() { // Insert student efficiently into all student vector, sorting again is too expensive
 	std::string firstname, surname;
 	short age, year;
 	std::cout << "Enter student details\n";
@@ -54,48 +59,51 @@ void AddStudent() {
 	std::cout << "Age:"; std::cin >> age;
 	std::cout << "Year:"; std::cin >> year;
 	Student* newStudent = new Student{ firstname, surname, age, year}; // Check object name conflict
-	// Modify so constructor is all which is needed
-	while (!newStudent->CheckAge()) {
-		std::cout << "The age's and year do not match, ensure correct data has been entered";
-		std::cout << "Age: "; std::cin >> age;
-		std::cout << "Year: ";std::cin >> year;
-	}
 	Interface();
 }
 
-// Custom search function
-void SearchStudent(std::vector<Student> &students) {
+Student* SearchStudent() { // Check!
+	std::string input = "";
+	std::cout << "Search for a specific student by name: "; std::cin >> input;
+	Students::SortStudents();
+	for (unsigned int i = 0; i < Students::allStudents.size(); i++) {
+		for (unsigned int j = 0; j < Students::allStudents.size(); j++) {
+			std::cout << Students::allStudents[i][j].GetSurname() << '\n';
+		}
+		putchar('\n');
+	}
+	// Temp linear search | Implement map/faster search algortithm | Look into pushing objects to map
+	std::map<short, Student> sMap; // Use!
+	for (int i = 0; i < Students::allStudents.size(); i++) {
+		if (input == Students::allStudents[0][i].GetName())
+			return &Students::allStudents[0][i]; // Check return!!!!
+	}
 
+	// std::binary_search(Students::allStudents.begin(), Students::allStudents.end(), ); // Pass in correct variable
 }
 
 void RemoveStudent() {
 	std::string input = ""; // Just have universal? So no need to assign more memory then needed
 	std::cout << "Search for student via name: "; std::cin >> input;
+	Students::SortStudents(); // Inefficient to sort again?
 	// Sort via name
-	// Do binary search
+	// Do binary search?
+	// Check with teacher and show ciriculum
 }
 
 void EditStudent() {
-	std::cout << "Search for student via name: ";
-	// DO map or faster search algorithm (Something which isn't linear)
-}
-
-void SearchStudent() {
-	std::string input = "";
-	std::vector<Student> allStudents{};
-	std::cout << "Search for a specific student by name: "; std::cin >> input;
-	// Inefficient??
-	for(unsigned int i = 0; i < Students::Y7_Students.size(); i++)  allStudents.push_back(Students::Y7_Students[i]);
-	for(unsigned int i = 0; i < Students::Y8_Students.size(); i++)  allStudents.push_back(Students::Y8_Students[i]);
-	for(unsigned int i = 0; i < Students::Y9_Students.size(); i++)  allStudents.push_back(Students::Y9_Students[i]);
-	for(unsigned int i = 0; i < Students::Y10_Students.size(); i++) allStudents.push_back(Students::Y10_Students[i]);
-	for(unsigned int i = 0; i < Students::Y11_Students.size(); i++) allStudents.push_back(Students::Y11_Students[i]);
-	std::sort(allStudents.begin(), allStudents.end()); // Won't work, no data to sort!
-
-	// DO map or faster search algorithm (Something which isn't linear)
-}
-
-void ChangeCuric() {
+	std::cout << "You must confirm your login\n";
+	Student *curStudent; // Heap allocate?
+	if(Login()) {
+		curStudent = SearchStudent();
+	}
+	short input = 0;
+	std::cout << "What would you like to do: "
+			  << "1) Change Data  2) Change Ciriculum\n";
+	switch (input) {
+		case 1: curStudent->ChangeDetails(); break;
+		case 2: curStudent->SetCiriculum(); break;
+	}
 }
 
 void ViewStudentInterface() {
@@ -121,13 +129,13 @@ void ViewStaffInterface() {
 	std::cout << "Principal: " << StaffList::principal.GetName() << '\n';
 	std::cout << "English Teachers:\n";
 	for (int i = 0; i < StaffList::englishTeachers.size(); i++)
-		std::cout << StaffList::englishTeachers[i].GetName() << '\n';
+		std::cout << "  " << StaffList::englishTeachers[i].GetName() << '\n';
 	std::cout << "Science Teachers:\n";
 	for (int i = 0; i < StaffList::scienceTeachers.size(); i++)
-		std::cout << StaffList::scienceTeachers[i].GetName() << '\n';
+		std::cout << "  " << StaffList::scienceTeachers[i].GetName() << '\n';
 	std::cout << "Maths Teachers:\n";
 	for (int i = 0; i < StaffList::mathsTeachers.size(); i++)
-		std::cout << StaffList::mathsTeachers[i].GetName() << '\n';
+		std::cout << "  " << StaffList::mathsTeachers[i].GetName() << '\n';
 	std::cout << "Press enter to return: "; 
 	std::cin.get();
 	std::cin.get();
@@ -146,15 +154,24 @@ void AddStaff() {
 
 void RemoveStaff() {
 	std::cout << "Search for staff via name: ";
-	// Much like the student search, implement a fast searching algorithmn for demonstration purposes.
+	// Much like the student search, implement a fast searching algorithmn.
 	// Check if the staff is on a ciriculum
 	// If so, check with the user.
 	// If user is ok with it, remove from necessary vectors and delete object from memory.
 }
 
 void SwapTeachers() {
+	std::string name = "";
+	std::cout << "Search via name: "; std::cin >> name;
 	// Teacher subjects must match.
 	// If so, move the ciriculum around so they are swapped
+}
+
+void ChangeCuric() {
+	SearchStudent();
+	Students::Y7_Students[0].SetCiriculum();
+	// Call set ciriculum function on searched studen
+	Students::Y7_Students[0].GetCiriculum();
 }
 
 void ManageInterface() {
@@ -165,10 +182,10 @@ void ManageInterface() {
 	if(input == 1) {
 		system("cls");
 		std::cout << "1) Add Student to databse\n" <<
-			"2) Remove studeny from database\n" <<
-			"3) Edit Student data\n" <<
-			"4) Change Curiculum\n" <<
-			"5) RETURN";
+				"2) Remove studeny from database\n" <<
+				"3) Edit Student data\n" <<
+				"4) Change Curiculum\n" <<
+				"5) RETURN";
 		std::cin >> input;
 		switch(input) {
 			case 1: AddStudent(); break;
@@ -188,27 +205,68 @@ void ManageInterface() {
 		switch(input) {
 			case 1: AddStaff();	break;
 			case 2: RemoveStaff(); break;
-			case 3: SwapTeachers(); break;
+			case 3: SwapTeachers(); break; // Add ciriculum as well
 			case 4: ManageInterface(); break;
 		}
 	}
 }
 
 void Interface() {
-	system("cls");
-	short input = 0;
-	std::cout << "===============-SCHOOL SYSTEM-===============\n" <<
-			     "1)VIEW STUDENTS  2)VIEW STAFF  3)MANAGE  4)QUIT";
-	short total = Students::Y7_Students.size() + Students::Y8_Students.size() + Students::Y9_Students.size() + Students::Y10_Students.size() + Students::Y11_Students.size();
-	std::cout << "\nAmount of Students: " << total << '\n';
-	// Add teachers
-	std::cout << "Amount of Staff:\n";
-	total = StaffList::englishTeachers.size() + StaffList::scienceTeachers.size() + StaffList::mathsTeachers.size();
-	std::cin >> input;
-	switch (input) {
-		case 1: ViewStudentInterface(); break;
-		case 2: ViewStaffInterface(); break;
-		case 3: ManageInterface(); break;
-		case 4: exit(0); break;
+	/*
+	Students::SortStudents();
+	for (unsigned int i = 0; i < Students::allStudents.size(); i++) {
+		for (unsigned int j = 0; j < Students::allStudents.size(); j++) {
+			std::cout << Students::allStudents[i][j].GetSurname() << '\n';
+		}
+		putchar('\n');
 	}
+	*/
+
+	if(Login()) {
+		system("cls");
+		short input = 0;
+		std::cout << "===============-SCHOOL SYSTEM-===============\n" <<
+			"1)VIEW STUDENTS  2)VIEW STAFF  3)MANAGE  4)QUIT";
+		short total = Students::Y7_Students.size() + Students::Y8_Students.size() + Students::Y9_Students.size() + Students::Y10_Students.size() + Students::Y11_Students.size();
+		std::cout << "\nAmount of Students: " << total << '\n';
+		// Add teachers
+		std::cout << "Amount of Staff:\n";
+		total = StaffList::englishTeachers.size() + StaffList::scienceTeachers.size() + StaffList::mathsTeachers.size();
+		std::cin >> input;
+		system("cls");
+		switch (input) {
+			case 1: ViewStudentInterface(); break;
+			case 2: ViewStaffInterface(); break;
+			case 3: ManageInterface(); break;
+			case 4: exit(0); break;
+		}
+	}
+}
+
+bool Login() {
+	if (hasLoggedin)
+		return true;
+	else {
+		short attempts = 0;
+		std::string username = "", password = "";
+		// Convert password to '*'
+		while (attempts <= 3) {
+			system("cls");
+			std::cout << "Username: "; std::cin >> username;
+			std::cout << "Password: "; std::cin >> password;
+			if(username == profileName && password == profilePass) { // Check need!
+				std::this_thread::sleep_for(std::chrono::seconds(1));
+				hasLoggedin = true;
+				return true;
+			}
+			else {
+				std::cout << "You have entered an incorrect useranme or password!\nTry again (Press enter to continue)";
+				std::cin.get();
+				std::cin.get();
+			}
+		}
+	}
+	std::cout << "YOu have made too many attempts!\n EXITING...";
+	std::this_thread::sleep_for(std::chrono::seconds(2));
+	return false;
 }

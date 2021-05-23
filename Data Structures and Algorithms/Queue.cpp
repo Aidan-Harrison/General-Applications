@@ -1,15 +1,12 @@
 #include <iostream>
-
 struct Queue {
     int items[10];
-    int itemCount = 0;
     int front = -1;
-    int rear = 0;
-    int Size() const { return itemCount; }
+    int rear = -1;
 };
 
 bool IsFull(Queue *q) {
-    if(q->front == 10 -1)
+    if(q->rear == 10)
         return true;
     else
         return false;
@@ -24,21 +21,24 @@ bool IsEmpty(Queue *q) {
 
 void Enqueue(Queue *q, int side, int item) {
     if(IsFull(q)) {
-        std::cerr << "Queue is full!";
+        std::cerr << "Queue is full!" << std::endl;
         exit(1);
     }
     else {
-        q->items[q->rear++] = item; // Check!
+        q->items[q->rear++] = item; 
+        // Front?
     }
 }
 
-void Dequeue(Queue *q) {
+int Dequeue(Queue *q) {
     if(IsEmpty(q)) {
-        std::cerr << "Queue is empty!";
+        std::cerr << "Queue is empty!" << std::endl;
         exit(1);
     }
     else {
-
+        int item = q->items[q->front];
+        q->front++;
+        return item;
     }
 }
 
@@ -52,12 +52,11 @@ void Insert(Queue *q, int item) {
             q->rear = -1;
     }
     q->items[q->rear++] = item;
-    q->itemCount++;
 }
 
-void PrintQueue(Queue *q, int size) {
-    for(int i = 0; i < size; i++)
-        std::cout << q->items[i] << ', ';
+void PrintQueue(Queue &q) {
+    for(int i = 0; i < q.rear; i++)
+        std::cout << q.items[i] << ', ';
 }
 
 int main() {
