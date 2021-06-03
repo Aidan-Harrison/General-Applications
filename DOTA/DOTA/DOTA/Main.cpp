@@ -10,12 +10,30 @@
 #include <algorithm>
 #include <fstream>
 
+// Add graphics
+#include <SFML/Graphics.hpp>
+
 void ShopSetup(); // In shop.cpp
 void Game(Player& p, Map& m);
+void Draw();
 
-// Remove these from global?
-Map map;
-Player player;
+std::fstream fileHandler;
+
+void ParseFile(const std::string &filePath) { // Move!?
+	fileHandler.open(filePath);
+	if (fileHandler.fail()) {
+		std::cerr << "Failed to open file! Either corrupt or missing\n";
+	}
+	else {
+		if (filePath.find_last_of(".jpg") || filePath.find_last_of(".jpeg") || filePath.find_last_of(".png")) {
+			sf::Image img;
+			img.loadFromFile(filePath);
+		}
+		else if (filePath.find_last_of(".txt")) {
+			// Handle file writing
+		}
+	}
+}
 
 void SetupAbilities(Hero &h) { // One giant switch statement, may be a better solution although I do not think so
 	switch(h.id) {
@@ -24,7 +42,7 @@ void SetupAbilities(Hero &h) { // One giant switch statement, may be a better so
 	}
 }
 
-void PlayerSetup() { // Possibly convert to a single loop | Sort and print in alphabetical order!
+void PlayerSetup(Player &p) { // Possibly convert to a single loop | Sort and print in alphabetical order!
 	short choice = 0, team = 0, index = 1;
 	std::cout << "List of heroes:\n" << "Total: " << heroes.size() << '\n';
 	std::cout << "Strength:\n";
@@ -71,59 +89,63 @@ void PlayerSetup() { // Possibly convert to a single loop | Sort and print in al
 	}
 	*/
 
-	// Hero Pick
+	// Hero Pick | Convert to SFML
 	std::cout << "Pick your hero: "; std::cin >> choice;
-	player.currentHero = &heroes[choice];
-	player.teamID = rand() % 3;
-	player.teamID++;
-	player.teamID == 1 ? player.currentTeam = "Radiant" : player.currentTeam = "Dire"; // Check!
-	std::cout << "You are playing as " << player.currentHero->GetName() << " and are on team: " << player.currentTeam;
-	std::cout << "\nYour health is " << player.currentHero->GetHealth() << " | Base health regen: " << player.currentHero->m_HealthRegen;
-	std::cout << "\nYour mana is " << player.currentHero->GetMana() << " | Base mana regen: " << player.currentHero->m_ManaRegen;
-	std::cout << "\nYour armor is: " << player.currentHero->GetArmor();
-	std::cout << "\nYour magic resistance is: " << player.currentHero->GetMagicRes();
+	p.currentHero = &heroes[choice];
+	p.teamID = rand() % 3;
+	p.teamID++;
+	p.teamID == 1 ? p.currentTeam = "Radiant" : p.currentTeam = "Dire"; // Check!
+	std::cout << "You are playing as " << p.currentHero->GetName() << " and are on team: " << p.currentTeam;
+	std::cout << "\nYour health is " << p.currentHero->GetHealth() << " | Base health regen: " << p.currentHero->m_HealthRegen;
+	std::cout << "\nYour mana is " << p.currentHero->GetMana() << " | Base mana regen: " << p.currentHero->m_ManaRegen;
+	std::cout << "\nYour armor is: " << p.currentHero->GetArmor();
+	std::cout << "\nYour magic resistance is: " << p.currentHero->GetMagicRes();
 	std::cin.get();
 	std::cin.get();
 	SetupAbilities(heroes[choice]);
 }
 
 // Add team compositions | Move to map setup!????
-void TeamSetup() {
+void TeamSetup(Map &m, Player &p) {
 	srand(time(0));
 	int membersToAdd = 0;
-	if(player.teamID == 1)// Radiant | Add player to respective team, then calcualte rest
-		map.radiantTeam.push_back(*player.currentHero); // Check!
+	if(p.teamID == 1)// Radiant | Add player to respective team, then calcualte rest
+		m.radiantTeam.push_back(*p.currentHero); // Check!
 	else
-		map.direTeam.push_back(*player.currentHero);
+		m.direTeam.push_back(*p.currentHero);
 
 	for(unsigned int i = 0; i < 5; i++) {
 		membersToAdd = rand() & heroes.size() - 1; // Change to custom rand singleton
-		map.radiantTeam.push_back(heroes[membersToAdd]);
+		m.radiantTeam.push_back(heroes[membersToAdd]);
 		membersToAdd = rand() & heroes.size() - 1;
-		map.direTeam.push_back(heroes[membersToAdd]);
+		m.direTeam.push_back(heroes[membersToAdd]);
 	}
 
-	if(map.radiantTeam.size() > 5) map.radiantTeam.pop_back();
-	if(map.direTeam.size() > 5)	map.direTeam.pop_back();
+	if(m.radiantTeam.size() > 5) m.radiantTeam.pop_back();
+	if(m.direTeam.size() > 5)	m.direTeam.pop_back();
 
-	for (unsigned int i = 0; i < map.radiantTeam.size(); i++)
-		SetupAbilities(map.radiantTeam[i]);
-	for (unsigned int i = 0; i < map.direTeam.size(); i++)
-		SetupAbilities(map.direTeam[i]);
+	for (unsigned int i = 0; i < m.radiantTeam.size(); i++)
+		SetupAbilities(m.radiantTeam[i]);
+	for (unsigned int i = 0; i < m.direTeam.size(); i++)
+		SetupAbilities(m.direTeam[i]);
 
-	if (player.teamID == 1) {
+	if (p.teamID == 1) {
 		for (unsigned int i = 0; i < 4; i++)
-			player.teamMembers.push_back(map.radiantTeam[i]);
+			p.teamMembers.push_back(m.radiantTeam[i]);
 	}
 	else {
 		for (unsigned int i = 0; i < 4; i++)
-			player.teamMembers.push_back(map.direTeam[i]);
+			p.teamMembers.push_back(m.direTeam[i]);
 	}
 }
 
 int main() {
-	PlayerSetup();
-	TeamSetup();
+	std::thread drawThread(Draw);
+
+	Map m;
+	Player p;
+	PlayerSetup(p);
+	TeamSetup(m, p);
 	ShopSetup();
 	// DOTA LOGO
 	std::fstream file;
@@ -139,6 +161,7 @@ int main() {
 		}
 	}
 	file.close();
+
 	// Fix this | string issue
 	/*
 		std::cout << "Radiant Team:\n"; 
@@ -157,8 +180,9 @@ int main() {
 		}
 	*/
 	std::cin.get();
-	Game(player, map);
+	Game(p, m);
 
+	drawThread.join();
 	return 0;
 }
 

@@ -9,6 +9,7 @@
 #include <array>
 #include "Item.h"
 
+#include <SFML/Graphics.hpp>
 // This file is becoming hard to read, clean up at a later date
 
 struct Ability {
@@ -31,7 +32,7 @@ struct Ability {
 
 class Hero {
 private:
-	// Add Vector wrapper (Constrains vector size to given amount) | Re-do
+	// Add Vector wrapper (Constrains vector size to given amount) | Re-do | Use resize()
 	const short inventSize = 6, backSize = 3;
 	void VectorWrap(int maxSize, char type) { // Do!
 		switch(type) {
@@ -43,6 +44,9 @@ private:
 	short m_Armor = 3, m_MagicRes = 3;
 	short m_Strength = 10, m_Agility = 10, m_Intelligence = 10;
 	short kills = 0, deaths = 0, assists = 0;
+	// SFML
+	sf::RectangleShape body; // Replace with sprites
+	sf::Text hoverText; // Hovers above sprite at all times
 public:
 	short id = 1;
 	enum Abilities {Q = 1, W, E, R};
@@ -63,6 +67,12 @@ public:
 		:m_Name(name), m_Health(health), m_Mana(mana), m_Damage(damage), m_MoveSpeed(moveSpeed), m_AttackRange(attackRange), type(type)
 	{
 		assert(m_Name != " " && m_Health != 0 && m_Mana != 0 && m_Damage != 0 && m_MoveSpeed != 0);
+
+		body.setSize(sf::Vector2f(25.0f, 25.0f));
+		body.setOrigin(12.5f, 12.5f);
+		body.setFillColor(sf::Color::Red);
+
+		hoverText.setString(m_Name);
 	}
 	~Hero() = default;
 	// Main (Gameplay)

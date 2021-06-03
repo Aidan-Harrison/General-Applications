@@ -47,19 +47,22 @@ void QuickSort(std::vector<int> &arr, int low, int high) {
     }
 }
 
+// ======================= Merge Sort =======================
+
+
 void PrintArray(std::vector<int> &arr) {
-    for(int i = 0; i < arr.size(); i++)
-        std::cout << arr[i] << ", ";
+    for(int i : arr)
+        std::cout << i << ", ";
 }
 
 int main() {
     std::vector<int> array{5,3,2,1,4,6,9,7,8};
     // BubbleSort(array);
 
-    // Quick Sort
     PrintArray(array);
     QuickSort(array, 0, array.size());
     PrintArray(array);
+    
 
     return 0;
 }

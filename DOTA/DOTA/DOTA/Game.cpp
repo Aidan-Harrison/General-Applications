@@ -19,6 +19,38 @@ void CheckVision();
 bool jungVision = false;
 bool laneVision = false;
 
+short screenWidth = 800, screenHeight = 600;
+
+sf::Image background;
+sf::Font font;
+
+void Setup() { // Move to different file!
+	font.loadFromFile(""); // Do!
+}
+
+void Draw() {
+	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "DOTA");
+	// Scoreboard/Header
+	sf::RectangleShape headerBar;
+	headerBar.setFillColor(sf::Color::White);
+	headerBar.setSize(sf::Vector2f((float)screenWidth, 100.0f));
+	headerBar.setOrigin(screenWidth / 2, 50.0f);
+	headerBar.setPosition(headerBar.getOrigin().x, headerBar.getOrigin().y);
+
+	sf::Text timeOfDay;
+	//timeOfDay.setString(); // Do!
+	timeOfDay.setFont(font);
+	timeOfDay.setPosition(screenWidth / 2, 50.0f);
+
+	while (window.isOpen()) {
+
+		window.draw(headerBar);
+
+		window.display();
+		window.clear();
+	}
+}
+
 // Randomises between a set of predetermined camps | Check!
 void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference | Add teams
 	jungVision = true;
@@ -139,6 +171,8 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 					std::cin.get();
 					Game(p, m);
 				}
+				std::cin.get();
+				std::cin.get();
 			}
 			else if (p.choice == 'l') {
 				Game(p, m);

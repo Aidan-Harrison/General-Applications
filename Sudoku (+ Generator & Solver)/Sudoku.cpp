@@ -86,7 +86,9 @@ bool Solve() {
 }
 
 void PlayPuzzle() {
-
+    int posX, posY, value;
+    std::cout << "Pick a position and its value:\n";
+    std::cin >> posX >> posY >> value;
 }
 
 void GeneratePuzzle() {

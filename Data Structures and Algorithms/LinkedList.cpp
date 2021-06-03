@@ -3,7 +3,9 @@
 struct node {
     int data;
     node *next;
+    node() :data(0), next(nullptr) {}
     node(int val) :data(val), next(nullptr) {}
+    node(int val, node *n) : data(val), next(n) {}
 };
 
 node* Add(node *prevNode, int val, node *nextNode) {
@@ -31,7 +33,11 @@ struct dNode {
     int data;
     dNode *prev;
     dNode *next;
+    dNode() :data(0), prev(nullptr), next(nullptr) {}
     dNode(int d) :data(d), prev(nullptr), next(nullptr) {}
+    dNode(int d, dNode *pN) :data(d), prev(pN), next(nullptr) {}
+    dNode(int d, dNode *nN) :data(d), prev(nullptr), next(nN) {}
+    dNode(int d, dNode *pN, dNode *nN) :data(d), prev(pN), next(nN) {}
 };
 
 dNode* Add(dNode *prevNode, int val, dNode *nextNode) {

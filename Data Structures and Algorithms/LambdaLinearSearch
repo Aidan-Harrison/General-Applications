@@ -18,7 +18,7 @@ int PureLambda(std::vector<int> &arr, int target, const std::function<int(std::v
 int main() {
     std::vector<int> vec{1,2,3,4,5,6,7,8,9};
     int array[5] = {1,2,3,4,5};
-    auto lambdaSearch = [](std::vector<int> arr, int target) { for(int i : arr) if(arr[i] == target) return target; }; // Check capture!
+    auto lambdaSearch = [](std::vector<int> arr, int target) { for(int i : arr) if(i == target) return target; }; // Check capture!
     auto lambdaPrint = [](int value) { std::cout << "Target: " << value << '\n'; };
 
     // Single lambda
