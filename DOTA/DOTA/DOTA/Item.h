@@ -10,12 +10,12 @@ class Item {
 private:
 	int m_Cost = 0, m_itemID = 0; // Automatically change ID??? Do so in vector
 	const std::string m_ItemName = " ", m_ToolTip = " ", m_ActiveName = " ", m_ActiveTooltip = " ";
-	short m_Strength = 0, m_Agility = 0, m_Intelligence = 0;
-	short m_Damage = 0;
+	int m_Strength = 0, m_Agility = 0, m_Intelligence = 0;
+	int m_Damage = 0;
 public:
 	enum type {STRENGTH, AGILITY, INTELLIGENCE};
 	bool canBeSold = true, m_isActive = false, m_IsNeutral = false;
-	short cooldown = 10; // Appiles to both active and passive
+	int cooldown = 10; // Appiles to both active and passive
 	Item() = default;
 	Item(const char* name, int cost = 300, const char* toolTip =  " ", bool isActive = false, const char* activeName = " ", const char* activeDesc = " ", bool isNeutral = false)
 		:m_ItemName(name), m_Cost(cost), m_ToolTip(toolTip), m_isActive(isActive), m_ActiveName(activeName), m_ActiveTooltip(activeDesc), m_IsNeutral(isNeutral)
@@ -30,10 +30,10 @@ public:
 	void SetID(int id) { m_itemID = id; }
 	void DeleteItem() { delete this; }
 	// General
-	short GetStrength()     const { return m_Strength; }
-	short GetAgility()      const { return m_Agility; }
-	short GetIntelligence() const { return m_Intelligence; }
-	short GetDamage()	    const { return m_Damage; }
+	int GetStrength()     const { return m_Strength; }
+	int GetAgility()      const { return m_Agility; }
+	int GetIntelligence() const { return m_Intelligence; }
+	int GetDamage()	    const { return m_Damage; }
 	virtual void Active() {};
 };
 

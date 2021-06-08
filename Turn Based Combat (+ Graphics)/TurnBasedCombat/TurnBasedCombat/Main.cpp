@@ -29,7 +29,7 @@ void Interface() { // Engine/Tool interface | Edit game
 	background.setSize(sf::Vector2f((float)screenWidth / 3, (float)screenHeight));
 }
 
-void Draw(AllyTeam &aT, EnemyTeam &eT, sf::RenderWindow &window) {
+void Draw(AllyTeam &aT, EnemyTeam &eT) {
 	sf::Text turnCount;
 	sf::RectangleShape background;
 	background.setSize(sf::Vector2f((float)screenWidth, (float)screenHeight));
@@ -148,6 +148,7 @@ void LogicSetup() {
 		}
 		AllyTeam aT("Ally Team", allies);
 		GraphicsSetup(aT, eT);
+		std::thread drawThread(Draw, std::ref(aT), std::ref(eT)); // !Fix parameter threading | Join!
 	}
 	else {
 		return;
@@ -155,7 +156,6 @@ void LogicSetup() {
 }
 
 int main() {
-	std::thread drawThread(Draw); // Have to use namepsaces instead or study method to use paramteres in thread call
 
 	short choice = 0;
 	std::cin >> choice;
@@ -164,6 +164,5 @@ int main() {
 		case 2: FileHandler(); break;
 	}
 
-	drawThread.join();
 	return 0;
 }

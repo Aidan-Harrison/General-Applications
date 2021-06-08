@@ -17,9 +17,9 @@ struct Ability {
 	float m_Cooldown = 0.0f;
 	bool used = false, passive = false; // Passive abilites have zero cost
 	int m_Index = 1, m_AbiLevel = 1; // References key (Q, W, E, R)
-	short manaCost = 0;
+	int manaCost = 0;
 	Ability() = default;
-	Ability(const char* name, short cost, short cooldown, const bool isPassive)
+	Ability(const char* name, int cost, int cooldown, const bool isPassive)
 		:m_AbilityName(name), manaCost(cost), m_Cooldown(cooldown), passive(isPassive)
 	{
 		assert(m_AbilityName != " "); // Cost can be zero
@@ -33,7 +33,7 @@ struct Ability {
 class Hero {
 private:
 	// Add Vector wrapper (Constrains vector size to given amount) | Re-do | Use resize()
-	const short inventSize = 6, backSize = 3;
+	const int inventSize = 6, backSize = 3;
 	void VectorWrap(int maxSize, char type) { // Do!
 		switch(type) {
 			case 'i': maxSize = inventSize;
@@ -41,20 +41,22 @@ private:
 		}
 	}
 	const std::string m_Name = " ";
-	short m_Armor = 3, m_MagicRes = 3;
-	short m_Strength = 10, m_Agility = 10, m_Intelligence = 10;
-	short kills = 0, deaths = 0, assists = 0;
+	int m_Armor = 3, m_MagicRes = 3;
+	int m_Strength = 10, m_Agility = 10, m_Intelligence = 10;
+	int kills = 0, deaths = 0, assists = 0;
 	// SFML
 	sf::RectangleShape body; // Replace with sprites
 	sf::Text hoverText; // Hovers above sprite at all times
 public:
-	short id = 1;
+	int id = 1;
 	enum Abilities {Q = 1, W, E, R};
 	enum Type {STRENGTH, AGILITY, INTELLIGENCE};
+	enum Position {OFFLANE, MID, SAFELANE};
 	enum Team {RADIANT, DIRE}; // Check need! | Check against player team!
-	short m_Health = 450, m_Mana = 200, m_Damage = 50, m_MoveSpeed = 250, m_AttackRange = 300; // Main stats
-	short m_AttackChance = 0, m_StunDuration = 0; // Sub properties | Stun duration referes to the amount of game ticks
-	short m_HealthRegen = 2.5, m_ManaRegen = 1.5;
+	int m_Health = 450, m_Mana = 200, m_Damage = 50, m_MoveSpeed = 250, m_AttackRange = 300; // Main stats
+	int m_AttackChance = 0, m_StunDuration = 0; // Sub properties | Stun duration referes to the amount of game ticks
+	int m_HealthRegen = 2.5, m_ManaRegen = 1.5;
+	int posX = 0, posY = 0;
 	bool m_Dead = false, m_Invis = false, m_HasAghs = false, m_isStunned = false, m_SpellImune = false;
 	bool isBanned = false;
 	int type = 0, gold = 500, team = 0, level = 1, experience = 0, respawnTime = 20; // Type defaults to strength | Have respawn time scale
@@ -63,7 +65,7 @@ public:
 	std::array<Item, 8> m_Stash{};
 	Hero() = default;
 	// Defaults to Axe
-	Hero(const char* name = "Axe", short health = 500, short mana = 250, short damage = 60, short moveSpeed = 250, short attackRange= 500, int type = 0) // Check type!
+	Hero(const char* name = "Axe", int health = 500, int mana = 250, int damage = 60, int moveSpeed = 250, int attackRange= 500, int type = 0) // Check type!
 		:m_Name(name), m_Health(health), m_Mana(mana), m_Damage(damage), m_MoveSpeed(moveSpeed), m_AttackRange(attackRange), type(type)
 	{
 		assert(m_Name != " " && m_Health != 0 && m_Mana != 0 && m_Damage != 0 && m_MoveSpeed != 0);
@@ -78,17 +80,17 @@ public:
 	// Main (Gameplay)
 	void AddAbilities(std::vector<Ability> &abilList); // ??
 	int UseAbility(const char key);
-	short AutoAttack(); // Universal, also takes into account items
+	int AutoAttack(); // Universal, also takes into account items
 	void UseItem(Item &item);
-	void ChangeHealth(const short damage, const char type);
+	void ChangeHealth(const int damage, const char type);
 	Item CalcItem(Item &item); // Calculates item statistics | Change return?
 	// General
 	inline std::string GetName() const { return m_Name; }
 	inline int GetTeam() const { return team; } // Check, use enum!?
-	inline short GetHealth() const { return m_Health; }
-	inline short GetMana() const { return m_Mana; }
-	inline short GetArmor() const { return m_Armor; }
-	inline short GetMagicRes() const { return m_MagicRes; }
+	inline int GetHealth() const { return m_Health; }
+	inline int GetMana() const { return m_Mana; }
+	inline int GetArmor() const { return m_Armor; }
+	inline int GetMagicRes() const { return m_MagicRes; }
 	int GetType() const { return type; }
 	void RespawnTime(); // Runs on seperate thread | Change to 'Respawn'?
 	inline void BanHero() { delete this; }
@@ -99,6 +101,8 @@ public:
 	void PrintStash() const;
 	void PrintKDA() const;
 	void PrintAll() const;
+	// Graphics
+	void Draw(sf::RenderWindow &window);
 };
 
 

@@ -46,6 +46,10 @@ void Hero::PrintKDA() const {
 	return;
 }
 
+void Hero::Draw(sf::RenderWindow &window) {
+	window.draw(body);
+}
+
 void Hero::AddAbilities(std::vector<Ability> &abiList) { // Do move semantics
 	for(unsigned int i = 0; i < abilities.size(); i++)
 		abilities.push_back(abiList[i]);
@@ -85,7 +89,7 @@ int Hero::UseAbility(const char key) { // Returns damage, if any, other effects 
 	return 0; // Control path (Change?)
 }
 
-void Hero::ChangeHealth(const short damage, const char type) {
+void Hero::ChangeHealth(const int damage, const char type) {
 	if(type == 'p')
 		m_Health -= damage / m_Armor;
 	if(type == 'm')
@@ -111,7 +115,7 @@ void Hero::RespawnTime() {
 	// Reset respawn time to correct values
 }
 
-short Hero::AutoAttack() { // Add chances/items! | Returns damage
+int Hero::AutoAttack() { // Add chances/items! | Returns damage
 	m_AttackChance = rand() % 5; // Convert to rand singleton | Change size of range with items
 	if (m_AttackChance > 1) {
 		return m_Damage;

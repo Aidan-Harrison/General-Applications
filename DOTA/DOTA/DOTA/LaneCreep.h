@@ -9,7 +9,7 @@
 // Add pathing once SFML is implemented
 class LaneCreep {
 private:
-	short health = 100, m_exp = 25, m_Damage = 30, goldToGive = 35;
+	int health = 100, m_exp = 25, m_Damage = 30, goldToGive = 35;
 public:
 	bool dead = false, isMega = false;
 	LaneCreep() {
@@ -17,7 +17,7 @@ public:
 	}
 	~LaneCreep() = default;
 	void CheckBase(Base &b);
-	short AutoAttack();
+	int AutoAttack();
 };
 
 struct MegaCreep : public LaneCreep {

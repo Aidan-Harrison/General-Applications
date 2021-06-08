@@ -19,7 +19,7 @@ void CheckVision();
 bool jungVision = false;
 bool laneVision = false;
 
-short screenWidth = 800, screenHeight = 600;
+int screenWidth = 800, screenHeight = 600;
 
 sf::Image background;
 sf::Font font;
@@ -28,7 +28,7 @@ void Setup() { // Move to different file!
 	font.loadFromFile(""); // Do!
 }
 
-void Draw() {
+void Draw(Player &p, Map &m) {
 	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "DOTA");
 	// Scoreboard/Header
 	sf::RectangleShape headerBar;
@@ -45,6 +45,11 @@ void Draw() {
 	while (window.isOpen()) {
 
 		window.draw(headerBar);
+		p.currentHero->Draw(window);
+		for (unsigned int i = 0; i < m.direTeam.size(); i++)
+			m.direTeam[i].Draw(window);
+		for (unsigned int i = 0; i < m.radiantTeam.size(); i++)
+			m.radiantTeam[i].Draw(window);
 
 		window.display();
 		window.clear();
@@ -55,12 +60,12 @@ void Draw() {
 void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference | Add teams
 	jungVision = true;
 	bool hasSpawned = true;
-	short amountKilled = 0;
+	int amountKilled = 0;
 	if(!hasSpawned)
 		Game(p, m);
 	else {
 		p.fighting = true;
-		short jungleCamp = 0, spawnTime = 10;
+		int jungleCamp = 0, spawnTime = 10;
 		std::vector<JungleCreep> creeps{};
 		jungleCamp = rand() % 5; // Convert to rand singleton
 		jungleCamp++;
@@ -128,7 +133,7 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 			if (p.choice == 's') {
 				jungleCamp = rand() % creeps.size(); // Re-use integer
 				// Player attack
-				short temp = creeps[jungleCamp].m_Health;
+				int temp = creeps[jungleCamp].m_Health;
 				creeps[jungleCamp].m_Health -= p.currentHero->AutoAttack();
 				std::cout << "You dealt " << temp - creeps[jungleCamp].m_Health << " damage\n"; // Possibly move into auto attack function, account for miss chance and items
 				// Jungle creep attack | Move to function!
@@ -184,7 +189,7 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 // Will always run for 3 ticks
 void Laning(Player &p, Map &m) { // Add teams
 	laneVision = true;
-	short ticks = 0;
+	int ticks = 0;
 	bool laning = false;
 	std::array<LaneCreep, 8> creeps{};
 	system("cls");
@@ -215,7 +220,7 @@ void Laning(Player &p, Map &m) { // Add teams
 	Game(p, m);
 }
 
-short ChangeTick(Map &m) { // Check return!
+int ChangeTick(Map &m) { // Check return!
 	std::cout << "Current tick rate (Milliseconds): " << m.tickRate << '\n' 
 			  << "What would you like the tick rate to be (Avoid going below 200 miliiseconds): "; std::cin >> m.tickRate;
 	return m.tickRate;

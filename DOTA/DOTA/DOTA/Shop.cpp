@@ -41,10 +41,10 @@ std::vector<Item> itemList = { // Remove once map(hash table) is solved | Should
 
 // Do Neutrals in another vector?
 
-std::map<short,Item> items; // Push items to map, search via key | Avoid pushing in the first place, direct insert into map!!!!!!
+std::map<int,Item> items; // Push items to map, search via key | Avoid pushing in the first place, direct insert into map!!!!!!
 void ShopSetup() { // Run initially
 	for(unsigned int i = 0; i < itemList.size(); i++) {
-		items.insert (std::pair<short, Item>(i, itemList[i]) ); // Check!
+		items.insert (std::pair<int, Item>(i, itemList[i]) ); // Check!
 	}
 	// Item ID's
 	for(unsigned int i = 0; i < itemList.size(); i++) {
@@ -89,7 +89,7 @@ void Sell(Player &p) {
 		std::this_thread::sleep_for(std::chrono::seconds(3));
 		ShopInterface(p);
 	}
-	short choice = 0;
+	int choice = 0;
 	std::cout << "Sell from I) Inventory/Backpack  S) Stash\n";
 	std::cin >> choice;
 	std::cout << "Choose an item to sell!\n";

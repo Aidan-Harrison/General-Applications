@@ -12,25 +12,25 @@ private:
 public:
 	// Possibly group together again, change array accordingly
 	struct MeleeBarracks {
-		short health = 1000;
+		int health = 1000;
 		bool isDestroyed = false;
 		MeleeBarracks() = default;
 		~MeleeBarracks() = default;
 	};
 	struct RangedBarracks {
-		short health = 1000;
+		int health = 1000;
 		bool isDestroyed = false;
 		RangedBarracks() = default;
 		~RangedBarracks() = default;
 	};
 
 	struct Shrine { // Get actual name if incorrect!
-		short health = 500;
-		const short goldToGive = 100;
+		int health = 500;
+		const int goldToGive = 100;
 		Shrine() = default;
 		~Shrine() = default;
 	};
-	short ancientHealth = 5000; // Check this value to dictate if game is over or not
+	int ancientHealth = 5000; // Check this value to dictate if game is over or not
 	std::array<MeleeBarracks, 3>  MeleeBarracksList{};
 	std::array<RangedBarracks, 3> RangedBarracksList{};
 	//Shrine[3];

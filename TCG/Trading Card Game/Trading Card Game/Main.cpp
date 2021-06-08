@@ -13,7 +13,6 @@ int main() {
 	Deck testDeck{};
 
 	while (window.isOpen()) {
-
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {

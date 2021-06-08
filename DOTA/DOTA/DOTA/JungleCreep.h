@@ -7,11 +7,11 @@
 #include "Hero.h"
 
 struct JungleCreep {
-	short m_Health = 0, m_Damage = 15, magicRes = 10, armour = 10, m_ChanceToAttack = 0;
+	int m_Health = 0, m_Damage = 15, magicRes = 10, armour = 10, m_ChanceToAttack = 0;
 	bool isDead = false, canDrop = false;
 	Item* m_NeutralItem; // Initialise!
 	JungleCreep() = default;
-	JungleCreep(short health, short damage)
+	JungleCreep(int health, int damage)
 		:m_Health(health), m_Damage(damage)
 	{
 		assert(health != 0 && damage != 0);
@@ -23,9 +23,9 @@ struct JungleCreep {
 };
 
 struct Roshan : public JungleCreep {
-	short chanceToAttack = 0, chanceToStun = 0;
+	int chanceToAttack = 0, chanceToStun = 0;
 	Roshan() = default;
-	Roshan(short health) // Scale
+	Roshan(int health) // Scale
 		:JungleCreep(health, 250)
 	{
 	}

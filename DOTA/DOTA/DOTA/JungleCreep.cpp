@@ -12,7 +12,7 @@ void JungleCreep::AutoAttack(Hero &h) { // Return by address?? Would have to mod
 }
 
 bool JungleCreep::KillCreep(std::vector<Item> &neutrals) {
-	short chanceToDrop = 0;
+	int chanceToDrop = 0;
 	std::cout << "Creep killed!\n";
 	isDead = true; // Pointless??
 	chanceToDrop = rand() % 10; // Convert to rand singleton, scale with game??

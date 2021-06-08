@@ -5,6 +5,7 @@
 
 struct Item {
 	std::string itemName = "";
+	void Use() {}
 };
 
 #endif

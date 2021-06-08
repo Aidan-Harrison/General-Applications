@@ -3,8 +3,8 @@
 #include <vector>
 #include <algorithm>
 
-// Rudamentary
-int BinarySearch(const std::vector<int> &arr, const int target) {
+// Iterative
+int BinarySearchIterative(const std::vector<int> &arr, const int target) {
     if(arr.size() == 0) // Edge case
         return -1;
     else {
@@ -21,13 +21,18 @@ int BinarySearch(const std::vector<int> &arr, const int target) {
 }
 
 // Recursive
-int BinarySearchRecursive(const std::vector<int> &arr, const int target) {
-    if(arr.size() == 0) 
-        return -1;
-    else {
-        return 0;
-    }
-    return 0;
+int BinarySearchRecursive(std::vector<int> &arr, int left, int right, int target) {
+	if(arr.size() == 0)
+		return -1;
+	else {
+		if(left < right) { // While?
+			int mid = left + (right - left) / 2;
+			if(arr[mid] == target) return arr[mid];
+			else if(arr[mid] < target) return BinarySearchRecursive(arr, left = mid + 1, right, target);
+			else return BinarySearchRecursive(arr, left, right = mid - 1, target);
+		}
+	}
+	return -1;
 }
 
 int main() {

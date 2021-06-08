@@ -15,7 +15,7 @@
 
 void ShopSetup(); // In shop.cpp
 void Game(Player& p, Map& m);
-void Draw();
+void Draw(Player &p, Map &m);
 
 std::fstream fileHandler;
 
@@ -43,7 +43,7 @@ void SetupAbilities(Hero &h) { // One giant switch statement, may be a better so
 }
 
 void PlayerSetup(Player &p) { // Possibly convert to a single loop | Sort and print in alphabetical order!
-	short choice = 0, team = 0, index = 1;
+	int choice = 0, team = 0, index = 1;
 	std::cout << "List of heroes:\n" << "Total: " << heroes.size() << '\n';
 	std::cout << "Strength:\n";
 	for (unsigned int i = 0; i < heroes.size(); i++) {
@@ -140,13 +140,14 @@ void TeamSetup(Map &m, Player &p) {
 }
 
 int main() {
-	std::thread drawThread(Draw);
-
 	Map m;
 	Player p;
+
 	PlayerSetup(p);
 	TeamSetup(m, p);
 	ShopSetup();
+
+	std::thread drawThread(Draw, m, p);
 	// DOTA LOGO
 	std::fstream file;
 	std::string line = " ";

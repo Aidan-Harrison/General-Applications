@@ -16,7 +16,7 @@ void Ally::Move(std::array<Enemy, 5> &e, sf::RenderWindow &window, sf::Event &ev
 }
 
 void Ally::Attack(std::array<Enemy, 5> &enemies, sf::RenderWindow &window) { // Check size
-	short choice = 0;
+	int choice = 0;
 	std::cout << "Pick a target";
 	std::cin >> choice;
 	if (choice == 1) {
@@ -43,7 +43,7 @@ void Ally::Attack(std::array<Enemy, 5> &enemies, sf::RenderWindow &window) { // 
 	}
 }
 
-void Ally::TakeDamage(const short damage, sf::RenderWindow &window) {
+void Ally::TakeDamage(const int damage, sf::RenderWindow &window) {
 	sf::Text text;
 	text.setString(std::to_string(m_Damage));
 	m_Health -= damage;
@@ -63,7 +63,7 @@ void Ally::SetPosition(float x, float y) {
 }
 
 void Ally::Spell(std::array<Enemy, 5>& enemies) {
-	short choice = 0;
+	int choice = 0;
 	std::cout << "Pick a spell";
 	std::cin >> choice;
 	std::tolower(choice);
@@ -75,33 +75,32 @@ void Ally::Spell(std::array<Enemy, 5>& enemies) {
 }
 
 void Ally::UseItem() {
-	short choice = 0;
+	int choice = 0;
 	std::cout << "Pick an item";
 	std::cin >> choice;
 	switch(choice) {
-	default:
-		break;
+		case 1: inventory[0].Use(); itemStacks[0]--; break;
+		case 2: inventory[1].Use(); itemStacks[1]--; break;
+		case 3: inventory[2].Use(); itemStacks[2]--; break;
+		case 4: inventory[3].Use(); itemStacks[3]--; break;
+		case 5: inventory[4].Use(); itemStacks[4]--; break;
 	}
 	std::cout << "Pick an ally";
 	std::cin >> choice;
-	switch(choice) {
-	default:
-		break;
-	}
 }
 
 // Support spells
 void Heal::Use(std::array<Ally, 2> &allies, std::array<Enemy, 5> &enemies) {
-	short choice = 0;
+	int choice = 0;
 	std::cout << "Pick an ally to heal:\n";
 	switch (choice) {
-		case 1: allies[0].m_Health += amountToHeal;
-		case 2: allies[1].m_Health += amountToHeal;
+		case 1: allies[0].m_Health += amountToHeal; break;
+		case 2: allies[1].m_Health += amountToHeal; break;
 	}
 }
 
 void Cleanse::Use(std::array<Ally, 2>& allies, std::array<Enemy, 5>& enemies) {
-	short choice = 0;
+	int choice = 0;
 	std::cout << "Pick an ally to cleanse:\n";
 
 }
@@ -112,14 +111,14 @@ void Armor::Use(std::array<Ally, 2>& allies, std::array<Enemy, 5>& enemies) {
 
 // Damage spells
 void Fireball::Use(std::array<Ally, 2>& allies, std::array<Enemy, 5>& enemies) {
-	short choice = 0;
+	int choice = 0;
 	std::cout << "Pick an enemy to attack:\n";
 	switch(choice) {
-		case 1: enemies[0].m_Health -= damageToDeal;
-		case 2: enemies[1].m_Health -= damageToDeal;
-		case 3: enemies[2].m_Health -= damageToDeal;
-		case 4: enemies[3].m_Health -= damageToDeal;
-		case 5: enemies[4].m_Health -= damageToDeal;
+		case 1: enemies[0].m_Health -= damageToDeal; break;
+		case 2: enemies[1].m_Health -= damageToDeal; break;
+		case 3: enemies[2].m_Health -= damageToDeal; break;
+		case 4: enemies[3].m_Health -= damageToDeal; break;
+		case 5: enemies[4].m_Health -= damageToDeal; break;
 	}
 }
 

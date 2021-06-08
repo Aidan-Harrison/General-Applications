@@ -17,7 +17,6 @@ public:
     void DepthFirstSearch(int vertex);
 };
 
-
 void Graph::AddEdge(int start, int end) {
     adjVerts[start].push_front(end);
 }

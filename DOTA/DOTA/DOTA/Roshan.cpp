@@ -14,7 +14,7 @@ Random randomGen; // Move semantics
 
 void RoshanFight(std::vector<Hero>& team, Map& m, Player &p) { // Randomize amount of members in pit
 	std::vector<Hero> teamPit = {};
-	short teamAmount = 0;
+	int teamAmount = 0;
 	srand(time(0));
 	system("cls");
 	if(m.m_RoshUp) { // Do!
@@ -64,7 +64,7 @@ void RoshanFight(std::vector<Hero>& team, Map& m, Player &p) { // Randomize amou
 			}
 			// Player | Improve this to take into account everything
 			p.currentHero->ChangeHealth(rosh.m_Damage, 'p'); // Do stun!
-			short temp = rosh.m_Health;
+			int temp = rosh.m_Health;
 			rosh.m_Health -= p.currentHero->AutoAttack();
 			std::cout << "hit Roshan for: " << temp - rosh.m_Health << " damage"; // Do team part
 			// Check for team members and player health
