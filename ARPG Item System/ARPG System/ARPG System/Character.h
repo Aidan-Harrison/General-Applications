@@ -7,6 +7,8 @@
 #include "Item.h"
 #include "CraftingItem.h"
 
+#include <SFML/Graphics.hpp>
+
 class Character {
 private:
 	std::string m_Name = "";
@@ -17,7 +19,7 @@ public:
 	float attackSpeed = 1.0f;
 	float moveSpeed = 10.0f;
 	std::vector<Item> *itemStash{}; // Check!
-	std::vector<CraftingItem> materialsStash{};
+	std::vector<CraftingItem> materialsStash{}; // Change to pointer, solve function call
 	Character(const std::string &name, int startingItemAmount)
 		:m_Name(name) 
 	{
@@ -26,8 +28,18 @@ public:
 		nameGraphics.setFont(font);
 		nameGraphics.setString(m_Name);
 		nameGraphics.setOrigin(nameGraphics.getLocalBounds().width / 2, nameGraphics.getLocalBounds().height / 2);
-		nameGraphics.setPosition(400.0f, 25.0f);
+		nameGraphics.setPosition(400.0f, 15.0f);
+
 		itemStash = new std::vector<Item>[startingItemAmount];
+
+		// Probably don't need to heap allocate
+		AgonyOrb aO("Images/Moyai.png");
+		PerfectionOrb pO("Images/Moyai.png");
+		LamentGem lG("Images/Moyai.png");
+		// Use vector.insert instead??? | Below method seems far too ineffcient
+		materialsStash.push_back(aO);
+		materialsStash.push_back(pO);
+		materialsStash.push_back(lG);
 	}
 
 	Item* GetItem() const;
@@ -37,7 +49,7 @@ public:
 	void PrintStats(sf::RenderWindow &window) const;
 
 	void GetItemStash() const;
-	void GetCraftingStash() const;
+	void GetCraftingStash(sf::RenderWindow &window) const;
 
 	~Character() = default;
 };

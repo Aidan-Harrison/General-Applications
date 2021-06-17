@@ -4,6 +4,7 @@
 #include <thread>
 #include <string>
 
+#include "SuffixStats.h"
 #include "Character.h"
 #include "Generator.h"
 
@@ -16,47 +17,49 @@ sf::Event event;
 
 void Interface(Item& i);
 
-std::string GenerateName(char t) {
+std::array<std::string, 5> GenerateName(char t) {
 	int choice = 0;
-	std::string name = "";
+	std::array<std::string, 5> nameTest;
 	if (t == 's') {
 		choice = rand() % 5;
-		if (choice > 3) {
+		if (choice > 4) {
 			choice = rand() % SwordPrefixNames::prefixes.size();
-			name.append(SwordPrefixNames::prefixes[choice]);
-			name.append(" ");
+			nameTest[0] = SwordPrefixNames::prefixes[choice];
+			nameTest[1] = " ";
 		}
 		choice = rand() % SwordBaseNames::bases.size();
-		name.append(SwordBaseNames::bases[choice]);
+		nameTest[2] = SwordBaseNames::bases[choice];
+		nameTest[3] = " ";
 	}
 	else if (t == 'b') {
 		choice = rand() % 5;
-		if (choice > 3) {
+		if (choice > 4) {
 			choice = rand() % BootsPrefixNames::prefixes.size();
-			name.append(BootsPrefixNames::prefixes[choice]);
-			name.append(" ");
+			nameTest[0] = BootsPrefixNames::prefixes[choice];
+			nameTest[1] = " ";
 		}
 		choice = rand() % BootsBaseNames::bases.size();
-		name.append(BootsBaseNames::bases[choice]);
+		nameTest[2] = BootsBaseNames::bases[choice];
+		nameTest[3] = " ";
 	}
 	else if(t == 'r') {
 		choice = rand() % 5;
-		if (choice > 3) {
+		if (choice > 4) {
 			choice = rand() % RingPrefixNames::prefixes.size();
-			name.append(RingPrefixNames::prefixes[choice]);
-			name.append(" ");
+			nameTest[0] = RingPrefixNames::prefixes[choice];
+			nameTest[1] = " ";
 		}
 		choice = rand() % RingBaseNames::bases.size();
-		name.append(RingBaseNames::bases[choice]);
+		nameTest[2] = RingBaseNames::bases[choice];
+		nameTest[3] = " ";
 	}
 	// Suffix generation
-	name.append(" ");
 	choice = rand() % 5;
-	if (choice > 3) {
-		choice = rand() % SuffixNames::suffixes.size();
-		name.append(SuffixNames::suffixes[choice]);
+	if (choice > 4) {
+		choice = rand() % SuffixNames::nameSuffixes.size();
+		nameTest[4] = SuffixNames::nameSuffixes[choice];
 	}
-	return name;
+	return nameTest;
 }
 
 void RollItem() { // Optimise input/confirm section!!??
@@ -65,38 +68,42 @@ void RollItem() { // Optimise input/confirm section!!??
 	char input = 0;
 	choice = rand() % 3;
 	if (choice == 0) {
-		Sword s(GenerateName('s'));
-		// s.PrintItem(window);
-		Interface(s);
+		std::array<std::string, 5> itemName = GenerateName('s');
+		Sword *s = new Sword(itemName);
+		s->GenerateStats(Suffixes::suffixes);
+		Interface(*s); // Check!
 		std::cout << "Stash?: Y/N\n";
 		std::cin >> input;
-		std::tolower(input);
-		switch (input) {
-			case 'y': c.itemStash->push_back(s); break;
-			case 'n': RollItem();
+		char i = std::tolower(input);
+		switch (i) {
+			case 'y': c.itemStash->push_back(*s); break;
+			case 'n': delete s; RollItem(); break;
 		}
 	}
 	else if (choice == 1) {
-		Boots b(GenerateName('s'));
-		Interface(b);
+		std::array<std::string, 5> itemName = GenerateName('b');
+		Boots *b = new Boots(itemName);
+		b->GenerateStats(Suffixes::suffixes);
+		Interface(*b);
 		std::cout << "Stash?: Y/N\n";
 		std::cin >> input;
-		std::tolower(input);
-		switch (input) {
-			case 'y': c.itemStash->push_back(b); break;
-			case 'n': RollItem();
+		char i = std::tolower(input);
+		switch (i) {
+			case 'y': c.itemStash->push_back(*b); break;
+			case 'n': delete b; RollItem(); break;
 		}
 	}
 	else if (choice == 2) {
-		Ring r(GenerateName('r'));
-		// r.PrintItem(window);
-		Interface(r);
+		std::array<std::string, 5> itemName = GenerateName('r');
+		Ring *r = new Ring(itemName);
+		r->GenerateStats(Suffixes::suffixes);
+		Interface(*r);
 		std::cout << "Stash?: Y/N\n";
 		std::cin >> input;
-		std::tolower(input);
-		switch (input) {
-			case 'y': c.itemStash->push_back(r); break;
-			case 'n': RollItem();
+		char i = std::tolower(input);
+		switch (i) {
+			case 'y': c.itemStash->push_back(*r); break;
+			case 'n': delete r; RollItem(); break;
 		}
 	}
 }
@@ -109,7 +116,7 @@ void Craft() {
 	// Pick item
 	std::cin >> choice;
 	c.itemStash[choice];
-	c.GetCraftingStash();
+	c.GetCraftingStash(window);
 	// Pick crafting materials
 	std::cin >> choice;
 	c.materialsStash[choice];
@@ -124,16 +131,25 @@ void Interface(Item &i) { // Add SFML here
 				RollItem();
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
 				Craft();
+			// Get mouse picking
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+				// Check if hitting crafting item
+				if (sf::Mouse::getPosition().x == c.materialsStash[0].GetPosX() && sf::Mouse::getPosition().y == c.materialsStash[0].GetPosY()) // +/-
+					std::cout << "HIT\n";
+				else if (sf::Mouse::getPosition().x == c.materialsStash[1].GetPosX() && sf::Mouse::getPosition().y == c.materialsStash[1].GetPosY())
+					std::cout << "HIT2\n";
+			}
 		}
 		c.PrintStats(window);
-		i.PrintItem(window);
+		i.Draw(window);
 		window.display();
 	}
 }
 
 int main() {
 	srand(time(0));
-	Item defaultItem("Default Item");
+	std::array<std::string, 5> defaultName{"", "", "Default Item", "", ""};
+	Item defaultItem(defaultName);
 	Interface(defaultItem);
 
 	return 0;

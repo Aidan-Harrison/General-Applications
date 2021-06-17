@@ -11,10 +11,10 @@ void Character::GetItemStash() const {
 	}
 }
 
-void Character::GetCraftingStash() const {
+void Character::GetCraftingStash(sf::RenderWindow& window) const {
+	float offset = 25.0f;
 	for(unsigned int i = 0; i < materialsStash.size(); i++)  {
-		if(i % 10 == 0)
-			putchar('\n');
-		std::cout << materialsStash[i].itemName << " ";
+		materialsStash[i].Draw(window, offset);
+		offset += 25.0f;
 	}	
 }

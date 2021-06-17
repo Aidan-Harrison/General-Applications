@@ -41,5 +41,8 @@
     <ClInclude Include="Generator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SuffixStats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

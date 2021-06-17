@@ -5,19 +5,17 @@ struct node {
     node *next;
     node() :data(0), next(nullptr) {}
     node(int val) :data(val), next(nullptr) {}
-    node(int val, node *n) : data(val), next(n) {}
 };
 
-node* Add(node *prevNode, int val, node *nextNode) {
-    node *newNode;
-    newNode = new node(val);
-    prevNode->next = newNode;
-    newNode->next = nextNode;
+node* Add(node *curNode, int val) {
+    node *newNode = new node(val);
+    newNode->next = curNode->next;
+    curNode->next = newNode;
     return newNode;
 }
 
-void Delete(node *prevNode, node *delNode) { // Due to being singly linked, must provide prev and current node
-    prevNode->next = delNode->next;
+void Delete(node *n) { // Due to being singly linked, must provide prev and current node
+    n->next = n->next->next;
     // Possibly add 'delete'
 }
 
@@ -35,22 +33,19 @@ struct dNode {
     dNode *next;
     dNode() :data(0), prev(nullptr), next(nullptr) {}
     dNode(int d) :data(d), prev(nullptr), next(nullptr) {}
-    dNode(int d, dNode *pN) :data(d), prev(pN), next(nullptr) {}
-    dNode(int d, dNode *nN) :data(d), prev(nullptr), next(nN) {}
-    dNode(int d, dNode *pN, dNode *nN) :data(d), prev(pN), next(nN) {}
 };
 
-dNode* Add(dNode *prevNode, int val, dNode *nextNode) {
-    dNode *newNode;
-    newNode = new dNode(val);
-    prevNode->next = newNode;
-    nextNode->prev = newNode;
+dNode* Add(dNode *curNode, int val) {
+    dNode *newNode = new dNode(val);
+    newNode->prev = curNode;
+    newNode->next = curNode->next;
+    curNode->next = newNode;
     return newNode;
 }
 
-void Delete(dNode *node) {
-    node->prev->next = node->next;
-    node->next->prev = node->prev;    
+void Delete(dNode *n) {
+    n->prev->next = n->next;
+    n->next->prev = n->prev;    
 }
 
 int main() {
@@ -73,10 +68,10 @@ int main() {
     tail->next = nullptr;
 
     PrintList(head);
-    node *insertNode = Add(one, 7, two); // Adds a new node between one and two with the value 7
+    node *insertNode = Add(one, 7); // Adds a new node between one and two with the value 7
     putchar('\n');
     PrintList(head);
-    Delete(one, two); // Sets one's next pointer to the next value of two, thus removing two from list 
+    Delete(one); // Sets one's next pointer to the next value of two, thus removing two from list 
     putchar('\n');
     PrintList(head);
 

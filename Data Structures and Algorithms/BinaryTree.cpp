@@ -11,16 +11,20 @@ struct node {
 
 class bTree {
 private:
+    void Insert(int data, node *n);
+    node* Search(int data, node *n);
 public:
     node *root;
 
-    void Insert(int data, node*n);    
-    node* Search(int data, node *n);
+    bTree() {};
+
+    void Insert(int data);    
+    node* Search(int data);
+    void DeleteTree(node *n);
 
     void Print(node *n, node *other) const;
 
-    bTree();
-    ~bTree();
+    ~bTree() {};
 };
 
 void bTree::Insert(int data, node *n) {
@@ -48,6 +52,25 @@ node* bTree::Search(int data, node *n) {
             return Search(data, n->rChild);
     }
     return NULL;
+}
+
+void bTree::Insert(int data) {
+    if(root != nullptr)
+        Insert(data, root);
+    else
+        node *root = new node(data);
+}
+
+node* bTree::Search(int data) { // nullptr check?
+    return Search(data, root);
+}
+ 
+void bTree::DeleteTree(node *n) {
+    if(n != nullptr) {
+        n->lChild = nullptr;
+        n->rChild = nullptr;
+        delete n;
+    }
 }
 
 void bTree::Print(node *n, node *other) const { // Handle both children!!!!!

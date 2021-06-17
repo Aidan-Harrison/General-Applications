@@ -71,7 +71,7 @@ bool IsFull(CQueue *q, int rear) {
         return false;
 }
 
-void CEnqueue(Queue *q, int front, int rear, int data) {
+void CEnqueue(CQueue *q, int front, int rear, int data) {
     if(IsFull(q, rear)) {
         return; // Check!
     }
