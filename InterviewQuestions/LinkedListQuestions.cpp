@@ -4,11 +4,11 @@
 
 // Print function
 void PrintList(std::list<int> &list) {
-    putchar('\n');
     for(auto i : list)
         std::cout << i << ", ";
 }
 
+// Problems:
 // Prints the middle most element of a list
 void PrintMiddle(std::list<int> &list) {
     auto front = list.begin(); // Create iterator | Can write (std::list<int>::iterator)
@@ -24,7 +24,7 @@ void DeleteMiddle(std::list<int> &list) {
         std::cout << *it << ", ";
 }
 
-// Picks a node in the linked list and increments it by 1
+// Picks a node in the list and increments its value by 1
 void IncrementNode(int data, std::list<int> &list) {
     for(std::list<int>::iterator it; it != list.end(); it++) {
         if(*it == data)
@@ -34,8 +34,9 @@ void IncrementNode(int data, std::list<int> &list) {
 
 int main() {
     std::list<int> testList({5,9,14,24,46,98,124});
+
     PrintMiddle(testList);
-    // DeleteMiddle(testList);
+    DeleteMiddle(testList);
     PrintList(testList);
     IncrementNode(46, testList);
     PrintList(testList);

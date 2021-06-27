@@ -23,52 +23,52 @@ void Scrapper(Characters &character);
 // Continue this!
 void StatCalculation(Characters &character) { // Too slow | Use Map
     for(unsigned int i = 0; i < character.playerInventory.size(); i++) {
-        if(character.playerInventory[i].m_ItemName == "Soldiers Syringe")
+        if(character.playerInventory[i]->m_ItemName == "Soldiers Syringe")
             character.m_AttackSpeed += 10;
-        else if(character.playerInventory[i].m_ItemName == "Tougher Times")
+        else if(character.playerInventory[i]->m_ItemName == "Tougher Times")
             character.m_HitChance -= 10;
-        else if(character.playerInventory[i].m_ItemName == "Lens Maker Glasses")
+        else if(character.playerInventory[i]->m_ItemName == "Lens Maker Glasses")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "Topaz Brooch")
+        else if(character.playerInventory[i]->m_ItemName == "Topaz Brooch")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "Crowbar")
+        else if(character.playerInventory[i]->m_ItemName == "Crowbar")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "Bustling Fungus")
+        else if(character.playerInventory[i]->m_ItemName == "Bustling Fungus")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "ATG Missle MK.2")
+        else if(character.playerInventory[i]->m_ItemName == "ATG Missle MK.2")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "Ukele")
+        else if(character.playerInventory[i]->m_ItemName == "Ukele")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "Predators Instinct")
+        else if(character.playerInventory[i]->m_ItemName == "Predators Instinct")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "Red Whip")
+        else if(character.playerInventory[i]->m_ItemName == "Red Whip")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "Infusion")
+        else if(character.playerInventory[i]->m_ItemName == "Infusion")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "Will-O-Wisp")
+        else if(character.playerInventory[i]->m_ItemName == "Will-O-Wisp")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "Brilliant Behemoth")
+        else if(character.playerInventory[i]->m_ItemName == "Brilliant Behemoth")
             character.m_Damage += 50;
-        else if(character.playerInventory[i].m_ItemName == "Soulbound Catalyst")
+        else if(character.playerInventory[i]->m_ItemName == "Soulbound Catalyst")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "Aegis")
+        else if(character.playerInventory[i]->m_ItemName == "Aegis")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "57 Leaf Clover") {
+        else if(character.playerInventory[i]->m_ItemName == "57 Leaf Clover") {
             character.m_Luck = 2;
             character.m_CritChance *= character.m_Luck;
             character.m_HitChance /= character.m_Luck;
         }
-        else if(character.playerInventory[i].m_ItemName == "Rejuvanation Rack")
+        else if(character.playerInventory[i]->m_ItemName == "Rejuvanation Rack")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "Resonance Disc")
+        else if(character.playerInventory[i]->m_ItemName == "Resonance Disc")
             character.m_CritChance += 10;
-        else if(character.playerInventory[i].m_ItemName == "Shaped Glass") {
+        else if(character.playerInventory[i]->m_ItemName == "Shaped Glass") {
             character.m_Damage *= 2;
             character.m_Health /= 2;
         }
-        else if(character.playerInventory[i].m_ItemName == "Beads of Fealty")
+        else if(character.playerInventory[i]->m_ItemName == "Beads of Fealty")
             character.toSecret = true;
-        else if(character.playerInventory[i].m_ItemName == "Transcendence") {
+        else if(character.playerInventory[i]->m_ItemName == "Transcendence") {
             character.m_Shield = character.m_Health;
             character.m_Health = 0;
         }

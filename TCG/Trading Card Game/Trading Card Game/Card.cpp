@@ -17,7 +17,7 @@ void Card::Draw(sf::RenderWindow &window) {
 	window.draw(m_Art);
 }
 
-void Card::SetPos(sf::Vector2i pos) {
+void Card::SetPos(sf::Vector2i pos) { // Convert to floats
 	body.setPosition(pos.x, pos.y);
 	damageBack.setPosition(pos.x - 125, pos.y + 175);
 	healthBack.setPosition(pos.x + 125, pos.y + 175);
@@ -30,4 +30,7 @@ void Card::SetPos(sf::Vector2i pos) {
 	manaValue.setPosition(pos.x - 125, pos.y - 175);
 	healthValue.setPosition(pos.x + 125, pos.y + 175);
 	damageValue.setPosition(pos.x - 125, pos.y + 175);
+
+	// Art
+	m_Art.setPosition(pos.x, pos.y - 125);
 }

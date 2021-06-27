@@ -24,11 +24,15 @@ public:
 		inventoryBackground.setOrigin(invSizeX / 2, invSizeY / 2);
 		inventoryBackground.setPosition(100.0f, 200.0f); // Get screen size
 		header.setString("INVENTORY");
+
+
 	}
 	~AllyTeam() = default;
 	void GetTeam() const;
 
 	void DisplayInventory(sf::RenderWindow &window) const;
+
+	void DrawTeam(sf::RenderWindow &window);
 };
 
 class EnemyTeam {
@@ -44,6 +48,7 @@ public:
 	~EnemyTeam() = default;
 
 	void GetTeam() const;
+	void DrawTeam(sf::RenderWindow& window);
 };
 
 #endif

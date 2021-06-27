@@ -8,6 +8,8 @@
 #include "Plant.h"
 #include "map.h"
 
+// Convert to SFML
+
 bool isSimulating = false;
 short animalSize = 0;
 

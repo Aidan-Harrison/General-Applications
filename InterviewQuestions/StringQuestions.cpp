@@ -11,13 +11,14 @@ std::string GetDuplicates(const std::string &&str) {
         return str;
     else {
         // std::sort(str.begin(), str.end()); // Check need!
-        std::vector<char> duplicates{};
+        std::string dupStr= ""; // Use
         std::map<int, char> m;
         for(char i : str)
             m[i]++; // Add to map
         for(char i = 'a'; i <= 'z'; i++)
             if(m.count(i) > 0)
-                duplicates.push_back(i);
+                dupStr.append(std::to_string(i));
+        return dupStr;
     }
     return str;
 }
@@ -54,15 +55,31 @@ std::string ReverseStringInPlace(std::string &&str) {
     return Swap(str, 0, str.length()-1);
 }
 
-// Checks if a string contains only digits | Sort? Could be faster is numbers are sorted first
+// Checks if a string contains only digits
 bool OnlyDigits(std::string &&str) {
     if(str.length() == 0)
         return false;
     else {
-        std::sort(str.begin(), str.end()); // We want to sort as digits come before letters, given a large string, we can cut back on the amount of iterating
+        std::sort(str.end(), str.begin());
         for(int i = 0; i < str.length(); i++)
             if(!isdigit(str[i]))
                 return false;
+    }
+    return true;
+}
+
+// Just like before, except no direct sorting and using a map for fast searching | Can be reversed to check if only chars
+bool OnlyDigitsMap(const std::string &&str) {
+    if(str.length() == 0)
+        return false;
+    else {
+        std::map<int, char> m;
+        for(auto i : str)
+            m[i]++;
+        for(char i = 'a'; i < 'z'; i++) { // We can loop through all 26 characters and quickly check instead, as long as one is found, return false
+            if(m.count(i) > 0)
+                return false;
+        }
     }
     return true;
 }
@@ -124,7 +141,7 @@ int CountVowels(const std::string &str) {
     return -1;
 }
 
-// Prints the character which occurs the most and how many times | If two character occur the same amount of time, prints first
+// Prints the character which occurs the most and how many times | If two character occur the same amount of times, prints first
 void MaxOccuringCharacter(const std::string &str) {
     if(str.length() == 0)
         std::cerr << "String is empty!\n";
@@ -154,8 +171,24 @@ char FindFirstNonDuplicate(std::string &&str) { // Fix!
         for(char i : str)
             m[i]++;
         for(char i = 'a'; i <= 'z'; i++)
-            if(m.count(i) == 1) // Check!
+            if(m.count(i) == 1)
                 return i;
+    }
+    return ' ';
+}
+
+// This method is slower but takes up less memory
+char FindFirstNonDuplicateIter(std::string &str) {
+    if(str.length() == 0)
+        return ' ';
+    else {
+        std::sort(str.begin(), str.end());
+        for(int i = 0; i < str.length(); i++) {
+            for(int j = 0; j < str.length(); j++) {
+                if(str[j] != str[j++])
+                    return str[j];
+            }
+        }
     }
     return ' ';
 }
@@ -166,8 +199,7 @@ bool Palindrome(std::string &&str) {
     std::string revStr = ReverseStringInPlace(std::forward<std::string>(str));
     if(revStr == str)
         return true;
-    else
-        return false;
+    return false;
 }
 
 // Using std::equal we can condense this to a single line
@@ -203,6 +235,22 @@ bool AnagramMap(std::string &&str1, std::string &&str2) {
             m2[i]++;
         return std::equal(m1.begin(), m1.end(), m2.end());
     }
+}
+
+// Given two strings, check if one string is a subsequence of another, in relative order
+bool ValidSubSequence(const std::string &str1, const std::string &str2) {
+    if(str1 == "")
+        return true;
+    else {
+        int check = 0;
+        for(auto i : str2) {
+            if(str1[check] == i)
+                check++;
+            if(check == str1.length())
+                return true;
+        }
+    }
+    return false;
 }
 
 int main() {

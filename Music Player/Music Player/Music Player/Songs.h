@@ -10,7 +10,7 @@ namespace Songs {
 }
 
 namespace Covers {
-	std::vector<std::string> covers{"Tekken3Logo.jpg", "", "", ""};
+	std::vector<std::string> covers{"Tekken3Logo.jpg", "StreetFighter3Cover.png", "MarvelVsCapcom2.jpg", "RidgeRacerType4.jpg"};
 }
 
 #endif

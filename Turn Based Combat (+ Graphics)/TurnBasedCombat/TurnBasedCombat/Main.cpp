@@ -6,6 +6,8 @@
 
 #include "Team.h"
 
+// We should use a queue to check who should attack next | Do!
+
 // Turn system
 short turn = 0;
 bool allyTurn = false;
@@ -39,12 +41,18 @@ void Draw(AllyTeam &aT, EnemyTeam &eT) {
 	// UI/HUD
 	// turnCount.setFont(font);
 	while (window.isOpen()) {
+		while (window.pollEvent(event)) {
+			// Keyboard Input
+
+			// Mouse Input
+			
+		}
 
 		window.draw(background);
 
 		// Allies and Enemies
-		for (unsigned int i = 0; i < aT.aTeam.size(); i++) { aT.aTeam[i].Draw(window); }
-		for (unsigned int i = 0; i < eT.eTeam.size(); i++) { eT.eTeam[i].Draw(window); }
+		aT.DrawTeam(window);
+		eT.DrawTeam(window);
 
 		aT.DisplayInventory(window);
 		window.display();
