@@ -23,6 +23,13 @@ bool IsEmpty() {
     return false;
 }
 
+// Binary Tree Traversals
+// - Depth First Search
+
+// - Breadth First Search
+
+
+
 // Branch Sum
 // Continue!
 int CalculateBranch(bNode *n, int sum) {
@@ -89,7 +96,7 @@ struct gNode {
 std::vector<bool> markedVertices{};
 
 void DFSRecursive(gNode n, int vertex) { // Check!
-    // Add base case
+    // Add base case? Already done
     n.isVisited = true;
     markedVertices[vertex] = true;
     for(int i = 0; i < n.children.size(); i++) {

@@ -23,8 +23,6 @@ namespace StaffList {
 	std::vector<Staff> mathsTeachers {
 		*Tariq
 	};
-
-	std::vector<std::vector<Staff>> allStaff{englishTeachers, scienceTeachers, mathsTeachers};
 }
 
 

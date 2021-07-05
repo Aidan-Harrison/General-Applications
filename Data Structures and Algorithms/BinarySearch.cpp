@@ -4,16 +4,16 @@
 #include <algorithm>
 
 // Iterative
-int BinarySearchIterative(const std::vector<int> &arr, const int target) {
+int BinarySearchIterative(std::vector<int> &arr, const int target) {
     if(arr.size() == 0) // Edge case
         return -1;
     else {
         std::sort(arr.begin(), arr.end());
         int left = 0, right = arr.size()-1;
-        int mid = left + (right - left) / 2;
         while(left <= right) {
+            int mid = left + (right - left) / 2;
             if(arr[mid] == target) { return mid; }
-            else if(arr[mid] > target) { left = mid + 1; }
+            else if(arr[mid] < target) { left = mid + 1; }
             else { right = mid - 1; }
         }
     }

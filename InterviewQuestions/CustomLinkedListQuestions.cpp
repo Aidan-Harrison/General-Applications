@@ -1,24 +1,50 @@
 #include <iostream>
 #include <vector>
 
+struct node {
+    int data;
+    node *next;
+    node() :data(0), next(nullptr) {}
+    node(int d) :data(d), next(nullptr) {}
+};
+
 struct sList {
-    struct node {
-        int data;
-        node *next;
-        node() :data(0), next(nullptr) {}
-        node(int d) :data(d), next(nullptr) {}
-    };
     sList() {}
     ~sList() {}
 
-    void AddNode(int data);
+    node *head;
+
+    // Useful functions
+    int GetSize();
+    void AddNode(node *n); // Take into accout head node
 
     void PrintMiddle(node *head, int size);
     void DeleteMiddle(node *head, int size);
     void Increment(node *n);
     node* NthFromEnd(node* head, int n, int total); // Node instead?
     void ReverseList(node *head);
+    void SortList(); // DO!
 };
+
+void sList::AddNode(node *n) { // Come back to this! Not correct so far
+    node *temp = new node;
+    temp = head;
+    while(temp != nullptr) {
+        temp = temp->next;
+    }
+}
+
+int sList::GetSize() {
+    int size = 0;
+    node *temp = new node;
+    temp = head;
+    while(temp != nullptr) {
+        size += temp->data;
+        temp = temp->next;
+    }
+    delete temp;
+    return size;
+}
 
 void sList::PrintMiddle(node *head, int size) { // Rounded up
     node *tempNode = new node;
@@ -45,7 +71,7 @@ void sList::Increment(node *n) {
 }
 
 // Returns the nth element from the end of the list
-sList::node* sList::NthFromEnd(node *head, int n, int total) {
+node* sList::NthFromEnd(node *head, int n, int total) {
     for(int i = 0; i > total-n; i++) {
 
     }
@@ -130,13 +156,51 @@ void dList::ReverseList(node *head) {
     head = prev; // We need to set the head to the end now that the list is reversed
 }
 
+// Assuming two lists are of the same size, get the sum of their data
+int SumofLists(sList &n, sList &n2) {
+    int sum = 0;
+    while(n.head != nullptr) {
+        sum += n.head->data + n2.head->data;
+        n.head = n.head->next;
+        n2.head = n2.head->next;
+    }
+    return sum;
+}
+
+// Lists do NOT have to be the same size
+int SumofListsIndependent(sList &n1, sList &n2) {
+    int sum = 0;
+    if(n1.GetSize() > n2.GetSize()) {
+        for(int i = 0; i < n2.GetSize(); i++) {
+            sum += n1.head->data + n2.head->data;
+            n1.head = n1.head->next;
+        }
+        while(n1.head != nullptr) { // Get remaining
+            sum += n1.head->data;
+            n1.head->data;
+        }
+    }
+    else {
+        for(int i = 0; i < n1.GetSize(); i++) {
+            sum += n2.head->data + n1.head->data;
+            n2.head = n2.head->next;
+        }
+        while(n2.head != nullptr) {
+            sum += n2.head->data;
+            n2.head->data;
+        }
+    }
+    return sum;
+}   
+
 int main() {
     sList l;
-    sList::node *head = new sList::node(5);
-    sList::node *n1 = new sList::node(16);
-    sList::node *n2 = new sList::node(7);
-    sList::node *n3 = new sList::node(34);
-    sList::node *tail = new sList::node(9);
+    sList l2;
+    node *head = new node(5);
+    node *n1 = new node(16);
+    node *n2 = new node(7);
+    node *n3 = new node(34);
+    node *tail = new node(9);
 
     head->next = n1;
     n1->next = n2;
@@ -144,6 +208,9 @@ int main() {
     n3->next = tail;
 
     l.PrintMiddle(head, 5);
+
+
+    SumofListsIndependent(l, l2);
 
     return 0;
 }

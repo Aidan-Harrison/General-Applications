@@ -64,7 +64,7 @@ void AddStudent() { // Insert student efficiently into all student vector, sorti
 
 Student* SearchStudent() { // Check!
 	std::string input = "";
-	std::cout << "Search for a specific student by name: "; std::cin >> input;
+	std::cout << "Search for a student by name: "; std::cin >> input;
 	Students::SortStudents();
 	for (unsigned int i = 0; i < Students::allStudents.size(); i++) {
 		for (unsigned int j = 0; j < Students::allStudents.size(); j++) {
@@ -72,23 +72,21 @@ Student* SearchStudent() { // Check!
 		}
 		putchar('\n');
 	}
+	// Print all students with matching names
+
 	// Temp linear search | Implement map/faster search algortithm | Look into pushing objects to map
-	std::map<short, Student> sMap; // Use!
+	std::map<int, Student> sMap; // Figure out how to push elements to map, using method??
+
 	for (int i = 0; i < Students::allStudents.size(); i++) {
 		if (input == Students::allStudents[0][i].GetName())
 			return &Students::allStudents[0][i]; // Check return!!!!
 	}
-
-	// std::binary_search(Students::allStudents.begin(), Students::allStudents.end(), ); // Pass in correct variable
 }
 
 void RemoveStudent() {
 	std::string input = ""; // Just have universal? So no need to assign more memory then needed
 	std::cout << "Search for student via name: "; std::cin >> input;
 	Students::SortStudents(); // Inefficient to sort again?
-	// Sort via name
-	// Do binary search?
-	// Check with teacher and show ciriculum
 }
 
 void EditStudent() {
@@ -129,13 +127,13 @@ void ViewStaffInterface() {
 	std::cout << "Principal: " << StaffList::principal.GetName() << '\n';
 	std::cout << "English Teachers:\n";
 	for (int i = 0; i < StaffList::englishTeachers.size(); i++)
-		std::cout << "  " << StaffList::englishTeachers[i].GetName() << '\n';
+		std::cout << i << ") " << StaffList::englishTeachers[i].GetName() << '\n';
 	std::cout << "Science Teachers:\n";
 	for (int i = 0; i < StaffList::scienceTeachers.size(); i++)
-		std::cout << "  " << StaffList::scienceTeachers[i].GetName() << '\n';
+		std::cout << i << ") " << StaffList::scienceTeachers[i].GetName() << '\n';
 	std::cout << "Maths Teachers:\n";
 	for (int i = 0; i < StaffList::mathsTeachers.size(); i++)
-		std::cout << "  " << StaffList::mathsTeachers[i].GetName() << '\n';
+		std::cout << i << ") " << StaffList::mathsTeachers[i].GetName() << '\n';
 	std::cout << "Press enter to return: "; 
 	std::cin.get();
 	std::cin.get();
@@ -154,6 +152,13 @@ void AddStaff() {
 
 void RemoveStaff() {
 	std::cout << "Search for staff via name: ";
+	std::string input = "";
+	// Have a single container instead???
+	for (int i = 0; i < StaffList::englishTeachers.size(); i++) {
+		if (input == StaffList::englishTeachers[i].GetName())
+			StaffList::englishTeachers[i].~Staff(); // Check!
+	}
+
 	// Much like the student search, implement a fast searching algorithmn.
 	// Check if the staff is on a ciriculum
 	// If so, check with the user.

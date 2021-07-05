@@ -13,9 +13,12 @@ public:
 		:forename(fName), surname(sName), m_Job(job)
 	{
 	}
-	~Staff() = default;
+	~Staff() {};
+
 	virtual std::string GetJob() const { return m_Job; }
 	std::string GetName() const { return forename + ' ' + surname; }
+
+	// Add friend functions??
 };
 
 class Principal : public Staff { // Singeleton! DO

@@ -52,39 +52,71 @@ int FPeek(Queue *q) {
 
 void PrintQueue(Queue &q) {
     for(int i = 0; i < q.rear; i++)
-        std::cout << q.items[i] << ', ';
+        std::cout << q.items[i] << ",";
 }
 
 // ================ Circular Queue ================
-struct CQueue {
+struct RingBuffer { // Check everything!
+    int SIZE = 0;
     int items[10];
     int front = -1;
     int rear = -1;
-};
 
-bool IsFull(CQueue *q, int rear) {
-    if((rear + 1) % 10 == q->front) {
-        std::cout << "Queue is full!\n";
-        return true;
+    bool IsFull() {
+        if(rear == SIZE-1 && front == 0 || rear == front-1) // Check!
+            return true;
+        return false; 
     }
-    else
+
+    bool IsEmpty() {
+        if(front == -1)
+            return true;
         return false;
-}
+    }
 
-void CEnqueue(CQueue *q, int front, int rear, int data) {
-    if(IsFull(q, rear)) {
-        return; // Check!
+    void Enqueue(const int data) {
+        if(IsFull())
+            std::cerr << "Circular Queue is full!\n";
+        else {
+            if(front != 0) {
+                rear = 0;
+                items[rear] = data;   
+            }
+        }
     }
-    else {
-        q->rear = (q->rear + 1) % 10;
-        q->items[q->rear] = data;
-        if(q->front = -1)
-            q->front = 0;
+
+    int Dequeue() {
+        if(IsEmpty())
+            std::cerr << "Queue is empty!\n";
+        else {
+            if(front == rear) {
+                front = - 1;
+                rear = -1;
+            } 
+            else if(front == SIZE - 1) {
+                front = 0;
+                return items[front]; // Check!
+            }
+        }
+        return -1;
     }
-}
+
+    void Print() {
+        for(int i = 0; i < rear; i++)
+            std::cout << items[i];       
+    }
+};
 
 int main() {
     Queue q;
-    
+    RingBuffer r;
+
+    r.Enqueue(5);
+    r.Enqueue(7);
+    r.Enqueue(4);
+    r.Enqueue(1);
+
+    r.Print();
+
     return 0;
 }

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <utility>
 #include <map>
+#include <unordered_map>
 
 // Returns all duplicate characters in string format | Change!/Fix! Return
 std::string GetDuplicates(const std::string &&str) {
@@ -21,6 +22,85 @@ std::string GetDuplicates(const std::string &&str) {
         return dupStr;
     }
     return str;
+}
+
+std::string DeleteDuplicates(std::string &str) {
+   if(str.length() == 0)
+    return str;
+    else {
+        std::map<int, char> m;
+        for(auto i : str)
+            m[i]++;
+        for(char i = 'a'; i < 'z'; i++)
+            if(m.count(i) > 0)
+                str.erase(i); // Check!
+    }
+    return str;
+}
+
+// Rotate a string x amount of times either left or right
+std::string RotateString(std::string &str, char dir, int amount) {
+    if(dir == 'l') {
+        for(int i = 0; i < amount; i++) {
+            char starter = str[0];
+            for(int j = 0; j < str.length(); j++) {
+                str[j] = str[j+1];
+            }
+            str[str.length()-1] = starter;
+            std::cout << str;
+        }
+    }
+    else if(dir == 'r') { // Check!
+        for(int i = 0; i < amount; i++) {
+            char starter = str[0];
+            for(int j = 0; j < str.length(); j++) {
+                str[j] = str[j-1];
+            }
+            str[str.length()-1]; 
+        }    
+    }
+    return str;
+}
+
+// Check if a string is a rotation of another string
+bool StringRotation(std::string &&str1, const std::string &&str2) { // Check!
+    if(str1.length() == 0 || str2.length() == 0 || str1.length() != str2.length())
+        return false;
+    else {
+        int passedChars = 0;
+        int amount = 1;
+        char direction = 'l';
+        while(amount < str1.length()) {
+            std::string curRotation = RotateString(str1, direction, amount);
+            amount++;
+            if(amount == str1.length()-1) { // Might cause issues | Skips a character
+                direction = 'r';
+                amount = 0;
+            }
+            for(int i = 0; i < curRotation.length(); i++) {
+                if(curRotation[i] == str2[i])
+                    passedChars++; // Should reset at some point!
+            }
+            if(passedChars == curRotation.length())
+                return true;
+        }
+    }
+}
+
+// Remove any character from str1 which is found in str2 (Case sensitive) | Have remove all instance of a letter!
+std::string RemoveFirstFromSecond(std::string &&str1, const std::string &&str2) {
+   if(str1.length() == 0 || str2.length() == 0)
+        return str1;
+    else {
+        std::unordered_map<int,char> m;
+        for(auto i : str2)
+            m[i]++;
+        for(int i = 0; i < str1.length(); i++) {
+            if(m.count(str1[i]) > 0)
+                str1.erase(str1.find(str1[i])); // Change, only deletes single instance. Make erase function work with all characters
+        }
+    }
+    return str1; 
 }
 
 // Check if the specified char exists in the string
@@ -98,27 +178,53 @@ void Permutations(std::string &&str, int start, int end) {
     }
 }
 
-// Prints all vowels and consonants seperately | Come back to this
-void VowelsConsonants(const std::string &str) {
+// Prints the vowels and consonants which exist seperately
+void VowelsConsonants(const std::string &&str) {
     if(str.length() == 0)
         std::cerr << "String is empty!\n";
     else {
-        std::map<int,char> m;
+        std::unordered_map<int,char> m;
         char vow[5] = {'a','e','i','o','u'};
         char con[21] = {'b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','w','v','x','y','z'};
         for(char i : str) {
             char c = std::tolower(i);
             m[c]++;
         }
-        for(std::map<int,char>::iterator it = m.begin(); it != m.end(); it++) {
-            for(char i : vow)
-                if(it->second == i)
-                    std::cout << i << ", ";
-            for(char i : con)
-                if(it->second == i)
-                    std::cout << i << ", ";
-        }
+        for(char i : vow)
+            if(m.count(i) > 0)
+                std::cout << i << ", ";
+        for(char i : con)
+            if(m.count(i) > 0)
+                std::cout << i << ", ";
     }
+}
+
+// Prints ALL vowels and consonants for the amount of times they appear
+void VowelsConsonantsAll(const std::string &&str) {  // Check, doesn't seem too good, doesn't function currently
+    if(str.length() == 0)
+        std::cerr << "String is empty!\n";
+    else {
+        int count;
+        std::unordered_map<int,char> m;
+        char vow[5] = {'a','e','i','o','u'};
+        char con[21] = {'b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','w','v','x','y','z'};
+        for(char i : str) {
+            char c = std::tolower(i);
+            m[c]++;
+        }
+        for(char i : vow) {
+            count = m.count(i);
+                for(int i = 0; i < count; i++)
+                    putchar(i);
+            count = 0;
+        }
+        for(char i : con) {
+            count = m.count(i);
+                for(int i = 0; i < count; i++)
+                    putchar(i);
+            count = 0;
+        }
+    }   
 }
 
 int CountVowels(const std::string &str) {
@@ -163,31 +269,32 @@ void MaxOccuringCharacter(const std::string &str) {
     }
 }
 
-char FindFirstNonDuplicate(std::string &&str) { // Fix!
+char FindFirstNonDuplicate(std::string &&str) {
     if(str.length() == 0)
         return ' ';
     else {
-        std::map<char,int> m;
-        for(char i : str)
+        std::unordered_map<char,int> m;
+        for(char i : str) {
+            char c = std::tolower(str[i]);
             m[i]++;
-        for(char i = 'a'; i <= 'z'; i++)
-            if(m.count(i) == 1)
-                return i;
+        }
+        for(int i = 0; i < str.length(); i++) {
+            char c = std::tolower(str[i]);
+            if(m.count(c) == 1)
+                return str[i];
+        }
     }
     return ' ';
 }
 
-// This method is slower but takes up less memory
-char FindFirstNonDuplicateIter(std::string &str) {
+char FindFirstNonDuplicateIter(std::string &&str) {
     if(str.length() == 0)
         return ' ';
     else {
         std::sort(str.begin(), str.end());
-        for(int i = 0; i < str.length(); i++) {
-            for(int j = 0; j < str.length(); j++) {
-                if(str[j] != str[j++])
-                    return str[j];
-            }
+        for(int i = 0; i < str.length()-1; i++) {
+            if(str[i] != str[i++])
+                return str[i];
         }
     }
     return ' ';
@@ -223,23 +330,28 @@ bool Anagram(std::string &&str1, std::string &&str2) {
     return true;
 }
 
-bool AnagramMap(std::string &&str1, std::string &&str2) {
+bool AnagramMap(std::string &&str1, std::string &&str2) { // Fix!
     if(str1.length() == str2.length())
         return false;
     else {
-        std::map<int, char> m1;
-        std::map<int, char> m2;
-        for(char i : str1)
-            m1[i]++;
-        for(char i : str2)
-            m2[i]++;
-        return std::equal(m1.begin(), m1.end(), m2.end());
+        std::unordered_map<int, char> m;
+        for(char i : str1) {
+            char c = std::tolower(i);
+            m[c]++;
+        }
+        for(int i = 0; i < str2.length(); i++) {
+            char c = std::tolower(str2[i]);
+            if(m.count(c) == 0)
+                return false;
+        }
+        // return std::equal(m1.begin(), m1.end(), m2.end()); // Check!
     }
+    return true;
 }
 
 // Given two strings, check if one string is a subsequence of another, in relative order
 bool ValidSubSequence(const std::string &str1, const std::string &str2) {
-    if(str1 == "")
+    if(str1 == "" || str2 == "")
         return true;
     else {
         int check = 0;
@@ -253,6 +365,57 @@ bool ValidSubSequence(const std::string &str1, const std::string &str2) {
     return false;
 }
 
+/*
+// Reverse the order of words in a string
+std::string ReverseWordsInString(std::string &&str) {
+    if(str.length() == 0)
+        return str;
+    else {
+        std::string currentWord;
+        std::vector<std::string> words{};
+        for(int i = 0; i < str.length(); i++) {
+            if(str[i] != ' ')
+                currentWord.append(std::to_string(str[i])); // Optimise?
+            else {
+                words.push_back(currentWord); 
+                currentWord = "";
+            }
+        }
+        str.clear();
+        for(int i = words.size(); i > 0; i++) {
+            str.append(words[i]);
+            str.append(" ");  
+        }
+    }
+    return str;
+}
+*/
+
+// Returns the longest palindromic string found in another string (Excluding string itself) | Check! Wrong!
+std::string LongestPalindromicSubString(std::string &&str) {
+    if(str.length() == 0)
+        return str;
+    else {
+        // Two pointer technique, reverse string and check for palindromde, keep increasing or reducing and check against previous until all of string has been searched
+        int breakInt = 0;
+        std::string palinString;
+        int left = 1, right = str.length()-1; // We set left = 1 as we are ignoring the string itself 
+        while(left < right) {
+            palinString = ReverseStringInPlace(std::forward<std::string>(str)); // Modifies string, change!
+            for(int i = left; i < right; i++) {
+                if(str[i] != palinString[i]) {
+                    left++;
+                    right--;
+                }
+            }
+            breakInt++;
+            if(breakInt == 20)
+                break;
+        }
+    }
+    return str;
+}
+
 int main() {
     std::cout << CheckExists('a', "Hello World") << '\n';
     std::cout << CheckExists('o', "Hello World");
@@ -261,12 +424,32 @@ int main() {
     std::cout << ReverseStringInPlace("Hello World");
     putchar('\n');
 
-    std::cout << OnlyDigits("123456789") << '\n';
-    std::cout << OnlyDigits("123h56789");
+    std::cout << RemoveFirstFromSecond("Hello World", "ello");
 
+    putchar('\n');
+            
+    //std::cout << StringRotation("HelloWorld", "lloWorldHe");
+    //std::cout << StringRotation("HelloWorld", "ldHelloWor");
+
+    putchar('\n');
+
+    std::cout << LongestPalindromicSubString("Banana");
+
+    //std::cout << ReverseWordsInString("Hello World");
+    //std::cout << OnlyDigits("123456789") << '\n';
+    //std::cout << OnlyDigits("123h56789");
+    putchar('\n');
+
+    std::cout << FindFirstNonDuplicate("Tthhiiss is a Test");
+    std::cout << FindFirstNonDuplicate("bbbbcccccddddffffggghhhhkuuuTest");
+    std::cout << FindFirstNonDuplicateIter("Tthhiiss is a Test");
+    std::cout << FindFirstNonDuplicateIter("bbbbcccccddddffffggghhhhkuuuTest");
+
+    putchar('\n');
     // Permutations("Hello", 0, 4); // Check!
 
-    VowelsConsonants("AlienPls");
+    VowelsConsonants("VowelandConsonantTest");
+    VowelsConsonantsAll("aaaauuuuttttiiibbbbmmmmhhhpppp");
 
     putchar('\n');
     std::cout << CountVowels("AlienPls");
@@ -275,9 +458,11 @@ int main() {
 
     putchar('\n');
 
-    std::cout << Anagram("Ram", "maR");
-    std::cout << Anagram("cat", "tac");
-    std::cout << Anagram("leg", "rib");
+    std::cout << Anagram("Ram", "maR") << '\n';
+    std::cout << Anagram("cat", "tac") << '\n';
+    std::cout << Anagram("leg", "rib") << '\n';
+
+    std::cout << AnagramMap("Ram", "maR") << '\n';
 
     return 0;
 }

@@ -28,7 +28,7 @@ public:
 	bool CheckAge();
 	void SetName();
 
-	void ChangeDetails();
+	void ChangeDetails(); // Friend??
 
 	void GetCiriculum();
 	void SetCiriculum();

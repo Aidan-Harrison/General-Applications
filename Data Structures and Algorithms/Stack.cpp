@@ -1,7 +1,7 @@
 #include <iostream>
 struct stack {
     int items[10];
-    int top = -1; // Dictates the size of the stack
+    int top = 0; // Dictates the size of the stack
 };
 
 void CreateEmptyStack(stack* s) {

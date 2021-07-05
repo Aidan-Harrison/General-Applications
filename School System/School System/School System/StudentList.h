@@ -120,7 +120,7 @@ namespace Students {
 	}
 
 	void SortStudents() { // Sort via surname
-		std::sort(Students::allStudents[0].begin(), Students::allStudents[0].end(), comp);
+		std::sort(Students::allStudents[0].begin(), Students::allStudents[0].end(), comp); // Check!
 	}
 }
 
