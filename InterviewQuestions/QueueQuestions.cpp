@@ -15,7 +15,7 @@ struct Queue {
         return false;
     }
     bool IsEmpty() {
-        if(front == 0)
+        if(front == -1)
             return true;
         return false;
     }
@@ -23,17 +23,19 @@ struct Queue {
         if(IsFull())
             std::cerr << "Queue is full!\n";
         else {
+            if(front == -1)
+                front = 0;
             items[rear++] = data;
         }
     }
-    int Dequeue() {
+    int Dequeue() { // Fix!
         if(IsEmpty())
             std::cerr << "Queue is empty!\n";
         else {
             front++;
             if(front == MAXSIZE) {
                 rear = 0; // Check!
-                front = 0;   // Check!
+                front = -1;   // Check!
             }
             return items[rear];
         }
