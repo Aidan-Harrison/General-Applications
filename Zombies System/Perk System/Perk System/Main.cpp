@@ -6,7 +6,7 @@ void Interface();
 
 void RollPerk() {
 	system("cls");
-	short input = 0;
+	int input = 0;
 	std::cout << "Current Points: " << player.points << '\n';
 	std::cout << "Pick a perk:\n" <<
 				 "1) Quick-Revive(500)  2) Juggernaut(2500)  3) Speed-Cola(3000)  4) Double-Tap(2000)  5) Mule-Kick(4000)  6) Widows-Wine(3500)  7) Stamina-Up(2500)";
@@ -46,23 +46,24 @@ void MysteryBox() {
 }
 
 void PackAPunch() {
-	if(player.weaponInventory.size() == 0) {
-		std::cout << "You have no weapons to Pack-A-Punch!\n";
+	if(player.weaponInventory.size() == 0 || player.points < 5000) {
+		std::cout << "You have no weapons to Pack-A-Punch! or don't have enough points!\n\t PRESS ENTER TO CONTINUE";
 		std::cin.get();
 		std::cin.get();
 		Interface();
 	}
 	else {
-		Weapon newWeapon;
+		Weapon *newWeapon = new Weapon;
 		std::string wepChoice = " ";
 		std::cout << "What weapon would you like to Pack-A-Punch:\n"; std::cin >> wepChoice;
 		for(unsigned int i = 0; i < player.weaponInventory.size(); i++) {
-			if(wepChoice == player.weaponInventory[i].wepName) {
-				newWeapon.wepName = "Pack-A-Punched " + player.weaponInventory[i].wepName;
-				newWeapon.m_Damage = player.weaponInventory[i].m_Damage * 2;
-				newWeapon.m_Ammo = player.weaponInventory[i].m_Ammo * 2;
-				player.weaponInventory[i].DeleteWeapon(&player.weaponInventory[i]);
+			if(wepChoice == player.weaponInventory[i]->wepName) {
+				// newWeapon->wepName = std::string("Pack-A-Punched " + player.weaponInventory[i]->wepName);
+				newWeapon->wepName = "Pack-A-Punched " + player.weaponInventory[i]->wepName;
+				newWeapon->m_Damage = player.weaponInventory[i]->m_Damage * 2;
+				newWeapon->m_Ammo = player.weaponInventory[i]->m_Ammo * 2;
 			}
+			delete player.weaponInventory[i];
 		}
 		player.weaponInventory.push_back(newWeapon);
 	}
@@ -75,30 +76,33 @@ void GobbleGum() {
 	gum = rand() % 3;
 	player.AddGum(gum);
 	for(unsigned int i = 0; i < player.gumInventory.size(); i++) {
-		if (player.gumInventory[i].m_Name == "Perk-A-Holic")       player.m_MaxPerkCount = 7;
-		else if (player.gumInventory[i].m_Name == "Fast-Hands")    player.m_ReloadSpeed = 20;
-		else if (player.gumInventory[i].m_Name == "Avoid-Zombies") player.isInvisible = true;
+		if (player.gumInventory[i]->m_Name == "Perk-A-Holic")       player.m_MaxPerkCount = 7;
+		else if (player.gumInventory[i]->m_Name == "Fast-Hands")    player.m_ReloadSpeed = 20;
+		else if (player.gumInventory[i]->m_Name == "Avoid-Zombies") player.isInvisible = true;
 	}
 	Interface();
 }
 
 void Interface() {
 	system("cls");
-	short input = 0;
-	std::cout << "Zombie's System:\n" <<
-				 "Pick an option | 1) Perk  2) Mystery Box  3) Pack-A-Punch  4) Gobble-Gum  5) Print Stats"; 
+	int input = 0;
+	player.PrintStats();
+
+	std::cout << "\t\n\nZombie's System:\n\t" <<
+				 "Pick an option | 1) Perk  2) Mystery Box  3) Pack-A-Punch  4) Gobble-Gum\n"; 
 	std::cin >> input;
 	switch(input) {
-		case 1: RollPerk();			 break;
-		case 2: MysteryBox();		 break;
-		case 3: PackAPunch();		 break;
-		case 4: GobbleGum();	     break;
-		case 5: player.PrintStats(); break;
+		case 1: RollPerk();	 break;
+		case 2: MysteryBox();break;
+		case 3: PackAPunch();break;
+		case 4: GobbleGum(); break;
+		default: RollPerk(); break;
 	}
 }
 
 int main() {
 	std::cout << "How many points would you like to start with? (Defaults to 500) "; std::cin >> player.points;
 	Interface();
+
 	return 0;
 }

@@ -28,7 +28,7 @@ void Graph::DepthFirstSearch(int vertex) {
     std::cout << vertex << " ";
 
     for(std::list<int>::iterator it = adjVert.begin(); it != adjVert.end(); it++)
-        if(!isVisited[*it]) // If a node has been visited, recursively call and visit it (First line of function)
+        if(!isVisited[*it]) // If a node has been visited, recursively call and visit it
             DepthFirstSearch(*it);
 }
 

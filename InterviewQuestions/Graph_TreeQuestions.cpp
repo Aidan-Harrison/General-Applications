@@ -77,31 +77,28 @@ void BinaryDepthFirstSearch(bNode *n) { // Do Backtrack!
 
 // Graph
 struct gNode {
-    int data;
+    int data = 0;
     bool isVisited = false;
     std::vector<gNode> children{};
-    gNode()
-    {
-        for(auto i : children)
-            i.data = 0;
-    }
+
+    gNode() {}
     gNode(int d) 
     {
-        for(auto i : children)
-            i.data = 0;
+        children.resize(d);
     }
+
+    ~gNode() {}
 };
 
 // Depth-First Search
 std::vector<bool> markedVertices{};
 
-void DFSRecursive(gNode n, int vertex) { // Check!
-    // Add base case? Already done
-    n.isVisited = true;
+void DFSRecursive(gNode *n, int vertex) { // Check! | Handle return
+    n->isVisited = true;
     markedVertices[vertex] = true;
-    for(int i = 0; i < n.children.size(); i++) {
-        if(!markedVertices[i])
-            DFSRecursive(n.children[i], i);
+    for(unsigned int i = 0; i < n->children.size(); i++) {
+        if(!markedVertices[i]) // Base case
+            DFSRecursive(&n->children[i], i);
     }
 }
 
@@ -122,33 +119,38 @@ struct stack {
     }
 
     void Push(gNode *n) {
-        if(IsFull()) {
-            return;
-        }
+        if(IsFull())
+            std::cerr << "Stack if full!\n";
         else {
-            items[top++] = n;
+            top++;
+            items[top] = n;
         }
     }
 
     gNode* Pop() {
         if(IsEmpty())
-            return;
+            std::cerr << "Stack is empty!\n";
         else {
+            gNode *rNode = items[top];
             items[top] = NULL; // Check!
-            return items[top];
             top--;
+            return rNode;
         }
+        return nullptr;
     }
+
+    int GetSize() const { return items.size();}
 };
 
 std::vector<bool> markedVerticesIter{};
 
-void DFSIterative(gNode *n, int vertex) { // Check! Seems wrong regarding loop, should use vertex somewhere
+void DFSIterative(gNode *n, int vertex) { // Fix! Seems wrong regarding loop, should use vertex somewhere
     stack s;
     std::vector<gNode*> visitedVerts{};
-    s.Push(n); // Check!
-    while(!s.IsEmpty()) {
+    s.Push(n);
+    while(!s.IsEmpty() && visitedVerts.size() > 0) { // Check!
         visitedVerts.push_back(s.Pop());
+        markedVerticesIter.resize(s.GetSize());
         if(!markedVerticesIter[vertex]) {
             n->isVisited = true;
             markedVerticesIter[vertex] = true;
@@ -177,12 +179,24 @@ struct bStack {
     }
 
     void Push(bNode *n) {
-        items[top++] == n;
+        if(IsFull())
+            std::cerr << "Stack is full!\n";
+        else {
+            top++;
+            items[top] == n;
+        }
     }
 
     bNode* Pop() {
-        items[top] = NULL;
-        top--;
+        if(IsEmpty())
+            std::cerr << "Stack is empty!\n";
+        else {
+            bNode *rNode = items[top];
+            items[top] = nullptr;
+            top--;
+            return rNode;
+        }
+        return nullptr;
     }
 };
 
@@ -198,7 +212,7 @@ int TreeDiameter(bNode *root, int vertex) { // Branch == left or right | RE-DO, 
     // Count max distance based on how far each search went, example-
         // - If one branch pushed 4 vertices to the stack and one brach pushed 5, the latter branch is larger
     s.Push(root);
-    while(!s.IsEmpty()) {
+    while(!s.IsEmpty() && visitedVertices.size() > 0) { // Check!
         visitedVertices.push_back(s.Pop());
         if(!markedVerts[vertex]) {
             root->isVisited = true;
@@ -209,10 +223,18 @@ int TreeDiameter(bNode *root, int vertex) { // Branch == left or right | RE-DO, 
                 s.Push(std::get<1>(root->children));
         }
     }
+    return distance;
 }
 
 int main() {
+    gNode *a;
+    gNode *b;
+    gNode *c;
+    gNode *d;
+    gNode *e;
+    gNode *f;
 
+    DFSRecursive(a, 0);
 
     return 0;
 }

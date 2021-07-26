@@ -4,56 +4,59 @@ struct Queue {
     int items[10];
     int front = 0;
     int rear = -1;
+
+    bool IsFull();
+    bool IsEmpty();
+    void Enqueue(int data);
+    int Dequeue();
+
+    void Print() const;
 };
 
-bool IsFull(Queue *q) {
-    if(q->rear == 10)
+bool Queue::IsFull() {
+    if(rear == 10)
         return true;
-    else
-        return false;
+    return false;
 }
 
-bool IsEmpty(Queue *q) {
-    if(q->front > q->rear)
+bool Queue::IsEmpty() {
+    if(front > rear)
         return true;
-    else
-        return false;
+    return false;
 }
 
-void Enqueue(Queue *q, int side, int item) {
-    if(IsFull(q)) {
+void Queue::Enqueue(int data) {
+    if(IsFull()) {
         std::cerr << "Queue is full!" << std::endl;
         exit(1);
     }
     else {
-        q->items[q->rear++] = item; 
+        rear++;
+        items[rear] = data; 
     }
 }
 
-int Dequeue(Queue *q) {
-    if(IsEmpty(q)) {
+int Queue::Dequeue() {
+    if(IsEmpty()) {
         std::cerr << "Queue is empty!" << std::endl;
         exit(1);
     }
     else {
-        int item = q->items[q->front];
-        q->front++;
+        int item = items[front];
+        front++;
         return item;
     }
 }
 
-int RPeek(Queue *q) {
-    return q->items[q->rear];
+void Queue::Print() const {
+    for(int i = 0; i < rear; i++)
+        std::cout << items[i] << ",";
 }
 
-int FPeek(Queue *q) {
-    return q->items[q->front];
-}
+// ================ List Queue ================
+struct ListQueue { // Queue implemented via a linked list
 
-void PrintQueue(Queue &q) {
-    for(int i = 0; i < q.rear; i++)
-        std::cout << q.items[i] << ",";
-}
+};
 
 // ================ Circular Queue ================
 struct RingBuffer { // Check everything!

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <string>
 
 struct node {
     int data;
@@ -24,6 +25,8 @@ struct sList {
     node* NthFromEnd(node* head, int n, int total); // Node instead?
     void ReverseList(node *head);
     void SortList(); // DO!
+    void RotateList();
+    int SumOfLinkedList(node *n1, node *n2);
 };
 
 void sList::AddNode(node *n) { // Come back to this! Not correct so far
@@ -36,10 +39,10 @@ void sList::AddNode(node *n) { // Come back to this! Not correct so far
 
 int sList::GetSize() {
     int size = 0;
-    node *temp = new node;
+    node *temp = new node; // If specifying node to check from, direct initialise
     temp = head;
-    while(temp != nullptr) {
-        size += temp->data;
+    while(temp != nullptr) { // Check order!
+        size++;
         temp = temp->next;
     }
     delete temp;
@@ -47,20 +50,17 @@ int sList::GetSize() {
 }
 
 void sList::PrintMiddle(node *head, int size) { // Rounded up
-    node *tempNode = new node;
-    tempNode = head;
-    for(int i = 0; i < size/2; i++)
+    node *tempNode = head;
+    for(unsigned int i = 0; i < size/2; i++)
         tempNode = tempNode->next;
     std::cout << tempNode->data;
     delete tempNode;
 }
 
-void sList::DeleteMiddle(node *head, int size) {
-    node *tempNode = new node;
-    tempNode = head;
-    for(int i = 0; i < size/2-2; i++) { // Go back one before mid
+void sList::DeleteMiddle(node *head, int size) { // Wrong! Temporary node doesn't work | Formula is correct, change to use actual list, not temp iterator
+    node *tempNode = head;
+    for(unsigned int i = 0; i < size/2-2; i++) // Go back one before mid
         tempNode = tempNode->next;
-    }
     tempNode->next = tempNode->next->next; // Check!
 
     delete tempNode;
@@ -88,6 +88,27 @@ void sList::ReverseList(node *head) {
     }
     head = prev; // We need to set the head to the end now that the list is reversed
 }
+
+void sList::RotateList() {
+    // Refer to array/string rotation
+}
+
+// Given two numbers represented by linked lists, add them together and return their sum
+int sList::SumOfLinkedList(node *n1, node *n2) {
+    std::string firstNum = "";
+    std::string secondNum = "";
+    while(n1 != nullptr) {
+        firstNum.append(std::to_string(n1->data));
+        n1 = n1->next;
+    }
+    while(n2 != nullptr) {
+        secondNum.append(std::to_string(n2->data));
+        n2 = n2->next;
+    }
+    return std::stoi(firstNum) + std::stoi(secondNum);
+}
+
+
 
 // Doubly Linked-List
 class dList {

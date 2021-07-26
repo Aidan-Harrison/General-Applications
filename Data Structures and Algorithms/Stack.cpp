@@ -1,64 +1,73 @@
 #include <iostream>
 struct stack {
-    int items[10];
-    int top = 0; // Dictates the size of the stack
+    int items[10]; // Can also use vectors
+    int top = -1; // Dictates the size of the stack
+
+    bool IsFull();
+    bool IsEmpty();
+    void Push(int item);
+    int Pop();
+
+    void Print() const;
 };
 
-void CreateEmptyStack(stack* s) {
-    s->top = -1;
-}
-
-bool IsFull(stack *s) {
-    if(s->top == 10)
+bool stack::IsFull() {
+    if(top == 10)
         return true;
-    else
-        return false;
+    return false;
 }
 
-bool IsEmpty(stack *s) {
-    if(s->top == -1)
+bool stack::IsEmpty() {
+    if(top == -1)
         return true;
-    else
-        return false;
+    return false;
 }
 
-void Push(stack *s, int item) {
-    if(IsFull(s)) {
+void stack::Push(int item) {
+    if(IsFull()) {
         std::cerr << "Stack is full, cannot push!" << std::endl;
         exit(1);
     }
     else {
-        s->top++;
-        s->items[s->top] = item;
+        top++;
+        items[top] = item;
     }
 }
 
-void Pop(stack *s) {
-    if(IsEmpty(s)) {
+int stack::Pop() {
+    if(IsEmpty()) {
         std::cerr << "Their is nothing to pop!" << std::endl;
         exit(1);
     }
     else {
-        s->items[s->top] = 0;
-        s->top--;
+        int item = items[top];
+        items[top] = 0;
+        top--;
+        return item;
     }
+    return -1;
 }
 
-void PrintStack(stack *s) {
-    for(int i = 0; i < s->top; i++)
-        std::cout << s->items[i] << ", ";
+void stack::Print() const {
+    for(int i = 0; i < top; i++)
+        std::cout << items[i] << '|';
 }
 
 int main() {
     stack s;
-    Push(&s, 3);
-    Push(&s, 1);
-    Push(&s, 5);
-    Push(&s, 6);
-    PrintStack(&s);
-    Pop(&s);
+    s.Push(3);
+    s.Push(1);
+    s.Push(5);
+    s.Push(6);
+
+    s.Print();
+
+    s.Pop();
+
     putchar('\n');
-    PrintStack(&s);
+
+    s.Print();
+
 
     return 0;
 }

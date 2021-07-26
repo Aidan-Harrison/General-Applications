@@ -85,7 +85,83 @@ void bTree::Print(node *n, node *other) const { // Handle both children!!!!!
     }
 }
 
+// Another implementation
+struct bstNode {
+    int data;
+    bstNode *left;
+    bstNode *right;
+    bstNode(int d) :data(d), left(nullptr), right(nullptr) {}
+
+    bool Search(int value);
+    void Insert(int value);
+    void Print() const;
+};
+
+void bstNode::Insert(int value) { // Fix!
+    if(value <= data) {
+        if(left == nullptr)
+            bstNode *newNode = new bstNode(value);
+        else
+            left->Insert(value);
+    }
+    else {
+        if(right == nullptr)
+            bstNode *newNode = new bstNode(value);
+        else
+            right->Insert(value);
+    }
+}
+
+bool bstNode::Search(int value) { // Partially fix?
+    if(value == data)
+        return true;
+    else if(value < data) {
+        if(left == nullptr)
+            return false;
+        else
+            return left->Search(value);
+    }
+    else {
+        if(right == nullptr)
+            return false;
+        else
+            return right->Search(value);
+    }
+    return false;
+}
+
+void bstNode::Print() const { // In-Order printing/traversal | Fix! Infinite loop
+    if(left != nullptr)
+        left->Print();
+    std::cout << data << ", ";
+    if(right != nullptr)
+        right->Print();
+}
+
 int main() {    
+    bstNode *root = new bstNode(10);
+    bstNode *n2 = new bstNode(9);
+    bstNode *n3 = new bstNode(12);
+    bstNode *n4 = new bstNode(8);
+    bstNode *n5 = new bstNode(14);
+    bstNode *n6 = new bstNode(13);
+    bstNode *n7 = new bstNode(22);
+
+    root->left = n2;
+    root->right= n3;
+
+    n2->left = n4;
+    n2->right = n5;
+
+    n5->left = n6;
+    n5->right = n7;
+
+    root->Print();
+    putchar('\n');
+    std::cout << root->Search(8);
+    putchar('\n');
+    root->Insert(34);
+    root->Print();
 
     return 0;
 }

@@ -1,17 +1,22 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <string>
 
 // Convert to templated struct, figure out pass by reference!
+template<typename T>
 struct stack {
-    int items[10];
-    std::string TempItems[10];
+    T items[10];
     int top = 0;
 
     int MAXSIZE = 10; // Use when needed, intergrate into existing functions | ADD TO ARRAY
 
     stack() {}
-    ~stack() {}
+    stack(stack<int> *newStack) 
+    {
+        while(GetSize() != newStack->GetSize())
+            Push(newStack->Pop());
+    }
 
     bool IsFull() {
         if(top == MAXSIZE)
@@ -25,7 +30,7 @@ struct stack {
         return false;
     }
 
-    void Push(int data) {
+    void Push(T data) {
         if(IsFull())
             std::cerr << "Stack is full!\n";
         else {
@@ -33,31 +38,11 @@ struct stack {
         }
     }
 
-    void TempPush(char data) {
-        if(IsFull())
-            std::cerr << "Stack is full!\n";
-        else {
-            TempItems[top++] = data;
-        }
-    }
-
-    std::string TempPop() {
+    T Pop() {
         if(IsEmpty())
             std::cerr << "Stack is empty!\n";
         else {
-            std::string item = TempItems[top];
-            TempItems[top] = -1; // NULL instead?
-            top--;
-            return item;
-        }
-        return " ";
-    }
-
-    int Pop() {
-        if(IsEmpty())
-            std::cerr << "Stack is empty!\n";
-        else {
-            int item = items[top];
+            T item = items[top];
             items[top] = -1; // NULL instead?
             top--;
             return item;
@@ -77,34 +62,42 @@ struct stack {
         for(int i = 0; i < top; i++) // Check!
             std::cout << items[i] << ", ";
     }
+    
+    ~stack() {}
 };
 
 // Problems
-void SortStack(stack &s) {
+void SortStack(stack<int> &s) {
     int size = s.GetSize();
     std::vector<int> container{};
     for (int i = 0; i <= size; i++)
         container.push_back(s.Pop());
 
     std::sort(container.begin(), container.end());
-    
+
     for(int i = 0; i < container.size(); i++)
         s.Push(container[i]);
 }
 
-void ReverseArrayUsingStack(std::vector<int> &arr, stack &s) { 
+void SortStack2(stack<int> &s) { // Approach 2 | Avoid using std::sort or another container, compare instead
+    int current = 0;
+}
+
+void ReverseArrayUsingStack(std::vector<int> &arr, stack<int> &s) { 
     s.MAXSIZE = arr.size();
     for(auto i : arr)
        s.Push(i);
-    arr.clear(); // Check!
+    arr.clear();
     for(int i = 0; i < s.MAXSIZE; i++)
         arr.push_back(s.Pop());
 }
 
-// Given two stacks, create a Queue | Check entire section! Seems correct
+// Given two stacks, create a Queue | Check entire section! Seems just like a stack made of two stacks instead of a Queue
+template<typename T>
 struct QueueStack {
-    stack *s1; // s1 top handles front
-    stack *s2; // s2 top handles rear
+    QueueStack() {}
+    stack<int> *s1 = new stack<int>; // s1 top handles front | Check!
+    stack<int> *s2 = new stack<int>; // s2 top handles rear
 
     const int MAXSIZE = 10;
 
@@ -140,18 +133,19 @@ struct QueueStack {
             s1->top = 0;
         return s2->Pop(); // Return dequeued value
     }
+    ~QueueStack() {}
 };
 
-std::string ReverseString(std::string &str, stack &s) {
+std::string ReverseString(std::string &str, stack<char> &s) {
     for(auto i : str) 
-        s.TempPush(i);
+        s.Push(i);
     str.clear();
     for(int i = 0; i < s.GetSize(); i++)
-        str.append(s.TempPop());
+        str.append(std::to_string(s.Pop())); // to lower may be cheaper??
     return str;
 }
 
-void SortStackUsingOtherStack(stack &s1, stack &s2) { // Fix!
+void SortStackUsingOtherStack(stack<int> &s1, stack<int> &s2) { // Fix!
     for(int i = 0; i < s1.GetSize(); i++) {
         s2.Push(s1.Pop());
         if(s1.Peek() > s2.Peek())
@@ -162,27 +156,34 @@ void SortStackUsingOtherStack(stack &s1, stack &s2) { // Fix!
 }
 
 // Reverse a stack without using another data structure
-void ReverseStackContained(stack &s) {
-    int temp = s.Pop();
-    std::cout << temp;
-}
-
-// Sort a stack via recursion | Barely recursive, doesn't use recursion well, just so happens to use it
-void SortRecursion(stack &s, std::vector<int> &container, int index = 0) { // Check!
-    int amount = index;
-    if(index == 0) // Done sorting
-        return;
-    else {
-        container.push_back(s.Pop());
-        if(s.Peek() > container[amount]);
-            s.Push(container[index]);
-        SortRecursion(s, container, amount++);
+void ReverseStackContained(stack<int> &s) {
+    int left = 0;
+    int right = s.GetSize();
+    while(left < right) {
+        int temp = s.Pop();
+        s.Push(temp);
+        left++;
+        right--;
     }
 }
 
-// Returns a new stack which contains the sum of two stacks
-stack* AddStacks(stack &s1, stack &s2) {
-    stack *newStack = new stack;
+// Sort a stack via recursion | Barely recursive, doesn't use recursion well, just so happens to use it | RE-DO
+void SortRecursion(stack<int> &s, std::vector<int> &container, int index = 0) {
+    if(s.GetSize() == 0)
+        return;
+    if(index == s.GetSize()) {// Done sorting
+        for(unsigned int i = 0; i < container.size(); i++)
+            s.Push(container[i]);
+    }
+    else {
+        container.push_back(s.Pop());
+        SortRecursion(s, container, index++);
+    }
+}
+
+// Returns a new stack which contains the sum of two stacks (Matching Sizes)
+stack<int>* AddStacks(stack<int> &s1, stack<int> &s2) {
+    stack<int> *newStack = new stack<int>;
     if(s1.GetSize() != s2.GetSize() || s1.IsEmpty() || s2.IsEmpty())
         return newStack;
     else {
@@ -194,8 +195,35 @@ stack* AddStacks(stack &s1, stack &s2) {
     return newStack;
 }
 
+// Sizes do not have to match
+int AddStacksSeperate(stack<int> &s1, stack<int> &s2) { // Nearly their, small fix!
+    if(s1.IsEmpty() || s2.IsEmpty())
+        return -1;
+    else {
+        int sum = 0;
+        for(unsigned int i = 0; i <= s1.GetSize() && i <= s2.GetSize(); i++)  
+            sum += s1.Pop() + s2.Pop(); 
+        while (!s1.IsEmpty())
+            sum += s1.Pop();
+        while (!s2.IsEmpty())
+            sum += s2.Pop();
+        return sum;
+    }
+    return -1;
+}
+
+int CombinedSum(stack<int> &s1, stack<int> &s2) { // Version 1
+    std::string firstNum = "";
+    std::string secondNum = "";
+    while (!s1.IsEmpty()) firstNum.append(std::to_string(s1.Pop()));
+    while (!s2.IsEmpty()) secondNum.append(std::to_string(s2.Pop()));
+    std::reverse(firstNum.begin(), firstNum.end());
+    std::reverse(secondNum.begin(), secondNum.end());
+    return std::stoi(firstNum) + std::stoi(secondNum);
+}
+
 // Allows a stack to be cycled | CONTINUE, top always set to 0, change!?
-void CycleStack(stack &s1, int data) {
+void CycleStack(stack<int> &s1, int data) {
     if(s1.IsFull()) { // Cycle instead
         s1.top = 0; // We cycle top but don't pop anything, simply overwrite
         s1.items[s1.top] = data;
@@ -213,21 +241,39 @@ struct TwoStackArr {
 };
 
 int main() {
-    stack s1;
-    stack s2;
+    stack<int> s1;
+    stack<int> s2;
     s1.Push(6);
     s1.Push(12);
     s1.Push(4);
     s1.Push(90);
     s1.Push(1);
 
-    s1.Print(); // Not printing last?
+    s1.Print();
+    putchar('\n');
+
+    s2.Push(5);
+    s2.Push(7);
+    s2.Push(2);
+    s2.Push(10);
+
+    s2.Print();
 
     SortStack(s1);
 
     putchar('\n');
 
     s1.Print();
+
+    std::cout << "\nStack Adding:\n";
+    stack<int>Result(AddStacks(s1,s2));
+
+    putchar('\n');
+    Result.Print();
+    putchar('\n');
+
+    std::cout << AddStacksSeperate(s1, s2) << '\n';
+    std::cout << CombinedSum(s1, s2) << '\n';
 
     return 0;
 }

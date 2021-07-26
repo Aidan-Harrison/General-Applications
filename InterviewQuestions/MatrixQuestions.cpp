@@ -62,7 +62,7 @@ std::tuple<int,int> SearchSortedMatrix(std::vector<std::vector<int>> &matrix, in
     std::tuple<int,int> coords{};
     int i = 0, j = matrix.size();
     while(i < j) {
-        if(matrix[i][j] == target) { // Check ordering!
+        if(matrix[i][j] == target) {
             std::get<0>(coords) = i;
             std::get<1>(coords) = j;
             std::cout << i << " " << j << "\n";
@@ -78,12 +78,38 @@ std::tuple<int,int> SearchSortedMatrix(std::vector<std::vector<int>> &matrix, in
     return coords;
 }
 
+std::vector<int> SpiralTraversalSimple(std::vector<std::vector<int>> &mat) { // Replace with Depth first search!!!!!
+    std::vector<int> traversal{};
+    if(mat.size() * mat[0].size() == 0) //?
+        return traversal;
+    std::vector<std::vector<bool>> visited{};
+
+    // Each for loop is a direction reaching the end of what can be added
+    // Repeat until done with matrix
+    // REPLACE WITH DFS | REMOVE BELOW
+    int i = 0;
+    int j = 0;
+    while(visited.size() * visited[0].size() != mat.size() * mat[0].size()) {
+        if(i != mat.size() && !visited[i][0])
+            i++;
+        if(j != mat[0].size() && !visited[0][j])
+            i--;
+        visited[i][j] = true;
+        traversal.push_back(mat[i][j]);
+    }
+    for(auto i : traversal)
+        std::cout << i << ", ";
+
+    return traversal;
+}
+
 int main() {
-    std::vector<std::vector<int>> matrix2{{1,2,3,4,5},
-                                          {6,7,8,9,10},
+    std::vector<std::vector<int>> matrix2{{1, 2, 3, 4, 5},
+                                          {6, 7, 8, 9, 10},
                                           {11,12,13,14,15},
                                           {16,17,18,19,20},
                                           {21,22,23,24,25}};
+    /*
     std::tuple<int,int> result = SearchSortedMatrix(matrix2, 19);
 
     std::vector<std::vector<int>> matrix{{1,0,0,1,0},
@@ -95,6 +121,9 @@ int main() {
     sizes = RiverSizes(matrix); // Not assigning
     for(auto i : sizes)
         std::cout << i;
+    */
+
+   SpiralTraversalSimple(matrix2);
 
     return 0;
 }

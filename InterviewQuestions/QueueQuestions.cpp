@@ -6,53 +6,60 @@ struct Queue {
     int MAXSIZE = 10;
 
     int items[10];
-    int front = -1;
-    int rear = 0;
+    int rear = 0; // -1?
+    int front = 0;
 
     bool IsFull() {
-        if(rear == MAXSIZE)
+        if(front == MAXSIZE)
             return true;
         return false;
     }
+
     bool IsEmpty() {
-        if(front == -1)
+        if(rear == -1)
             return true;
         return false;
     }
-    void Enqueue(int data) { // Check, push front when full??
+
+    void Enqueue(int data) {
         if(IsFull())
             std::cerr << "Queue is full!\n";
         else {
-            if(front == -1)
-                front = 0;
-            items[rear++] = data;
+            if(rear == -1)
+                rear = 0;
+            front++;
+            rear++; // Ensure rear is one ahead of element
+            items[front] = data;
         }
     }
+
     int Dequeue() { // Fix!
         if(IsEmpty())
             std::cerr << "Queue is empty!\n";
         else {
-            front++;
-            if(front == MAXSIZE) {
-                rear = 0; // Check!
-                front = -1;   // Check!
-            }
-            return items[rear];
+            int item = items[front];
+            front--;
+            // Add rear increment!?
+            if(rear == MAXSIZE) {
+                rear = -1;
+                front = 0; 
+            } 
+            return item;
         }
         return -1;
     }
 
     int Peek() {
-        return items[rear];
+        return items[front];
     }
 
     int GetSize() {
-        return rear;
+        return front;
     }
 
     void Print() {
-        for(int i = 0; i < rear; i++)
-            std::cout << items[rear];
+        for(int i = 1; i <= front; i++)
+            std::cout << items[i] << ", ";
     }
 };
 
@@ -98,19 +105,27 @@ int main() {
 
     q.Print();
 
+    putchar('\n');
+
     SortQueue(q);
+
+    q.Print();
+
+    putchar('\n');
 
     // Fix printing!!!
     std::vector<int> array{16,5,4,2,1};
 
+    putchar('\n');
+
     for(auto i : array)
         std::cout << i << ", ";
+
+    putchar('\n');
     ReverseArray(array, q2);
-    for(int i = 0; i < array.size(); i++)
-        std::cout << array[i] << ", ";
 
-
-    q.Print();
+    for(auto i : array)
+        std::cout << i << ", ";
 
     return 0;
 }
