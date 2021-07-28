@@ -1,8 +1,77 @@
 Unemployed
-Freelancer
+Freelance Artist
+Freelance Programmer
 Construction Worker
 Engineer
-Scientist
 Software Engineer
 Retail Manager
 Stock Trader
+Bartender
+Barista
+Chef
+Artist
+Athlete
+Business Manager
+Entrepenuer
+Farmer
+Gardener
+Window Cleaner
+Janitor
+School Principal
+Teacher
+Retail Store Worker
+Bus Driver
+Transporation Manager
+HGV Driver
+Fashion Designer
+Model
+Fisherman
+Games Designer
+Data Architect
+Martial Arts Teacher
+Boxer
+MMA
+Door-to-Door Salesman/Woman
+Postman
+Actor
+Theatre Producer
+Writer
+Librarian
+Baker
+Butcher
+Tech Support
+Technician
+Accountant
+Mathematician
+Theorectical Physicist
+Experiemental Physicist
+Pilot
+Steward/Stewardess
+Mechanic
+Dentist
+Orthodontist
+General Practioner
+Psychiatrist
+Streamer
+Sports/Esports Caster
+Esports Athlete
+Security Guard
+DJ
+Veterinarian
+Plumber
+Electrician
+Pharmasist
+Musician
+Nurse
+Waiter/Waitress
+Photographer
+Wedding Planner
+Dancer
+Singer
+Gymnast
+Beekeeper
+Historian
+Train Conductor
+Web Developler
+Web Designer
+Archaeologist

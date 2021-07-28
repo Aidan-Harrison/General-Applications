@@ -25,12 +25,14 @@ struct stdStack {
             top++;
         }
     }
-    void Pop() {
+    int Pop() {
         if(IsEmpty())
             std::cerr << "Stack is empty!\n";
         else {
+            int item = items.front();
             items.pop_back();
             top--;
+            return item;
         }
     }
 
@@ -50,7 +52,7 @@ struct LinkedList { // Implemented as a doubly-linked list
         node *next;
         node *prev;
         node() :next(nullptr) {}
-        node(int d) :data(d), next(nullptr) {}
+        node(int d) :data(d), next(nullptr), prev(nullptr) {}
         ~node() {}
     };
 

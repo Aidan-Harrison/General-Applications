@@ -9,7 +9,7 @@ struct stack {
     T items[10];
     int top = 0;
 
-    int MAXSIZE = 10; // Use when needed, intergrate into existing functions | ADD TO ARRAY
+    int MAXSIZE = 10;
 
     stack() {}
     stack(stack<int> *newStack) 
@@ -25,7 +25,7 @@ struct stack {
     }
 
     bool IsEmpty() {
-        if(top == -1) // Check!
+        if(top == 0) // Check!
             return true;
         return false;
     }
@@ -34,7 +34,8 @@ struct stack {
         if(IsFull())
             std::cerr << "Stack is full!\n";
         else {
-            items[top++] = data;
+            top++;
+            items[top] = data;
         }
     }
 
@@ -50,16 +51,11 @@ struct stack {
         return -1;
     }
 
-    int Peek() {
-        return items[top];
-    }
-
-    int GetSize() {
-        return top;
-    }
+    int Peek() { return items[top];}
+    int GetSize() { return top;}
 
     void Print() const {
-        for(int i = 0; i < top; i++) // Check!
+        for(unsigned int i = 1; i <= top; i++)
             std::cout << items[i] << ", ";
     }
     
@@ -70,12 +66,12 @@ struct stack {
 void SortStack(stack<int> &s) {
     int size = s.GetSize();
     std::vector<int> container{};
-    for (int i = 0; i <= size; i++)
+    for(unsigned int i = 0; i < size; i++)
         container.push_back(s.Pop());
 
     std::sort(container.begin(), container.end());
 
-    for(int i = 0; i < container.size(); i++)
+    for(unsigned int i = 0; i < container.size(); i++)
         s.Push(container[i]);
 }
 
@@ -195,19 +191,38 @@ stack<int>* AddStacks(stack<int> &s1, stack<int> &s2) {
     return newStack;
 }
 
-// Sizes do not have to match
-int AddStacksSeperate(stack<int> &s1, stack<int> &s2) { // Nearly their, small fix!
+// Add two stacks total value and return
+int AddStacksGlobal(stack<int> &s1, stack<int> &s2) {
+    if(s1.GetSize() != s2.GetSize() || s1.IsEmpty() || s2.IsEmpty())
+        return 0;
+    else {
+        int sum = 0;
+        while (!s1.IsEmpty() && !s2.IsEmpty())
+            sum += s1.Pop() + s2.Pop();
+        return sum;   
+    }
+    return 0;
+}
+
+// Same as previous except sizes do not have to match
+int AddStacksSeperate(stack<int> &s1, stack<int> &s2) { // Assumes stack sizes won't be equal
     if(s1.IsEmpty() || s2.IsEmpty())
         return -1;
     else {
         int sum = 0;
-        for(unsigned int i = 0; i <= s1.GetSize() && i <= s2.GetSize(); i++)  
-            sum += s1.Pop() + s2.Pop(); 
-        while (!s1.IsEmpty())
-            sum += s1.Pop();
-        while (!s2.IsEmpty())
-            sum += s2.Pop();
-        return sum;
+        if(s1.GetSize() > s2.GetSize()) {
+            for(unsigned int i = 0; i <= s2.GetSize(); i++)
+                sum += s2.Pop() + s1.Pop();
+            while(!s1.IsEmpty())
+                sum += s1.Pop();
+        }
+        else {
+            for(unsigned int i = 0; i <= s1.GetSize(); i++)
+                sum += s1.Pop() + s2.Pop();
+            while(!s2.IsEmpty())
+                sum += s2.Pop();
+        }
+        return sum; 
     }
     return -1;
 }
@@ -248,6 +263,9 @@ int main() {
     s1.Push(4);
     s1.Push(90);
     s1.Push(1);
+    s1.Push(34);
+    s1.Push(5);
+    s1.Push(9);
 
     s1.Print();
     putchar('\n');
@@ -256,6 +274,7 @@ int main() {
     s2.Push(7);
     s2.Push(2);
     s2.Push(10);
+    s2.Push(17);
 
     s2.Print();
 
@@ -265,15 +284,13 @@ int main() {
 
     s1.Print();
 
-    std::cout << "\nStack Adding:\n";
-    stack<int>Result(AddStacks(s1,s2));
-
+    std::cout << "\n\nStack Adding:\n"; // Comment out any function not being used, else result will be affected
+    // stack<int>Result(AddStacks(s1,s2));
+    // Result.Print();
     putchar('\n');
-    Result.Print();
-    putchar('\n');
-
-    std::cout << AddStacksSeperate(s1, s2) << '\n';
-    std::cout << CombinedSum(s1, s2) << '\n';
+    // std::cout << "Add Stacks Global: " << AddStacksGlobal(s1,s2) << '\n';
+    std::cout << "Add Stacks Seperate: " << AddStacksSeperate(s1, s2) << '\n';
+    std::cout << "Combined Sum: " << CombinedSum(s1, s2) << '\n';
 
     return 0;
 }
