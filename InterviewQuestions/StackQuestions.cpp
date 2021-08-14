@@ -183,11 +183,31 @@ stack<int>* AddStacks(stack<int> &s1, stack<int> &s2) {
     if(s1.GetSize() != s2.GetSize() || s1.IsEmpty() || s2.IsEmpty())
         return newStack;
     else {
-        for(int i = 0; i < s1.GetSize(); i++) {
-            int sum = s1.Pop() + s2.Pop();
-            newStack->Push(sum);
-        }   
+        while(!s1.IsEmpty()) 
+            newStack->Push(s1.Pop() + s2.Pop());
     }
+    newStack->Print();
+    return newStack;
+}
+
+// Returns a new stack which contains the sum of two stacks (Size doesn't have to match, remaining elements will be pushed onto the end)
+stack<int>* AddStacksIndependent(stack<int> &s1, stack<int> &s2) {
+    stack<int> *newStack = new stack<int>;
+    if(s1.GetSize() > s2.GetSize()) {
+        int size = s2.GetSize();
+        for(unsigned int i = 0; i < size; i++)
+            newStack->Push(s1.Pop() + s2.Pop());
+        while(!s1.IsEmpty())
+            newStack->Push(s1.Pop());
+    }
+    else {
+        int size = s1.GetSize();
+        for(unsigned int i = 0; i < size; i++)
+            newStack->Push(s1.Pop() + s2.Pop());
+        while(!s2.IsEmpty())
+            newStack->Push(s2.Pop());
+    }
+    newStack->Print();
     return newStack;
 }
 
@@ -211,13 +231,15 @@ int AddStacksSeperate(stack<int> &s1, stack<int> &s2) { // Assumes stack sizes w
     else {
         int sum = 0;
         if(s1.GetSize() > s2.GetSize()) {
-            for(unsigned int i = 0; i <= s2.GetSize(); i++)
+            int size = s2.GetSize();
+            for(unsigned int i = 0; i < size; i++)
                 sum += s2.Pop() + s1.Pop();
             while(!s1.IsEmpty())
                 sum += s1.Pop();
         }
         else {
-            for(unsigned int i = 0; i <= s1.GetSize(); i++)
+            int size = s1.GetSize();
+            for(unsigned int i = 0; i < size; i++)
                 sum += s1.Pop() + s2.Pop();
             while(!s2.IsEmpty())
                 sum += s2.Pop();
@@ -227,22 +249,16 @@ int AddStacksSeperate(stack<int> &s1, stack<int> &s2) { // Assumes stack sizes w
     return -1;
 }
 
-int CombinedSum(stack<int> &s1, stack<int> &s2) { // Version 1
+// Converts the stacks into long numbers and adds them together
+long long CombinedSum(stack<int> &s1, stack<int> &s2) {
     std::string firstNum = "";
     std::string secondNum = "";
     while (!s1.IsEmpty()) firstNum.append(std::to_string(s1.Pop()));
     while (!s2.IsEmpty()) secondNum.append(std::to_string(s2.Pop()));
     std::reverse(firstNum.begin(), firstNum.end());
     std::reverse(secondNum.begin(), secondNum.end());
-    return std::stoi(firstNum) + std::stoi(secondNum);
-}
-
-// Allows a stack to be cycled | CONTINUE, top always set to 0, change!?
-void CycleStack(stack<int> &s1, int data) {
-    if(s1.IsFull()) { // Cycle instead
-        s1.top = 0; // We cycle top but don't pop anything, simply overwrite
-        s1.items[s1.top] = data;
-    }
+    std::cout << firstNum << " | " << secondNum << '\n';
+    return std::stoll(firstNum) + std::stoll(secondNum);
 }
 
 // Two stacks in array | Do!
@@ -258,6 +274,7 @@ struct TwoStackArr {
 int main() {
     stack<int> s1;
     stack<int> s2;
+    stack<int> s3;
     s1.Push(6);
     s1.Push(12);
     s1.Push(4);
@@ -278,6 +295,12 @@ int main() {
 
     s2.Print();
 
+    s3.Push(6);
+    s3.Push(12);
+    s3.Push(14);
+    s3.Push(2);
+    s3.Push(1);
+
     SortStack(s1);
 
     putchar('\n');
@@ -285,12 +308,12 @@ int main() {
     s1.Print();
 
     std::cout << "\n\nStack Adding:\n"; // Comment out any function not being used, else result will be affected
-    // stack<int>Result(AddStacks(s1,s2));
-    // Result.Print();
-    putchar('\n');
-    // std::cout << "Add Stacks Global: " << AddStacksGlobal(s1,s2) << '\n';
-    std::cout << "Add Stacks Seperate: " << AddStacksSeperate(s1, s2) << '\n';
-    std::cout << "Combined Sum: " << CombinedSum(s1, s2) << '\n';
+    // std::cout << "Add Stacks: "; AddStacks(s2,s3);
+    std::cout << "Add Stacks Independent: "; AddStacksIndependent(s2,s3);
+    // std::cout << "\nAdd Stacks Global: " << AddStacksGlobal(s2,s3);
+    // std::cout << "\nAdd Stacks Seperate: " << AddStacksSeperate(s1, s2);
+    // std::cout << "\nCombined Sum: " << CombinedSum(s1, s2);
+
 
     return 0;
 }

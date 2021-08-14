@@ -21,7 +21,7 @@ void Delete(node *n) { // Due to being singly linked, must provide prev and curr
 
 void PrintList(node *n) {
     while(n != nullptr) {
-        std::cout << n->data << ' ';
+        std::cout << n->data << " -> ";
         n = n->next;
     }
 }
@@ -46,6 +46,19 @@ dNode* Add(dNode *curNode, int val) {
 void Delete(dNode *n) {
     n->prev->next = n->next;
     n->next->prev = n->prev;    
+}
+
+void PrintDList(dNode *n) {
+    dNode *tempNode = n;
+    while(tempNode != nullptr) {
+        if(tempNode->prev == nullptr)
+            std::cout << 'X';
+        std::cout << " <- " << tempNode->data << " -> ";
+        if(tempNode->next == nullptr)
+            std::cout << 'X';
+        tempNode = tempNode->next;
+    }
+    delete tempNode;
 }
 
 int main() {
@@ -93,6 +106,8 @@ int main() {
     dHead->next = dOne;
     dOne->next = dTwo;
     dTwo->next = dTail;
+
+    PrintDList(dHead);
    
     return 0;
 }

@@ -2,10 +2,10 @@
 #include <iostream>
 #include <list>
 
-struct stdStack {
+struct stdStack { // std::list implementation | Pointless??? The same as a vector
     int MAXSIZE = 10;
     std::list<int> items;
-    int top = 0;
+    int top = -1;
 
     bool IsFull() {
         if(top == MAXSIZE)
@@ -36,9 +36,9 @@ struct stdStack {
         }
     }
 
-    void Print() {
+    void Print() const {
         for(auto i : items)
-            std::cout << i << '\n';
+            std::cout << i << "|";
     }
 
     stdStack() {}
@@ -61,11 +61,7 @@ struct LinkedList { // Implemented as a doubly-linked list
     node *tail;
 
     int Peek() {
-        node *newNode = head;
-        while(newNode != nullptr) {
-            newNode = newNode->next;
-        }
-        return newNode->data;
+        return tail->data;
     }
 
     int GetSize() {
@@ -77,13 +73,23 @@ struct LinkedList { // Implemented as a doubly-linked list
         return size;
     }
 
+    void Print() const {
+        node *tempNode = head;
+        while(tempNode != nullptr) {
+            std::cout << tempNode->data;
+            tempNode = head->next;
+        }
+        delete tempNode;
+    }
+
     LinkedList() {}
     ~LinkedList() {}
 };
 
-struct CusStack {
+struct CusStack { // Custom list implementation
     int MAXSIZE = 0;
     LinkedList *l;
+
     bool IsFull() {
         if(l->GetSize() == MAXSIZE)
             return true;
@@ -96,15 +102,18 @@ struct CusStack {
         return false;
     }
 
-    void Push(int data) {
+    void Push(int data) { // Fix!
         if(IsFull())
             std::cerr << "Stack is full!\n";
         else {
+            LinkedList *copyList = l;
             LinkedList::node* newNode = new LinkedList::node(data);
-            while(l->head != nullptr) {
-                 l->head = l->head->next;
+            while(copyList->head != nullptr) {
+                 copyList->head = copyList->head->next;
             }
-            l->head->next = newNode;
+            copyList->head->next = newNode;
+            l = copyList;
+            delete copyList;
         }
     }
 

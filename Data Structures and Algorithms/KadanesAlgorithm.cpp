@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
 
-// Solution 1 | Solution 2 = remove vector
+// Check entire file, all producing different results!!
+
+// Solution 1
 int MaxSumSub(std::vector<int> &arr) {
     int currentSum = 0;
     int largestSum = 0;
@@ -51,8 +53,9 @@ int KadanesAlgorithm(std::vector<int> &arr) {
 
 int main() {
     std::vector<int> array{-2,-3,4,-1,-2,1,5,-3};
-    std::cout << MaxSumSub(array);
-    std::cout << KadanesAlgorithm(array);
+    std::cout << MaxSumSub(array) << '\n';
+    std::cout << MaxSumSub2(array) << '\n';
+    std::cout << KadanesAlgorithm(array) << '\n';
 
     return 0;
 }

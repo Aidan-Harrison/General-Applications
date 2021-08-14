@@ -108,7 +108,8 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 			p.currentHero->PrintStats();
 			putchar('\n');
 			for (unsigned int i = 0; i < creeps.size(); i++) { 
-				std::cout << i << ") Creep Health: " << std::string(creeps[i].m_Health / 10, ' |') << " : " << creeps[i].m_Health << '\n'; 
+				if(!creeps[i].m_Health <= 0)
+					std::cout << i << ") Creep Health: " << std::string(creeps[i].m_Health / 10, ' |') << " : " << creeps[i].m_Health << '\n'; 
 			}
 			if(p.currentHero->m_Health == 0) { // Move to function within player
 				std::cout << "You died!\n";
@@ -119,18 +120,18 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 			if (p.currentHero->m_Health < 100) {
 				std::cout << "Your health is low, consider leaving the jungle?\n Would you like to leave? "	
 						  << "y/n \t"; std::cin >> p.choice;
-				std::tolower(p.choice);
-				switch (p.choice) {
-					case 'y': Game(p, m);
+				char c = std::tolower(p.choice);
+				switch (c) {
+					case 'y': Game(p, m); break;
 					case 'n': continue;
 				}
-				if(p.choice != 'y' && p.choice != 'n') {
+				if(c != 'y' && c != 'n') {
 					std::cout << "You have entered an incorrect value. Try again!\n";
 				}
 			}
 			std::cout << "\nWhat would you like to do: \nS) Keep fighting  L) Leave\n"; std::cin >> p.choice;
-			std::tolower(p.choice);
-			if (p.choice == 's') {
+			char c = std::tolower(p.choice);
+			if (c == 's') {
 				jungleCamp = rand() % creeps.size(); // Re-use integer
 				// Player attack
 				int temp = creeps[jungleCamp].m_Health;
@@ -149,10 +150,10 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 						if(hasDropped) {
 							while (1) {
 								std::cout << "Jungle creep dropped item: " << "\nTake it? y/n"; std::cin >> p.choice;
-								if (p.choice == 'y') {
-									// 
+								char c = std::tolower(p.choice);
+								if (c == 'y') { 
 									for (unsigned int i = 0; i < p.currentHero->m_Inventory.size(); i++) {
-										//p.currentHero->m_Inventory[i] = creeps[i].GetItem(); // Fix!
+										p.currentHero->m_Inventory[i] = &creeps[i].GetItem(); // Check!
 									}
 									break;
 								}
@@ -188,26 +189,33 @@ void Jungle(Player &p, Map&m) { // Map is currently unessecary! Wasted reference
 
 // Will always run for 3 ticks
 void Laning(Player &p, Map &m) { // Add teams
+	system("cls");
 	laneVision = true;
 	int ticks = 0;
-	bool laning = false;
-	std::array<LaneCreep, 8> creeps{};
-	system("cls");
+	bool laning = true;
+	std::array<LaneCreep*, 8> creeps{};
+	for (unsigned int i = 0; i < creeps.size(); i++) {
+		LaneCreep* newCreep = new LaneCreep();
+		creeps[i] = newCreep;
+	}
 	std::cout << "======LANE======\n";
 	while(laning) {
+		system("cls");
 		if(ticks < 3) {
 			p.currentHero->PrintStats();
 			if (p.currentHero->m_Health < 100) {
-				std::cout << "Your health is low, consider leaving!\n";
+				std::cout << "Your health is low, consider leaving!\ny/n"; std::cin >> p.choice;
+				char c = std::tolower(p.choice);
+				switch (c) {
+					case 'y': laning = false; break;
+					case 'n': continue;
+				}
 			}
 			for (unsigned int i = 0; i < creeps.size(); i++) {
-				std::cout << "Creep created!\n";
-				// Calculate attacks
-
+				std::cout << i << ") " << std::string(creeps[i]->GetHealth() / 2, '|') << '\n';
 			}
-			ticks++;
 		}
-		std::cout << "What would you like to do?\n"
+		std::cout << "\nWhat would you like to do?\n"
 				  << "1)Continue  2)Jungle  3)Back";
 		std::cin >> p.choice;
 		switch(p.choice) {
@@ -215,7 +223,7 @@ void Laning(Player &p, Map &m) { // Add teams
 			case 2: Jungle(p, m); break;
 			case 3: laning = false; break;
 		}
-		// Get other team members and enemies
+		ticks++;
 	}
 	Game(p, m);
 }
@@ -280,15 +288,15 @@ void Game(Player& p, Map& m) {
 		// Player
 		std::cout << "\n===PLAYER==="; // Add usernames?
 		p.currentHero->PrintStats();
-		p.currentHero->PrintInventory();
+		// p.currentHero->PrintInventory();
 
 		// Vision
 		if(jungVision) {
-			std::cout << "You can see jungle:\n";
+			std::cout << "You can see the jungle:\n";
 			// Check jungle
 		}
 		if (laneVision) {
-			std::cout << "You can see lane:\n";
+			std::cout << "You can see the lane:\n";
 			// Check lane
 		}
 
@@ -296,8 +304,8 @@ void Game(Player& p, Map& m) {
 		std::cout << "P) Shop  L) Laning  J) Jungle  R) Roshan  S) Scoreboard  C) Continue  T) Change tick rate  X) End game\n";
 		std::cin >> p.choice;
 		system("cls");
-		std::tolower(p.choice);
-		switch (p.choice) { // Always have tick happen!!!!????
+		char c = std::tolower(p.choice);
+		switch (c) { // Always have tick happen!!!!????
 			case 'p': ShopInterface(p);
 			case 'l': Laning(p, m);
 			case 'j': Jungle(p, m);

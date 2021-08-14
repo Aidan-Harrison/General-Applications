@@ -106,7 +106,7 @@ void PlayerSetup(Player &p) { // Possibly convert to a single loop | Sort and pr
 }
 
 // Add team compositions | Move to map setup!????
-void TeamSetup(Map &m, Player &p) {
+void TeamSetup(Map &m, Player &p) { // Heap allocate heroes? or player
 	srand(time(0));
 	int membersToAdd = 0;
 	if(p.teamID == 1)// Radiant | Add player to respective team, then calcualte rest
@@ -121,8 +121,10 @@ void TeamSetup(Map &m, Player &p) {
 		m.direTeam.push_back(heroes[membersToAdd]);
 	}
 
-	if(m.radiantTeam.size() > 5) m.radiantTeam.pop_back();
-	if(m.direTeam.size() > 5)	m.direTeam.pop_back();
+	if(m.radiantTeam.size() > 5) 
+		m.radiantTeam.pop_back();
+	if(m.direTeam.size() > 5) 
+		m.direTeam.pop_back();
 
 	for (unsigned int i = 0; i < m.radiantTeam.size(); i++)
 		SetupAbilities(m.radiantTeam[i]);
@@ -147,7 +149,7 @@ int main() {
 	TeamSetup(m, p);
 	ShopSetup();
 
-	std::thread drawThread(Draw, m, p);
+	// std::thread drawThread(Draw, m, p);
 	// DOTA LOGO
 	std::fstream file;
 	std::string line = " ";
@@ -183,7 +185,7 @@ int main() {
 	std::cin.get();
 	Game(p, m);
 
-	drawThread.join();
+	// drawThread.join();
 	return 0;
 }
 

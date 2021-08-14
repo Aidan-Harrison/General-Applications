@@ -6,6 +6,12 @@
 #include <map>
 #include <set>
 
+void AllPossiblePairs(std::vector<int> &arr) {
+    for(unsigned int i = 0; i < arr.size(); i++)
+        for(unsigned int j = 0; j < arr.size(); j++)
+            std::cout << arr[i] << ", " << arr[j] << "    ";
+}
+
 // Find missing number n - n assuming order of 1,2,3,4,5,etc...
 int FindMissing(std::vector<int> &arr) {
 	if(arr.size() == 0)
@@ -26,19 +32,64 @@ int FindMissing(std::vector<int> &arr) {
 	return -1; // Failed
 }
 
-int FindDuplicateOfTarget(int target, std::vector<int> &arr) {
+bool FindDuplicateOfTarget(std::vector<int> &arr, const int target) {
 	if(arr.size() == 0)
 		return false;
 	else {
 		std::sort(arr.begin(), arr.end());
-		for(int i = 0; i < arr.size(); i++) {
-			if(arr[i] == target)
-				if(arr[i++] == target)
-					return true;	
+		for(int i = 0; i < arr.size()-1; i++) {
+			if(arr[i] == target && arr[i++] == target)
+				return true;
 		}
 	}
 	return false;
 }
+
+bool FindDuplicateOfTargetMap(std::vector<int> &arr, const int target) { 
+    if(arr.size() == 0)
+        return false;
+    else {
+        std::unordered_map<int,int> map;
+        for(unsigned int i = 0; i < arr.size(); i++)
+            map.insert(std::pair<int,int>(i, arr[i]));
+        for(auto i : arr)
+            if(i == target)
+                if(map.count(i) > 1) 
+                    return true;
+    }
+    return false;
+}
+
+// Find all values which have duplicates
+std::vector<int> FindAllDuplicates(std::vector<int> &arr) { // Optimise | Should be a much more efficient way
+    if(arr.size() <= 1)
+        return arr;
+    else {
+        std::vector<int> duplicates{};
+        std::unordered_map<int,int> map;
+        for(auto i : arr)
+            map[i]++;
+        for(auto i : arr) {
+            if(map.count(i) > 1) {
+                for(auto j : duplicates)
+                    if(i == j)
+                        continue;
+                    else {
+                        duplicates.push_back(i);
+                        break;
+                    }
+            }
+        }
+
+        for(auto i : duplicates)
+            std::cout << i << ", ";
+
+        return duplicates;
+    }
+    return arr;
+}
+
+
 
 // Given an unsorted array, find the largest and smallest numbers, (THE ARRAY IS NOT ALLOWED TO BE SORTED) | Sort then return first & last otherwise
 // Iterative version: Base algorithm, compare values to one another until the largest and smallest are found
@@ -65,7 +116,7 @@ std::tuple<int,int> LargestSmallestUnsorted(std::vector<int> &arr) {
 					arr[i] = smallest;
 				}
 			}
-		}
+		} 
 		std::get<0>(values) = largest;
 		std::get<1>(values) = smallest;
 	}
@@ -390,7 +441,67 @@ std::vector<int> SortKSortedArray(std::vector<int> &arr, const int k) {
     return arr;
 }
 
+std::vector<std::vector<int>> MergeOverlappingIntervals(std::vector<std::vector<int>> &intervals) {
+    std::vector<std::vector<int>> result{};
+    if(intervals.size() <= 1)
+        return intervals;
+    else {
+        std::sort(intervals.begin(), intervals.end());
+        std::vector<int> firstInterval = intervals[0];
+        for(auto i : firstInterval)
+            std::cout << i << ", ";
+        putchar('\n');
+        for(auto i : intervals) {
+            std::cout << "Compare:" << i[0] << " to " << firstInterval[1] << "|\n";
+            if(i[0] <= firstInterval[1])
+                firstInterval[1] = std::max(i[1], firstInterval[1]);
+            else {
+                result.push_back(firstInterval);
+                firstInterval = i;
+            }
+        }
+        result.push_back(firstInterval);
+    }
+    return result;
+}
+
+// Given an array of integers representing building heights, check which buildings can see the sun
+int SunsetViews(std::vector<int> &arr) {
+    if(arr.size() == 0)
+        return 0;
+    else {
+        int result = 0;
+        int tallest = arr[0];
+        result++; // First building will always see sunlight
+        for(unsigned int i = 1; i < arr.size(); i++) {
+            if(arr[i] > tallest) {
+                result++;
+                tallest = arr[i];
+            }
+        }
+        return result;
+    }
+    return 0;
+}
+
+// Given a staircase of n steps, where a person can hop either 1 or 2 steps at a time. Find all possible ways of traversing the staircase
+int StaircaseTraversal(const int n) {
+    
+}
+
 int main() {
+    std::cout << "All possible pairs:\n";
+    std::vector<int> array{1,2,3};
+    AllPossiblePairs(array);
+
+    std::cout << "\nFind all duplicates:\n";
+    std::vector<int> dupArray{1,2,3,1,1,1,2,5,6,5,5,9,7,1};
+    std::cout << "Duplicate of target: " << FindDuplicateOfTarget(dupArray, 1) << '\n';
+    std::cout << "Duplicate of target (Map): " << FindDuplicateOfTargetMap(dupArray, 1) << '\n';
+    std::cout << "All Duplicates:\n";
+    FindAllDuplicates(dupArray);
+
+    std::cout << "\nShift negative:\n";
 	std::vector<int> data{1,-2,15,-67,-8,-3,45,90,123,-4,14};
 	ShiftNegative(data);
 
@@ -449,6 +560,20 @@ int main() {
     std::cout << FindUnsortedSubArray(data5);
 
     putchar('\n');
+
+    std::cout << "Merge Overlapping intervals:\n";
+    std::vector<std::vector<int>> inter{{1,3}, {2,6}, {8,10}, {15,18}};
+    std::vector<std::vector<int>> interResult = MergeOverlappingIntervals(inter);
+    for(unsigned int i = 0; i < interResult.size(); i++)
+        for(unsigned int j = 0; j < interResult[0].size(); j++)
+            std::cout << interResult[i][j] << ", ";
+
+    std::cout << "\nSunset Views:\n";
+    std::vector<int> buildings{7,4,8,2,9};
+    std::cout << SunsetViews(buildings);
+
+    std::cout << "\nStaircase Traversal:\n";
+    std::cout << StaircaseTraversal(4);
 
 	return 0;
 }

@@ -16,12 +16,9 @@ struct Node {
 std::queue<Node*> Q;
 
 // Iterative
-Node* BreadthFirstSearch(Node *root, int target) {
+Node* BreadthFirstSearchIterative(Node *root, int target) {
     Node *nullNode = new Node(0);
     root->isVisited = true;
-    Q.push(root);
-    Q.push(root);
-    Q.push(root);
     Q.push(root);
     while(!Q.empty()) {
         std::cout << " | " << Q.size() << '\n';
@@ -40,7 +37,7 @@ Node* BreadthFirstSearch(Node *root, int target) {
 }
 
 // Recursive
-Node *BreadthFirstSearchRecursive(Node *curNode, int target) {
+Node* BreadthFirstSearchRecursive(Node *curNode, int target) {
 
 }
 
@@ -51,7 +48,7 @@ int main() {
     Node *n3 = new Node(4);
     Node *n4 = new Node(9);
 
-    Node *resultNode = BreadthFirstSearch(root, 4);
+    Node *resultNode = BreadthFirstSearchIterative(root, 4);
     std::cout << resultNode->data;
 
     return 0;

@@ -18,15 +18,18 @@ void Hero::PrintAbilities() const {
 	}
 }
 
-void Hero::PrintInventory() const {
+void Hero::PrintInventory() const { // Fix due to pointers
 	std::cout << "\nInventory:\n\t";
-	for(unsigned int i = 0; i < 6; i++) std::cout << m_Inventory[i].GetName() << ", ";
-	std::cout << "Backpack:\n\t";
-	for(unsigned int i = 7; i < 9; i++) std::cout << m_Inventory[i].GetName() << ", ";
+	for (unsigned int i = 0; i < 6; i++)
+		std::cout << m_Inventory[i]->GetName() << ", ";
+	std::cout << "\nBackpack:\n\t";
+	for(unsigned int i = 7; i < 9; i++) 
+		std::cout << m_Inventory[i]->GetName() << ", ";
 }
 
 void Hero::PrintStash() const {
-	for(unsigned int i = 0; i < 8; i++) std::cout << m_Stash[i].GetName() << '\n';
+	std::cout << "\nStash:\n\t";
+	for(unsigned int i = 0; i < 8; i++) std::cout << m_Stash[i].GetName() << " | ";
 }
 
 void Hero::PrintAll() const {

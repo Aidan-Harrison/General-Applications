@@ -49,7 +49,7 @@ int stack::Pop() {
 }
 
 void stack::Print() const {
-    for(int i = 0; i < top; i++)
+    for(int i = 0; i <= top; i++)
         std::cout << items[i] << '|';
 }
 

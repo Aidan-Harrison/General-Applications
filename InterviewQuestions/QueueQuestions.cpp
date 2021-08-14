@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <queue>
 
 struct Queue {
     int MAXSIZE = 10;
@@ -58,7 +59,7 @@ struct Queue {
     }
 
     void Print() {
-        for(int i = 1; i <= front; i++)
+        for(unsigned int i = 1; i <= front; i++)
             std::cout << items[i] << ", ";
     }
 };
@@ -66,9 +67,8 @@ struct Queue {
 void SortQueue(Queue &q) {
    int size = q.GetSize();
    std::vector<int> container{};
-   for(int i = 0; i < size; i++) {
+   for(int i = 0; i < size; i++)
         container.push_back(q.Dequeue()); // Check!
-   }
    std::sort(container.begin(), container.end());
    for(int i = 0; i < container.size(); i++)
         q.Enqueue(container[i]);

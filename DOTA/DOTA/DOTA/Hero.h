@@ -61,11 +61,11 @@ public:
 	bool isBanned = false;
 	int type = 0, gold = 500, team = 0, level = 1, experience = 0, respawnTime = 20; // Type defaults to strength | Have respawn time scale
 	std::vector<Ability> abilities = {};
-	std::array<Item, 9> m_Inventory{};
+	std::array<Item*, 9> m_Inventory{};
 	std::array<Item, 8> m_Stash{};
 	Hero() = default;
 	// Defaults to Axe
-	Hero(const char* name = "Axe", int health = 500, int mana = 250, int damage = 60, int moveSpeed = 250, int attackRange= 500, int type = 0) // Check type!
+	Hero(const std::string &name = "Axe", int health = 500, int mana = 250, int damage = 60, int moveSpeed = 250, int attackRange= 500, int type = 0) // Check type!
 		:m_Name(name), m_Health(health), m_Mana(mana), m_Damage(damage), m_MoveSpeed(moveSpeed), m_AttackRange(attackRange), type(type)
 	{
 		assert(m_Name != " " && m_Health != 0 && m_Mana != 0 && m_Damage != 0 && m_MoveSpeed != 0);

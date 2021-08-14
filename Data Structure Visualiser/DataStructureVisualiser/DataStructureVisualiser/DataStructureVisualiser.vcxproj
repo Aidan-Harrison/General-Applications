@@ -150,12 +150,15 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="Stack.cpp" />
+    <ClCompile Include="Tree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graph.h" />
+    <ClInclude Include="Interface.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Stack.h" />
+    <ClInclude Include="Tree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

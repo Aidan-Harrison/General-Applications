@@ -1,46 +1,73 @@
 #include <iostream>
 #include <list>
+#include <stack>
+#include <vector>
 
-class Graph {
-private:
-    int numOfVerts;
-    std::list<int> *adjVerts;
-    bool *isVisited;
-public:
-    Graph(int verts)
-        :numOfVerts(verts) 
+struct gNode {
+    bool isVisited = false;
+    char key = 'a';
+    std::vector<gNode*> connectedNodes{};
+    gNode() {}
+    gNode(char c, const int children) 
+        :key(c) 
     {
-        adjVerts = new std::list<int>[verts]; // Dynamically allocate a 'stack' of integers
-        isVisited = new bool[verts]; // Dynamically allocate a 'stack' of bools
+        connectedNodes.resize(children);
     }
-    void AddEdge(int start, int end);
-    void DepthFirstSearch(int vertex);
+    ~gNode() {}
 };
 
-void Graph::AddEdge(int start, int end) {
-    adjVerts[start].push_front(end);
+void DepthFirstSearchIterative(gNode *n) { // CHANGE!
+    std::stack<gNode*> stack;
+    stack.push(n);
+
+    while(!stack.empty()) {
+        gNode* vertex = stack.top();
+        vertex->isVisited = true;
+        std::cout << vertex->key << " ";
+        stack.pop();
+        for(unsigned int i = 0; i < vertex->connectedNodes.size(); i++)
+            if(!vertex->connectedNodes[i]->isVisited)
+                stack.push(vertex->connectedNodes[i]);
+    }
 }
 
-void Graph::DepthFirstSearch(int vertex) {
-    isVisited[vertex] = true;
-    std::list<int> adjVert = adjVerts[vertex];
-
-    std::cout << vertex << " ";
-
-    for(std::list<int>::iterator it = adjVert.begin(); it != adjVert.end(); it++)
-        if(!isVisited[*it]) // If a node has been visited, recursively call and visit it
-            DepthFirstSearch(*it);
+void DepthFirstSearchRecursive(gNode *n) {
+    n->isVisited = true; 
+    std::cout << n->key << " ";
+    for(unsigned int i = 0; i < n->connectedNodes.size(); i++)
+        if(!n->connectedNodes[i]->isVisited)
+            DepthFirstSearchRecursive(n->connectedNodes[i]);
 }
 
 int main() {
-    Graph g(4);
+    gNode root('s', 3);
+    gNode n1('a', 2);
+    gNode n2('d', 3);
+    gNode n3('b', 2);
+    gNode n4('c', 2);
 
-    g.AddEdge(0, 1);
-    g.AddEdge(0, 2);
-    g.AddEdge(1, 2);
-    g.AddEdge(2, 3);
+    root.connectedNodes[0] = &n1;
+    root.connectedNodes[1] = &n3;
+    root.connectedNodes[2] = &n4;
 
-    g.DepthFirstSearch(2);
+    n1.connectedNodes[0] = &root; 
+    n1.connectedNodes[1] = &n2;
+
+    n2.connectedNodes[0] = &n1; 
+    n2.connectedNodes[1] = &n3; 
+    n2.connectedNodes[2] = &n4;
+
+    n3.connectedNodes[0] = &root; 
+    n3.connectedNodes[1] = &n2; 
     
+    n4.connectedNodes[0] = &root;
+    n4.connectedNodes[1] = &n2;
+
+    /*=== Comment one out ===*/
+    std::cout << "Iterative: ";
+    DepthFirstSearchIterative(&root);
+    std::cout << "\nRecrusive: ";
+    // DepthFirstSearchRecursive(&root);
+
     return 0;
 }

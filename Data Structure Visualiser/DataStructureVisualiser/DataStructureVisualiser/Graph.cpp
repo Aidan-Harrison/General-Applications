@@ -3,8 +3,8 @@
 void Graph::Insert(const int key, node* n) {
 }
 
-node* Graph::Search(const int key, node* n, const char type) { // Binary Tree only 
-	// Binary Tree
+node* Graph::Search(const int key, node* n, const char type) {
+	/*
 	if (n != nullptr) {
 		if (key == n->data)
 			return n;
@@ -13,6 +13,7 @@ node* Graph::Search(const int key, node* n, const char type) { // Binary Tree on
 		else
 			return Search(key, n->rChild, type);
 	}
+	*/
 
 	// Standard Graph
 	if (n != nullptr) {
@@ -30,6 +31,10 @@ void Graph::Insert(const int key) {
 
 void Graph::Search(const int key, const char type) { // SFML interface
 	Search(key, root, type);
+}
+
+void Graph::DFS(node *n) {
+	n->isVisited = true;
 }
 
 void Graph::Draw(sf::RenderWindow &window) { // Change

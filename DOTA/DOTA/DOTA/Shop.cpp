@@ -101,40 +101,40 @@ void Sell(Player &p) {
 				std::cout << "You must pick a value between 1-9!\n";
 			}
 			else if (choice == 1) {
-				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+				p.currentHero->m_Inventory[choice]->DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice]->GetCost() * p.currentHero->level / 2;
 			}
 			else if (choice == 2) {
-				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+				p.currentHero->m_Inventory[choice]->DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice]->GetCost() * p.currentHero->level / 2;
 			}
 			else if (choice == 3) {
-				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+				p.currentHero->m_Inventory[choice]->DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice]->GetCost() * p.currentHero->level / 2;
 			}
 			else if (choice == 4) {
-				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+				p.currentHero->m_Inventory[choice]->DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice]->GetCost() * p.currentHero->level / 2;
 			}
 			else if (choice == 5) {
-				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+				p.currentHero->m_Inventory[choice]->DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice]->GetCost() * p.currentHero->level / 2;
 			}
 			else if (choice == 6) {
-				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+				p.currentHero->m_Inventory[choice]->DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice]->GetCost() * p.currentHero->level / 2;
 			}
 			else if (choice == 7) {
-				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+				p.currentHero->m_Inventory[choice]->DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice]->GetCost() * p.currentHero->level / 2;
 			}
 			else if (choice == 8) {
-				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+				p.currentHero->m_Inventory[choice]->DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice]->GetCost() * p.currentHero->level / 2;
 			}
 			else if (choice == 9) {
-				p.currentHero->m_Inventory[choice].DeleteItem(); // Check!!!
-				p.currentHero->gold += p.currentHero->m_Inventory[choice].GetCost() * p.currentHero->level / 2;
+				p.currentHero->m_Inventory[choice]->DeleteItem(); // Check!!!
+				p.currentHero->gold += p.currentHero->m_Inventory[choice]->GetCost() * p.currentHero->level / 2;
 			}
 		}
 	}

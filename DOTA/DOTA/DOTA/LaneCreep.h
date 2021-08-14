@@ -12,12 +12,21 @@ private:
 	int health = 100, m_exp = 25, m_Damage = 30, goldToGive = 35;
 public:
 	bool dead = false, isMega = false;
-	LaneCreep() {
+	LaneCreep() 
+	{
 		assert(health != 0 && m_exp != 0 && m_Damage != 0);
 	}
-	~LaneCreep() = default;
 	void CheckBase(Base &b);
+	int GetHealth() const { return health; }
+
 	int AutoAttack();
+	void TakeDamage(const int damage) {
+		health -= damage;
+		if (health <= 0)
+			dead = true;
+	}
+
+	~LaneCreep() {};
 };
 
 struct MegaCreep : public LaneCreep {

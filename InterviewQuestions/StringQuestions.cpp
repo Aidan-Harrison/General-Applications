@@ -6,22 +6,23 @@
 #include <map>
 #include <unordered_map>
 
-// Returns all duplicate characters in string format | Change!/Fix! Return
+// Returns all duplicate characters in string format (Case insensitive) | Fix! Not pushing to map!
 std::string GetDuplicates(const std::string &&str) {
     if(str.length() == 0)
-        return str;
+        return "";
     else {
-        // std::sort(str.begin(), str.end()); // Check need!
-        std::string dupStr= ""; // Use
-        std::map<int, char> m;
-        for(char i : str)
-            m[i]++; // Add to map
-        for(char i = 'a'; i <= 'z'; i++)
-            if(m.count(i) > 0)
+        std::string dupStr = "";
+        std::unordered_map<int, char> m;
+        for(char i : str) {
+            char c = std::tolower(i);
+            m[c]++;
+        }
+        for(char i = 'a'; i <= 'z'; i++) // Account for appending same char
+            if(m.count(i) > 1)
                 dupStr.append(std::to_string(i));
         return dupStr;
     }
-    return str;
+    return "";
 }
 
 std::string DeleteDuplicates(std::string &str) {
@@ -297,13 +298,10 @@ char FindFirstNonDuplicate(std::string &&str) {
         return ' ';
     else {
         std::unordered_map<char,int> m;
-        for(char i : str) {
-            char c = std::tolower(str[i]);
-            m[i]++;
-        }
-        for(int i = 0; i < str.length(); i++) {
-            char c = std::tolower(str[i]);
-            if(m.count(c) == 1)
+        for(int i = 0; i < str.length(); i++)
+            m.insert(std::pair<char, int>(str[i], i));
+        for(unsigned int i = 0; i < str.length(); i++) {
+            if(m.count(str[i]) == 1)
                 return str[i];
         }
     }
@@ -315,7 +313,14 @@ char FindFirstNonDuplicateIter(std::string &&str) {
         return ' ';
     else {
         std::sort(str.begin(), str.end());
-        for(int i = 0; i < str.length()-1; i++) {
+        // Remove whitespace
+        for(unsigned int i = 0; i <= str.length(); i++)
+            if(str[i] == ' ')
+                str.erase(str.begin() + i);
+        for(auto i : str)
+            std::cout << i;
+        putchar('\n');
+        for(unsigned int i = 0; i < str.length()-1; i++) {
             if(str[i] != str[i++])
                 return str[i];
         }
@@ -461,6 +466,9 @@ std::string LongestPalindromicSubString(std::string &&str) {
 }
 
 int main() {
+    std::cout << "Get Duplicates:\n";
+    std::cout << GetDuplicates("Hello World");
+
     std::cout << "Check Character Exists:\n";
     std::cout << CheckExists('a', "Hello World") << '\n';
     std::cout << CheckExists('o', "Hello World");
@@ -490,13 +498,14 @@ int main() {
 
     putchar('\n');
     std::cout << "Longest Palindromic Sub-String:\n";
-    // std::cout << LongestPalindromicSubString("Banana");
+    std::cout << LongestPalindromicSubString("Banana");
 
     //std::cout << ReverseWordsInString("Hello World");
     putchar('\n');
     std::cout << "Find First Non-Duplicate:\n";
     std::cout << FindFirstNonDuplicate("Tthhiiss is a Test") << '\n';
     std::cout << FindFirstNonDuplicate("bbbbcccccddddffffggghhhhkuuuTest") << '\n';
+    std::cout << "Find First Non-Duplicate Iter:\n";
     std::cout << FindFirstNonDuplicateIter("Tthhiiss is a Test") << '\n';
     std::cout << FindFirstNonDuplicateIter("bbbbcccccddddffffggghhhhkuuuTest");
 

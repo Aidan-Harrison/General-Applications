@@ -15,16 +15,18 @@ struct sList {
 
     node *head;
 
-    // Useful functions
+    // Standard functions
     int GetSize();
     void AddNode(node *n); // Take into accout head node
+    void Print(node *n) const;
+    void Clear(node *n);
 
     void PrintMiddle(node *head, int size);
     void DeleteMiddle(node *head, int size);
     void Increment(node *n);
     node* NthFromEnd(node* head, int n, int total); // Node instead?
-    void ReverseList(node *head);
-    void SortList(); // DO!
+    void ReverseList(node *n);
+    void SortList(); // DO! | Merge Sort
     void RotateList();
     int SumOfLinkedList(node *n1, node *n2);
 };
@@ -49,6 +51,15 @@ int sList::GetSize() {
     return size;
 }
 
+void sList::Print(node *n) const {
+    node *tempNode = n;
+    while (tempNode != nullptr) {
+        std::cout << tempNode->data << " -> ";
+        tempNode = tempNode->next;
+    }
+    delete tempNode;
+}
+
 void sList::PrintMiddle(node *head, int size) { // Rounded up
     node *tempNode = head;
     for(unsigned int i = 0; i < size/2; i++)
@@ -57,12 +68,11 @@ void sList::PrintMiddle(node *head, int size) { // Rounded up
     delete tempNode;
 }
 
-void sList::DeleteMiddle(node *head, int size) { // Wrong! Temporary node doesn't work | Formula is correct, change to use actual list, not temp iterator
+void sList::DeleteMiddle(node *head, int size) { // Wrong! Temporary node doesn't work | Formula is also wrong, change to use actual list, not temp iterator
     node *tempNode = head;
     for(unsigned int i = 0; i < size/2-2; i++) // Go back one before mid
         tempNode = tempNode->next;
-    tempNode->next = tempNode->next->next; // Check!
-
+    tempNode->next = tempNode->next->next;
     delete tempNode;
 }
 
@@ -70,23 +80,36 @@ void sList::Increment(node *n) {
     n->data++;
 }
 
-// Returns the nth element from the end of the list
+// Returns the nth element from the end of the list | Change?
 node* sList::NthFromEnd(node *head, int n, int total) {
     for(int i = 0; i > total-n; i++) {
+    }
+    return nullptr;
+}
 
+void sList::Clear(node *n) {
+    while(n != nullptr) {
+        n->data = 0;
+        n = n->next;
     }
 }
 
-void sList::ReverseList(node *head) {
-    node* current = head;
-    node* prev = nullptr, *next = nullptr;
-    while(current != nullptr) {
-        next = current->next;
-        current->next = prev;
-        prev = current;
-        current = next;
-    }
-    head = prev; // We need to set the head to the end now that the list is reversed
+void sList::ReverseList(node *n) {
+   if(n->next == nullptr)
+        return;
+   node *root = n;
+   std::vector<int> temp{};
+   while(n != nullptr) {
+       temp.push_back(n->data);
+       n = n->next;
+   }
+   n = root;
+   Clear(n);
+   for(unsigned int i = 0; i < temp.size(); i++) {
+       node *newNode = new node(i);
+       n->next = newNode;
+       n = n->next;
+   }
 }
 
 void sList::RotateList() {
@@ -108,33 +131,45 @@ int sList::SumOfLinkedList(node *n1, node *n2) {
     return std::stoi(firstNum) + std::stoi(secondNum);
 }
 
-
+struct dNode {
+    int data;
+    dNode *prev;
+    dNode *next;
+    dNode() :data(0), prev(nullptr), next(nullptr) {}
+    dNode(int d) :data(d), prev(nullptr), next(nullptr) {}
+};
 
 // Doubly Linked-List
 class dList {
 private:
 public:
-    struct node {
-        int data;
-        node *prev;
-        node *next;
-        node() :data(0), prev(nullptr), next(nullptr) {}
-        node(int d) :data(d), prev(nullptr), next(nullptr) {}
-    };
-
     dList() {}
-    ~dList() {}
 
-    void PrintMiddle(node *head, int size); // No point in including?
-    void DeleteMiddle(node *head, int size);
-    void IncrementElement(int element);
-    node* NthFromEnd(node *tail, int n, int total);
-    void RemoveDuplicates(node *n);
-    void ReverseList(node *head);
+    void Print(dNode *n) const;
+
+    void PrintMiddle(dNode *head, int size); // No point in including?
+    void DeleteMiddle(dNode *head, int size);
+    void IncrementElement(dNode *head, const int element);
+    dNode* NthFromEnd(dNode *tail, int n, int total);
+    void RemoveDuplicates(dNode *n);
+    void ReverseList(dNode *tail);
+
+    ~dList() {}
 };
 
-void dList::PrintMiddle(node *head, int size) {
-    node *tempNode = new node;
+void dList::Print(dNode *n) const {
+    while(n != nullptr) {
+        if(n->prev == nullptr)
+            std::cout << "x";
+        std::cout << " <- " << n->data << " -> ";
+        if(n->next == nullptr)
+            std::cout << "x";
+        n = n->next;
+    }
+}
+
+void dList::PrintMiddle(dNode *head, int size) {
+    dNode *tempNode = new dNode;
     tempNode = head;
     for(int i = 0; i <= size/2; i++) {
         tempNode = tempNode->next;
@@ -143,21 +178,39 @@ void dList::PrintMiddle(node *head, int size) {
     delete tempNode;
 }
 
-void dList::IncrementElement(int element) {
-
+void dList::DeleteMiddle(dNode *head, int size) {
+    dNode *tempNode = head;
+    for(unsigned int i = 0; i < size/2; i++)
+        tempNode = tempNode->next;
+    tempNode->prev->next = tempNode->next;
+    delete tempNode;
 }
 
-dList::node* dList::NthFromEnd(node *tail, int n, int total) {
-    node *tempNode = new node;
+// Given the head node and the element of another node, increment the node which holds the matching element
+void dList::IncrementElement(dNode *head, const int element) {
+    dNode *tempNode = head;
+    while(tempNode != nullptr) {
+        if(tempNode->next->data == element) {
+            tempNode->next->data += 1;
+            tempNode = nullptr;
+        }
+        else
+            tempNode = tempNode->next;
+    }
+    delete tempNode;
+}
+
+dNode* dList::NthFromEnd(dNode *tail, int n, int total) {
+    dNode *tempNode = new dNode;
     tempNode = tail;
     for(int i = total; i > n; i--) {
         tempNode = tempNode->prev;
     }
-    // Handle deletion!
+    // Handle deletion!? Scope deletes??
     return tempNode;
 }
 
-void dList::RemoveDuplicates(node *n) { // Check!, fairly certain it is correct
+void dList::RemoveDuplicates(dNode *n) { // Check!, fairly certain it is correct
     while(n != nullptr) {
         if(n->data == n->next->data)
             n->next = n->next->next;
@@ -165,16 +218,11 @@ void dList::RemoveDuplicates(node *n) { // Check!, fairly certain it is correct
     }
 }
 
-void dList::ReverseList(node *head) {
-    node* current = head;
-    node* prev = nullptr, *next = nullptr;
-    while(current != nullptr) {
-        next = current->next;
-        current->next = prev;
-        prev = current;
-        current = next;
+void dList::ReverseList(dNode *tail) {
+    while(tail != nullptr) {
+        tail->next = tail->prev;
+        tail = tail->prev;
     }
-    head = prev; // We need to set the head to the end now that the list is reversed
 }
 
 // Assuming two lists are of the same size, get the sum of their data
@@ -215,6 +263,7 @@ int SumofListsIndependent(sList &n1, sList &n2) {
 }   
 
 int main() {
+    // Singly-Linked List
     sList l;
     sList l2;
     node *head = new node(5);
@@ -228,10 +277,44 @@ int main() {
     n2->next = n3;
     n3->next = tail;
 
-    l.PrintMiddle(head, 5);
+    l.Print(head);
+    putchar('\n');
+    // l.PrintMiddle(head, 5);
+    l.DeleteMiddle(head, 5);
+    //l.ReverseList(head);
+    l.Print(head);
 
+    // SumofListsIndependent(l, l2);
 
-    SumofListsIndependent(l, l2);
+    // Doubly-Linked List
+    std::cout << "\nDouble:\n";
+    dList dL;
+    dNode *dHead = new dNode(5);
+    dNode *dN1 = new dNode(16);
+    dNode *dN2 = new dNode(7);
+    dNode *dN3 = new dNode(34);
+    dNode *dTail = new dNode(9);
+
+    dHead->next = dN1;
+
+    dN1->prev = dHead;
+    dN1->next = dN2;
+
+    dN2->prev = dN1;
+    dN2->next = dN3;
+
+    dN3->prev = dN2;
+    dN3->next = dTail;
+
+    dTail->prev = dN3;
+
+    dL.Print(dHead);
+    dL.IncrementElement(dHead, 34);
+    putchar('\n');
+    dL.Print(dHead);
+    dL.DeleteMiddle(dHead, 5);
+    putchar('\n');
+    dL.Print(dHead);
 
     return 0;
 }

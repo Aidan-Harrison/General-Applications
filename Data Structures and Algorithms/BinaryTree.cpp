@@ -85,7 +85,7 @@ void bTree::Print(node *n, node *other) const { // Handle both children!!!!!
     }
 }
 
-// Another implementation
+// Another implementation | Purely node based ==============================================
 struct bstNode {
     int data;
     bstNode *left;
@@ -95,24 +95,32 @@ struct bstNode {
     bool Search(int value);
     void Insert(int value);
     void Print() const;
+
+    void InOrder();
+    void PreOrder();
+    void PostOrder();
 };
 
-void bstNode::Insert(int value) { // Fix!
+void bstNode::Insert(int value) {
     if(value <= data) {
-        if(left == nullptr)
+        if(left == nullptr) {
             bstNode *newNode = new bstNode(value);
+            left = newNode;
+        }
         else
             left->Insert(value);
     }
     else {
-        if(right == nullptr)
+        if(right == nullptr) {
             bstNode *newNode = new bstNode(value);
+            right = newNode;
+        }
         else
             right->Insert(value);
     }
 }
 
-bool bstNode::Search(int value) { // Partially fix?
+bool bstNode::Search(int value) {
     if(value == data)
         return true;
     else if(value < data) {
@@ -130,12 +138,30 @@ bool bstNode::Search(int value) { // Partially fix?
     return false;
 }
 
-void bstNode::Print() const { // In-Order printing/traversal | Fix! Infinite loop
+void bstNode::Print() const { // In-Order printing/traversal
     if(left != nullptr)
         left->Print();
     std::cout << data << ", ";
     if(right != nullptr)
         right->Print();
+}
+
+void bstNode::InOrder() {
+
+}
+
+void bstNode::PreOrder() { 
+
+    /*  // DFS?
+    std::cout << data << ", ";
+    if(left != nullptr)
+        left->PreOrder();
+    if(right != nullptr)
+        right->PreOrder();
+    */
+}
+
+void bstNode::PostOrder() {
 }
 
 int main() {    
@@ -158,10 +184,18 @@ int main() {
 
     root->Print();
     putchar('\n');
-    std::cout << root->Search(8);
-    putchar('\n');
+    std::cout << root->Search(8) << '\n';
     root->Insert(34);
+    std::cout << root->Search(34) << '\n';
     root->Print();
+
+    std::cout << "Traversal:\n";
+    root->InOrder();
+    putchar('\n');
+    root->PreOrder();
+    putchar('\n');
+    root->PostOrder();
+    putchar('\n');
 
     return 0;
 }
