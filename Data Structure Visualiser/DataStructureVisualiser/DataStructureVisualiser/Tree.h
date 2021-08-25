@@ -8,10 +8,10 @@ struct tNode {
 	bool isVisited = false;
 	sf::Text dataText;
 	sf::CircleShape circle;
-	tNode* lChild;
-	tNode* rChild;
+	tNode* lChild = nullptr;
+	tNode* rChild = nullptr;
 	tNode() {}
-	tNode(int d, sf::Vector2f pos, bool left = true) : lChild(nullptr), rChild(nullptr) 
+	tNode(int d, sf::Vector2f pos, bool left = true) 
 	{
 		circle.setFillColor(sf::Color::Green);
 		circle.setRadius(25.0f);

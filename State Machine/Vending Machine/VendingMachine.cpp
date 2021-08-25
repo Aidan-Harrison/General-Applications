@@ -1,11 +1,9 @@
 #include "VendingMachine.h"
 
-Machine::Machine(unsigned short stock) 
+Machine::Machine(unsigned int stock) 
     :stock(stock)
 {
 }
-
-Machine::~Machine() {};
 
 void Machine::Fill(const unsigned int quantity) {
     stock += quantity;

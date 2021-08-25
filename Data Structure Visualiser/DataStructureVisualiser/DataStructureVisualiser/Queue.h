@@ -26,7 +26,6 @@ public:
 	void Dequque();
 
 	void Draw(sf::RenderWindow &window);
-	void Interface(sf::RenderWindow& window);
 
 	Queue(const std::vector<int> &items) 
 	{

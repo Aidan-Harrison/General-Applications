@@ -11,16 +11,12 @@ public:
 	Collision(const float x, const float y, const sf::Vector2f &pos) // Position as well!
 	{
 		col.setSize(sf::Vector2f(x, y));
+		col.setOrigin(col.getSize().x/2, col.getSize().y/2);
+		col.setFillColor(sf::Color(105,105,105,85));
+		col.setPosition(pos.x, pos.y);
 	}
 
 	~Collision() {}
 };
-
-bool Collision::Check(Collision &otherCol) {
-	if (col.getPosition().x < otherCol.col.getPosition().x + otherCol.col.getSize().x && col.getSize().x + otherCol.col.getSize().x > otherCol.col.getPosition().x
-		&& col.getPosition().y < otherCol.col.getPosition().y + otherCol.col.getSize().y && col.getSize().y + otherCol.col.getSize().y > otherCol.col.getPosition().y) {
-		return true;
-	}
-}
 
 #endif

@@ -12,6 +12,29 @@ Interface interface(screenWidth, screenHeight);
 
 void StructureCreation();
 
+void TreeCreation(tNode *parent, int value, int size) { // Change value/data part
+	if (size == 0)
+		return;
+	if (value <= parent->data) {
+		if (parent->lChild == nullptr) {
+			tNode* lChild = new tNode(0, parent->circle.getPosition(), true);
+			parent->lChild = lChild;
+		}
+		else {
+			TreeCreation(parent->lChild, parent->lChild->data, size--);
+		}
+	}
+	else { // Have always happen?
+		if (parent->rChild == nullptr) {
+			tNode* rChild = new tNode(0, parent->circle.getPosition(), false);
+			parent->rChild = rChild;
+		}
+		else {
+			TreeCreation(parent->rChild, parent->rChild->data, size--);
+		}
+	}
+}
+
 template<typename T>
 void Draw(T &structure) {
 	window.setFramerateLimit(24);
@@ -58,19 +81,19 @@ void StructureCreation() {
 		List l;
 		Draw(l);
 	}
-	else if (choice == 4) {
-		// std::cout << "Tree size:\t";
+	else if (choice == 4) { // Tree
 		Tree newTree(screenWidth, screenHeight);
+		int size = 0;
+		std::cout << "Tree size:\t";
+		std::cin >> size;
 		tNode* parent = new tNode;
+		parent->data = 16;
 		parent->circle.setPosition(sf::Vector2f((float)screenWidth/2, (float)screenHeight/2));
 		newTree.root = parent;
-		tNode* lChild = new tNode(0, parent->circle.getPosition(), true);
-		tNode* rChild = new tNode(0, parent->circle.getPosition(), false);
-		newTree.root->lChild = lChild;
-		newTree.root->rChild = rChild;
+		TreeCreation(newTree.root, 12, size);
 		Draw(newTree);
 	}
-	else { // Graph/Tree?
+	else { // Graph
 		std::vector<int> data{1,2,3,4,5,6,7};
 		Graph g(data);
 		Draw(g);

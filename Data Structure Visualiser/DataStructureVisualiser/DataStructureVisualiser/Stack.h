@@ -48,7 +48,7 @@ public:
 		yOffset = 0.0f;
 		for (int i = 0; i < stackText.size(); i++) {
 			stackText[i].setFont(font);
-			// stackText[i].setFillColor(sf::Color::Black);
+			stackText[i].setFillColor(sf::Color::Red);
 			stackText[i].setString(std::to_string(values[i]));
 			stackText[i].setOrigin(stackText[i].getLocalBounds().width / 2, stackText[i].getLocalBounds().height / 2);
 			stackText[i].setPosition(400.0f, yOffset);

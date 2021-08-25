@@ -37,7 +37,7 @@ struct Animal {
 
 		rect.setSize(sf::Vector2f(25.0f,25.0f));
 		rect.setOrigin(rect.getSize().x / 2, rect.getSize().y / 2);
-		rect.setFillColor(sf::Color::Green);
+		rect.setFillColor(sf::Color(255,165,0,255));
 		rect.setPosition(positionX, positionY);
 
 		fVector.setFillColor(sf::Color::Red);
@@ -63,25 +63,28 @@ struct Animal {
 
 		Generate();
 	}
-	~Animal() {}
+	~Animal() 
+	{
+		std::cout << "Deleted!\n";
+	}
 
 	void Generate();
-	void Roam(const float screenWidth, const float screenHeight);
+	void Roam(const float screenWidth, const float screenHeight, std::vector<Animal*> &otherAnimals);
 	void Draw(sf::RenderWindow& window, bool drawText);
 };
 
 struct Bird : public Animal {
-	Bird() 
+	Bird(int h, sf::Vector2f& pos)
 	{
-		Animal();
+		Animal(h, pos);
 	}
 	~Bird() {}
 };
 
 struct Fox : public Animal {
-	Fox()
+	Fox(int h, sf::Vector2f& pos)
 	{
-		Animal();
+		Animal(h, pos);
 	}
 	~Fox() {}
 };

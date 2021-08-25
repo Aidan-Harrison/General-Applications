@@ -11,6 +11,8 @@ void Tree::DFS(tNode *n) {
 
 void Tree::Draw(sf::RenderWindow& window) {
 	window.draw(root->circle);
-	window.draw(root->lChild->circle);
-	window.draw(root->rChild->circle);
+	if(root->lChild != nullptr)
+		window.draw(root->lChild->circle);
+	if(root->rChild != nullptr)
+		window.draw(root->rChild->circle);
 }

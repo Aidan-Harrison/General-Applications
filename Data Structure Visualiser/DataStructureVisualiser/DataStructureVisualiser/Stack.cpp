@@ -3,15 +3,13 @@
 bool Stack::IsFull() {
 	if (top == values.size())
 		return true;
-	else
-		return false;
+	return false;
 }
 
 bool Stack::IsEmpty() {
 	if (top == -1)
 		return true;
-	else
-		return false;
+	return false;
 }
 
 void Stack::Push(const int data) {

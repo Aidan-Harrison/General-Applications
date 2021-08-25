@@ -11,7 +11,7 @@
 #include <SFML/Graphics.hpp>
 
 Character c("TestCharacter", 5);
-short screenWidth = 800, screenHeight = 600;
+int screenWidth = 800, screenHeight = 600;
 sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "ARPG Crafting System");
 sf::Event event;
 

@@ -3,15 +3,13 @@
 bool Queue::IsFull() {
 	if (rear == values.size())
 		return true;
-	else
-		return false;
+	return false;
 }
 
 bool Queue::IsEmpty() {
 	if (rear == front) // Check!
 		return true;
-	else
-		return false;
+	return false;
 }
 
 void Queue::Enqueue(const int data) {
@@ -35,8 +33,4 @@ void Queue::Draw(sf::RenderWindow& window) {
 		window.draw(queue[i]);
 		window.draw(queueText[i]);
 	}
-}
-
-void Queue::Interface(sf::RenderWindow &window) {
-
 }

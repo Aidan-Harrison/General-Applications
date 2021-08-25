@@ -3,15 +3,17 @@
 
 class Machine {
 private:
-    unsigned short stock;
+    unsigned int stock;
 public:
-    Machine(unsigned short stock);
-    ~Machine();
+    Machine() {}
+    Machine(unsigned int stock);
+
     void Fill(const unsigned int quantity);
     void Sell(const unsigned int quantity);
-    short GetStock() const { return stock; }
+    int GetStock() const { return stock; }
 
-    // States | Possibly move to its own class
+    // States
+    ~Machine() {};
 };
 
 #endif
