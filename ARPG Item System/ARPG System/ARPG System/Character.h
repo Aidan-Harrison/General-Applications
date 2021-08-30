@@ -18,6 +18,8 @@ public:
 	int m_Strength = 0, m_Agility = 0, m_Intelligence = 0;
 	float attackSpeed = 1.0f;
 	float moveSpeed = 10.0f;
+	float xOffset = 150.0f;
+	float yOffset = 500.0f;
 	std::vector<Item> *itemStash{}; // Check!
 	std::vector<CraftingItem> materialsStash{}; // Change to pointer, solve function call
 	Character(const std::string &name, int startingItemAmount)
@@ -36,10 +38,18 @@ public:
 		AgonyOrb aO("Images/Moyai.png");
 		PerfectionOrb pO("Images/Moyai.png");
 		LamentGem lG("Images/Moyai.png");
-		// Use vector.insert instead??? | Below method seems far too ineffcient
 		materialsStash.push_back(aO);
 		materialsStash.push_back(pO);
 		materialsStash.push_back(lG);
+
+		for (unsigned int i = 0; i < materialsStash.size(); i++) {
+			materialsStash[i].SetPos(xOffset, yOffset);
+			xOffset += 100.0f;
+			if (xOffset == 200.0f) {
+				xOffset = 150.0f;
+				yOffset += 50.0f;
+			}
+		}
 	}
 
 	Item* GetItem() const;
@@ -47,9 +57,9 @@ public:
 	std::string GetName() const { return m_Name; }
 
 	void PrintStats(sf::RenderWindow &window) const;
+	void PrintMatStash(sf::RenderWindow &window) const;
 
 	void GetItemStash() const;
-	void GetCraftingStash(sf::RenderWindow &window) const;
 
 	~Character() = default;
 };

@@ -155,6 +155,7 @@
     <ClInclude Include="CraftingItem.h" />
     <ClInclude Include="Generator.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="Prefixes.h" />
     <ClInclude Include="SuffixStats.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

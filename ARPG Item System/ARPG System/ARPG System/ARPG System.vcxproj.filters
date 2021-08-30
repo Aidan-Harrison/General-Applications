@@ -44,5 +44,8 @@
     <ClInclude Include="SuffixStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Prefixes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

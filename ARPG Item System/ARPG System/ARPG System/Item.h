@@ -18,10 +18,12 @@ private:
 	sf::Sprite img;
 public:	
 	std::string itemName;
-	enum RARITIES{NORMAL = 0, MAGIC, RARE, UNIQUE};
+	sf::RectangleShape rarityVisual;
+	sf::Text rarityText;
+	enum RARITIES{NORMAL = 0, MAGIC, RARE, UNIQUE, EXALTED, BOSS};
 	int rarity = 0;
 
-	enum TYPE{SWORD = 0, BOW, SHIELD, BOOTS, CHEST, RING, AMULET};
+	enum TYPE{SWORD = 0, BOW, SHIELD, BOOTS, CHEST, RING, AMULET, BELT};
 	int type = 0;
 
 	int iLevel = 1;
@@ -59,7 +61,7 @@ public:
 	sf::Text itemDescriptionText;
 
 	float offset = 0.0f; // Offsets text vertically
-	Item(const std::array<std::string, 5> &name)
+	Item(const std::array<std::string, 5> &name, int screenWidth, int screenHeight)
 		:a_Name(name)
 	{
 		// Set name (Visual)
@@ -74,13 +76,22 @@ public:
 		itemText.setFont(font);
 		itemText.setString(itemName);
 		itemText.setOrigin(itemText.getLocalBounds().width / 2, itemText.getLocalBounds().height / 2);
-		itemText.setPosition(600.0f, 100.0f);
+		itemText.setPosition(screenWidth/2, 100.0f);
 
 		// Item image
-		if (!tex.loadFromFile("Images/Moyai.png")) // Get correct image selection
+		if (!tex.loadFromFile("Images/Placeholder.png")) // Get correct image selection
 			std::cerr << "Failed to load item image!\n";
 		img.setTexture(tex);
-		img.setPosition(itemText.getPosition().x, itemText.getPosition().y + 25.0f);
+		img.setOrigin(img.getLocalBounds().width/2, img.getLocalBounds().height/2);
+		img.setPosition(itemText.getPosition().x, itemText.getPosition().y + 150.0f);
+
+		// Rarity
+		rarityVisual.setSize(sf::Vector2f(15.0f,250.0f));
+		rarityVisual.setOrigin(rarityVisual.getSize().x/2, rarityVisual.getSize().y/2);
+		rarityVisual.setPosition(itemText.getPosition().x - 190.0f, itemText.getPosition().y + 150.0f);
+		rarityText.setFont(font);
+		rarityText.setOrigin(rarityText.getLocalBounds().width/2, rarityText.getLocalBounds().height/2);
+		rarityText.setPosition(itemText.getPosition().x - 70.0f, itemText.getPosition().y - 50.0f);
 
 		// Remove string set from constructor???
 		// Stat Setup | VALUE
@@ -88,24 +99,27 @@ public:
 			implicitStatText[i].setFont(font);
 			implicitStatText[i].setString(std::to_string(implicitValues[i])); 
 			implicitStatText[i].setOrigin(implicitStatText[i].getLocalBounds().width / 2, implicitStatText[i].getLocalBounds().height / 2); 
-			implicitStatText[i].setPosition(450.0f, offset + 150.0f);
-			implicitStatText[i].setFillColor(sf::Color::Cyan);
+			implicitStatText[i].setPosition(screenWidth/3, offset + 150.0f);
+			implicitStatText[i].setFillColor(sf::Color(70, 130, 180, 255));
+			implicitStatText[i].setStyle(sf::Text::Italic);
 			offset += 25.0f;
 		}
 		for (unsigned int i = 0; i < prefixStatText.size(); i++) { 
 			prefixStatText[i].setFont(font);
 			prefixStatText[i].setString(std::to_string(prefixValues[i])); 
 			prefixStatText[i].setOrigin(prefixStatText[i].getLocalBounds().width / 2, prefixStatText[i].getLocalBounds().height / 2); 
-			prefixStatText[i].setPosition(450.0f, offset + 150.0f);
-			prefixStatText[i].setFillColor(sf::Color::Cyan);
+			prefixStatText[i].setPosition(screenWidth/3, offset + 150.0f);
+			prefixStatText[i].setFillColor(sf::Color(70, 130, 180, 255));
+			prefixStatText[i].setStyle(sf::Text::Italic);
 			offset += 25.0f;
 		}
 		for (unsigned int i = 0; i < suffixStatText.size(); i++) {
 			suffixStatText[i].setFont(font);
 			suffixStatText[i].setString(std::to_string(suffixValues[i])); 
 			suffixStatText[i].setOrigin(suffixStatText[i].getLocalBounds().width / 2, suffixStatText[i].getLocalBounds().height / 2); 
-			suffixStatText[i].setPosition(450.0f, offset + 150.0f);
-			suffixStatText[i].setFillColor(sf::Color::Cyan);
+			suffixStatText[i].setPosition(screenWidth/3, offset + 150.0f);
+			suffixStatText[i].setFillColor(sf::Color(70, 130, 180, 255));
+			suffixStatText[i].setStyle(sf::Text::Italic);
 			offset += 25.0f;
 		}
 
@@ -115,24 +129,24 @@ public:
 			implicitModText[i].setFont(font);
 			implicitModText[i].setString(implicitMods[i]); 
 			implicitModText[i].setOrigin(implicitModText[i].getLocalBounds().width / 2, implicitModText[i].getLocalBounds().height / 2); 
-			implicitModText[i].setPosition(500.0f, offset + 150.0f);
-			implicitModText[i].setFillColor(sf::Color::Cyan);
+			implicitModText[i].setPosition(screenWidth/2.5, offset + 140.0f);
+			implicitModText[i].setFillColor(sf::Color(70, 130, 180, 255));
 			offset += 25.0f;
 		}
 		for (unsigned int i = 0; i < prefixModText.size(); i++) { 
 			prefixModText[i].setFont(font);
 			prefixModText[i].setString(prefixMods[i]); 
 			prefixModText[i].setOrigin(prefixModText[i].getLocalBounds().width / 2, prefixModText[i].getLocalBounds().height / 2); 
-			prefixModText[i].setPosition(500.0f, offset + 150.0f);
-			prefixModText[i].setFillColor(sf::Color::Cyan);
+			prefixModText[i].setPosition(screenWidth/2.5, offset + 140.0f);
+			prefixModText[i].setFillColor(sf::Color(70, 130, 180, 255));
 			offset += 25.0f;
 		}
 		for (unsigned int i = 0; i < suffixModText.size(); i++) {  
 			suffixModText[i].setFont(font);
 			suffixModText[i].setString(suffixMods[i]); 
 			suffixModText[i].setOrigin(suffixModText[i].getLocalBounds().width / 2, suffixModText[i].getLocalBounds().height / 2); 
-			suffixModText[i].setPosition(500.0f, offset + 150.0f);
-			suffixModText[i].setFillColor(sf::Color::Cyan);
+			suffixModText[i].setPosition(screenWidth/2.5, offset + 140.0f);
+			suffixModText[i].setFillColor(sf::Color(70, 130, 180, 255));
 			offset += 25.0f;
 		}
 
@@ -142,39 +156,39 @@ public:
 			implicitTierText[i].setFont(font);
 			implicitTierText[i].setString(std::to_string(implicitTiers[i])); 
 			implicitTierText[i].setOrigin(implicitTierText[i].getLocalBounds().width / 2, implicitTierText[i].getLocalBounds().height / 2); 
-			implicitTierText[i].setPosition(750.0f, offset + 150.0f);
-			implicitTierText[i].setFillColor(sf::Color::Cyan);
+			implicitTierText[i].setPosition(screenWidth - 200, offset + 150.0f);
+			implicitTierText[i].setFillColor(sf::Color(70, 130, 180, 255));
 			offset += 25.0f;
 		}
 		for (unsigned int i = 0; i < prefixTierText.size(); i++) { 
 			prefixTierText[i].setFont(font);
 			prefixTierText[i].setString(std::to_string(prefixTiers[i])); 
 			prefixTierText[i].setOrigin(prefixTierText[i].getLocalBounds().width / 2, prefixTierText[i].getLocalBounds().height / 2); 
-			prefixTierText[i].setPosition(750.0f, offset + 150.0f);
-			prefixTierText[i].setFillColor(sf::Color::Cyan);
+			prefixTierText[i].setPosition(screenWidth - 200, offset + 150.0f);
+			prefixTierText[i].setFillColor(sf::Color(70,130,180,255));
 			offset += 25.0f;
 		}
 		for (unsigned int i = 0; i < suffixTierText.size(); i++) { 
 			suffixTierText[i].setFont(font);
 			suffixTierText[i].setString(std::to_string(suffixTiers[i])); 
 			suffixTierText[i].setOrigin(suffixTierText[i].getLocalBounds().width / 2, suffixTierText[i].getLocalBounds().height / 2); 
-			suffixTierText[i].setPosition(750.0f, offset + 150.0f);
-			suffixTierText[i].setFillColor(sf::Color::Cyan);
+			suffixTierText[i].setPosition(screenWidth - 200, offset + 150.0f);
+			suffixTierText[i].setFillColor(sf::Color(70, 130, 180, 255));
 			offset += 25.0f;
 		}
 	}
 	~Item() {};
 
 	void Draw(sf::RenderWindow &window) const; // Prints everything about the item in an ordered format | SFML based
-	virtual void GenerateStats(std::vector<std::string>& suffixes); // Implicit and Prefix | Suffix generation is global
+	// virtual void GenerateStats(std::vector<std::string>& suffixes); // Implicit and Prefix | Suffix generation is global
 	void GenerateSuffixStats(std::vector<std::string> &suffixes); // Merge?
 };
 
 class Sword : public Item {
 private:
 public:
-	Sword(std::array<std::string, 5> &name)
-		:Item(name)
+	Sword(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
+		:Item(name, screenWidth, screenHeight)
 	{
 	}
 	void GenerateStats(std::vector<std::string>& suffixes);
@@ -183,58 +197,53 @@ public:
 class Boots : public Item {
 private:
 public:
-	Boots(std::array<std::string, 5> &name)
-		:Item(name)
+	Boots(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
+		:Item(name, screenWidth, screenHeight)
 	{
 	}
-	void GenerateStats(std::vector<std::string>& suffixes);
 };
 
 class Ring : public Item {
 private:
 public:
-	Ring(std::array<std::string, 5> &name)
-		:Item(name)
+	Ring(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
+		:Item(name, screenWidth, screenHeight)
 	{
 	}
-	void GenerateStats(std::vector<std::string>& suffixes);
 };
 
 class Amulet : public Item {
 private:
 public:
-	Amulet(std::array<std::string, 5> &name)
-		:Item(name)
+	Amulet(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
+		:Item(name, screenWidth, screenHeight)
 	{
 	}
-	void GenerateStats(std::vector<std::string>& suffixes);
 };
 
 class Chest : public Item {
 private:
 public:
-	Chest(std::array<std::string, 5> &name)
-		:Item(name)
+	Chest(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
+		:Item(name, screenWidth, screenHeight)
 	{
 	}
-	void GenerateStats(std::vector<std::string>& suffixes);
 };
 
 class Belt : public Item {
 private:
 public:
-	Belt(std::array<std::string, 5> &name)
-		:Item(name)
+	Belt(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
+		:Item(name, screenWidth, screenHeight)
 	{
 	}
-	void GenerateStats(std::vector<std::string>& suffixes);
 };
 
 class Bow : public Item {
 private:
 public:
-	Bow(std::array<std::string, 5> &name)
-		:Item(name)
+	Bow(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
+		:Item(name, screenWidth, screenHeight)
 	{
 	}
 };
@@ -242,8 +251,8 @@ public:
 class Staff : public Item {
 private:
 public:
-	Staff(std::array<std::string, 5> &name)
-		:Item(name)
+	Staff(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
+		:Item(name, screenWidth, screenHeight)
 	{
 	}
 };
@@ -251,8 +260,8 @@ public:
 class Helmet : public Item {
 private:
 public:
-	Helmet(std::array<std::string, 5> &name)
-		:Item(name)
+	Helmet(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
+		:Item(name, screenWidth, screenHeight)
 	{
 	}
 };

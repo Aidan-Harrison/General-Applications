@@ -36,7 +36,6 @@ namespace TILESET {
 using namespace Global;
 
 void GenerateColours() {
-	srand(time(0));
 	int r = 0, g = 0, b = 0;
 	const int a = 255;
 	for (unsigned int i = 0; i < 10; i++) {
@@ -82,6 +81,15 @@ void Draw(std::vector<sf::RectangleShape> &grid) {
 	window.display();
 }
 
+void Regenerate(std::vector<sf::RectangleShape>& grid) {
+	int tileChoice = 0;
+	int gridChoice = 0;
+	tileChoice = rand() % TILESET::tiles.size();
+	gridChoice = rand() % grid.size();
+	grid[gridChoice] = TILESET::tiles[tileChoice];
+	Draw(grid);
+}
+
 void Generate() {
 	marcherPos.setFillColor(sf::Color::White);
 	marcherPos.setRadius(10.0f);
@@ -112,7 +120,7 @@ void Generate() {
 		grid[grid.size()-1].setPosition(marcher.x, marcher.y);
 		// std::cout << grid[grid.size() - 1].getPosition().x << "|" << grid[grid.size() - 1].getPosition().y << '\n';
 		// Call draw function
-		std::this_thread::sleep_for(std::chrono::milliseconds(300));
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 		Draw(grid);
 	}
 
@@ -122,11 +130,16 @@ void Generate() {
 				marcher.y = 200.0f;
 				Generate();
 			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::G)) {
+				std::cout << "Regen\n";
+				Regenerate(grid);
+			}
 		}
 	}
 }
 
 int main() {
+	srand(time(0));
 	if (!font.loadFromFile("Fonts/Roboto-Bold.ttf"))
 		std::cerr << "Faile to load font!\n";
 	std::get<0>(marcherPosText).setFont(font);
