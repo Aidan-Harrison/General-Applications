@@ -24,4 +24,16 @@ namespace BeltPrefixes {
 	std::vector<std::string> prefixes = {"Increased physical resistance", "Increased armor", "Increased health"};
 }
 
+namespace BowPrefixes {
+	std::vector<std::string> prefixes = {"Increased dexterity", "Increased attack speed", "Increased pierce", "Increaed attack range", "DEX"};
+}
+
+namespace AmuletPrefixes {
+	std::vector<std::string> prefixes = {"Increased item rarity", "Increased amount of gold found", "Increased magic resistance", "INT"};
+}
+
+namespace StaffPrefixes {
+	std::vector<std::string> prefixes = {"INT", "Physical converted to fire", "Physical converted to cold", "Physical converted to lightning", "Physical converted to poison", "Physical converted to chaos"};
+}
+
 #endif

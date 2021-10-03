@@ -19,10 +19,31 @@
 // Add different fonts
 // Add window scaling
 
-Character c("TestCharacter", 5);
-int screenWidth = 1000, screenHeight = 800;
-sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "ARPG Crafting System");
-sf::Event event;
+Character<std::tuple<int,float>> c("TestCharacter", 5);
+
+namespace Main {
+	int screenWidth = 1000, screenHeight = 800;
+	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "ARPG Crafting System"); // sf::Style::Fullscreen
+	sf::Event event;
+	sf::RectangleShape takeItem;
+	sf::RectangleShape rollItem;
+	sf::RectangleShape searchButton;
+	sf::Text rollItemText;
+	sf::Text takeItemText;
+	sf::Text searchButtonText;
+
+	sf::Texture mouseCursor;
+	sf::Sprite cursor;
+
+	std::string searchString = "";
+	sf::Text searchText;
+
+	bool printInventory = false;
+	bool printStats = false;
+	bool isSearching = false;
+}
+
+using namespace Main;
 
 // Hover
 sf::Font font;
@@ -44,31 +65,37 @@ void RarityGen(Item &i, int choice) {
 				i.rarityText.setString("NORMAL");
 				i.rarityText.setFillColor(sf::Color(225,225,225,255));
 				i.rarityVisual.setFillColor(sf::Color(225,225,225,200));
+				i.itemPrevBack.setFillColor(sf::Color(225,225,225,200));
 			break;
 		case 1: i.rarity = i.MAGIC;  
 				i.rarityText.setString("MAGIC");
 				i.rarityText.setFillColor(sf::Color(0,0,139,255));
 				i.rarityVisual.setFillColor(sf::Color(0,0,139,200));
+				i.itemPrevBack.setFillColor(sf::Color(0,0,139,200));
 			break;
 		case 2: i.rarity = i.RARE;   
 				i.rarityText.setString("RARE");
 				i.rarityText.setFillColor(sf::Color(255,255,51,255));
 				i.rarityVisual.setFillColor(sf::Color(255,255,51,200));
+				i.itemPrevBack.setFillColor(sf::Color(225,225,51,200));
 			break;
 		case 3: i.rarity = i.UNIQUE; 
 				i.rarityText.setString("UNIQUE");
 				i.rarityText.setFillColor(sf::Color(255,140,0,255));
 				i.rarityVisual.setFillColor(sf::Color(255,140,0,200));
+				i.itemPrevBack.setFillColor(sf::Color(225,140,0,200));
 			break;
 		case 4: i.rarity = i.EXALTED;
 				i.rarityText.setString("EXALTED");
 				i.rarityText.setFillColor(sf::Color(186,85,211,255));
 				i.rarityVisual.setFillColor(sf::Color(186,85,211,200));
+				i.itemPrevBack.setFillColor(sf::Color(186,85,211,200));
 			break;
 		case 5: i.rarity = i.BOSS;   
 				i.rarityText.setString("BOSS");
 				i.rarityText.setFillColor(sf::Color(60, 179, 113,255));
 				i.rarityVisual.setFillColor(sf::Color(60, 179, 113,200));
+				i.itemPrevBack.setFillColor(sf::Color(60,179,113,200));
 			break;
 	}
 }
@@ -82,9 +109,13 @@ void PrefixStatGeneration(Item &i, int choice) {
 		while(Compare(i.prefixModText[0], i.prefixModText[1]))
 			i.prefixModText[0].setString(SwordPrefixes::prefixes[choice = rand() % SwordPrefixes::prefixes.size()]);
 	}
-	else if (i.type == 2) {
+	else if (i.type == 2) { // BOW
+		for (unsigned int j = 0; j < i.prefixModText.size(); j++)
+			i.prefixModText[j].setString(BowPrefixes::prefixes[choice = rand() % BowPrefixes::prefixes.size()]);
+		for (unsigned int j = 0; j < i.prefixStatText.size(); j++)
+			i.prefixStatText[j].setString(std::to_string(choice = rand() % 75));
 		while(Compare(i.prefixModText[0], i.prefixModText[1]))
-			i.prefixModText[0].setString(SwordPrefixes::prefixes[choice = rand() % SwordPrefixes::prefixes.size()]);
+			i.prefixModText[0].setString(BowPrefixes::prefixes[choice = rand() % BowPrefixes::prefixes.size()]);
 	}
 	else if (i.type == 3) { // BOOTS
 		for (unsigned int j = 0; j < i.prefixModText.size(); j++)
@@ -102,7 +133,7 @@ void PrefixStatGeneration(Item &i, int choice) {
 		while(Compare(i.prefixModText[0], i.prefixModText[1]))
 			i.prefixModText[0].setString(ChestPrefixes::prefixes[choice = rand() % ChestPrefixes::prefixes.size()]);
 	}
-	else if (i.type == 5) {
+	else if (i.type == 5) { // RINGS
 		for (unsigned int j = 0; j < i.prefixModText.size(); j++)
 			i.prefixModText[j].setString(RingPrefixes::prefixes[choice = rand() % RingPrefixes::prefixes.size()]);
 		for (unsigned int j = 0; j < i.prefixStatText.size(); j++)
@@ -110,10 +141,15 @@ void PrefixStatGeneration(Item &i, int choice) {
 		while(Compare(i.prefixModText[0], i.prefixModText[1]))
 			i.prefixModText[0].setString(RingPrefixes::prefixes[choice = rand() % RingPrefixes::prefixes.size()]);
 	}
-	else if (i.type == 6) {
-		return;
+	else if (i.type == 6) { // Amulet
+		for (unsigned int j = 0; j < i.prefixModText.size(); j++)
+			i.prefixModText[j].setString(AmuletPrefixes::prefixes[choice = rand() % AmuletPrefixes::prefixes.size()]);
+		for (unsigned int j = 0; j < i.prefixStatText.size(); j++)
+			i.prefixStatText[j].setString(std::to_string(choice = rand() % 75));
+		while (Compare(i.prefixModText[0], i.prefixModText[1]))
+			i.prefixModText[0].setString(AmuletPrefixes::prefixes[choice = rand() % AmuletPrefixes::prefixes.size()]);
 	}
-	else if (i.type == 7) {
+	else if (i.type == 7) { // Belt
 		for (unsigned int j = 0; j < i.prefixModText.size(); j++)
 			i.prefixModText[j].setString(BeltPrefixes::prefixes[choice = rand() % BeltPrefixes::prefixes.size()]);
 		for (unsigned int j = 0; j < i.prefixStatText.size(); j++)
@@ -141,166 +177,7 @@ void SuffixStatGeneration(Item &i, int choice) {
 }
 
 // Generators
-// Seperate loops for different tiering
-void SwordGen(Item &i, int choice) {
-	if(i.itemName.find("Damascus Steel Sword") != std::string::npos) {
-		i.implicitModText[0].setString("extra damage");
-		i.implicitModText[1].setString("crit chance");
-	}
-	else if(i.itemName.find("Iron Sword") != std::string::npos) {
-		i.implicitModText[0].setString("extra attack speed");
-		i.implicitModText[1].setString("crit multi");
-	}
-	else if(i.itemName.find("Serrated Sword") != std::string::npos) {
-		i.implicitModText[0].setString("bleed chance");
-		i.implicitModText[1].setString("damage dealt over time");
-	}
-	else if(i.itemName.find("Scimitar") != std::string::npos) {
-		i.implicitModText[0].setString("extra attack speed");
-		i.implicitModText[1].setString("dexterity");
-	}
-	else if(i.itemName.find("Twisted Sword") != std::string::npos) {
-		i.implicitModText[0].setString("strength"); // +
-		i.implicitModText[1].setString("health"); // +
-	}
-	else if(i.itemName.find("Spiral Sword") != std::string::npos) {
-		i.implicitModText[0].setString("pierce rating");
-		i.implicitModText[1].setString("crit-multi");
-	}
-	else if(i.itemName.find("Katana") != std::string::npos) {
-		i.implicitModText[0].setString("attack range");
-		i.implicitModText[1].setString("multi strike chance");
-	}
-	else if(i.itemName.find("Plate Sword") != std::string::npos) {
-		i.implicitModText[0].setString("block chance"); // %
-		i.implicitModText[1].setString("increased armor");
-	}
-	else if(i.itemName.find("Falchion") != std::string::npos) {
-		i.implicitModText[0].setString("dodge rating");
-		i.implicitModText[1].setString("movement speed");
-	}
-	else if(i.itemName.find("Rapier") != std::string::npos) {
-		i.implicitModText[0].setString("crit chance");
-		i.implicitModText[1].setString("crit multi");
-	}
-	for(unsigned int j = 0; j < i.implicitStatText.size(); j++) 
-		i.implicitStatText[j].setString(std::to_string(choice = rand() % 100));
-	for (unsigned int j = 0; j < 4; j++) { // Fix!
-		if (i.implicitValues[0] > SwordThresholds::thresholds[j]) i.implicitTierText[0].setString(j);
-		if (i.implicitValues[1] > SwordThresholds::thresholds[j]) i.implicitTierText[1].setString(j);
-	}
-	PrefixStatGeneration(i, choice);
-	SuffixStatGeneration(i, choice);
-}
-
-void BootGen(Item &i, int choice) {
-	if (i.itemName.find("Leather Boots") != std::string::npos) {
-		i.implicitModText[0].setString("movement speed");
-		i.implicitModText[1].setString("dodge rating");
-	}
-	else if (i.itemName.find("Steel Greaves") != std::string::npos) {
-		i.implicitModText[0].setString("armor");
-		i.implicitModText[1].setString("block rating");
-	}
-	else if (i.itemName.find("Silk Slippers") != std::string::npos) {
-		i.implicitModText[0].setString("INT");
-		i.implicitModText[1].setString("mana");
-	}
-	else if (i.itemName.find("Paladain Greaves") != std::string::npos) {
-		i.implicitModText[0].setString("STR");
-		i.implicitModText[1].setString("physical resistance");
-	}
-	else if (i.itemName.find("Rag Shoes") != std::string::npos) {
-		i.implicitModText[0].setString("DEX");
-		i.implicitModText[1].setString("crown control reduction");
-	}
-	else if (i.itemName.find("Woven Treads") != std::string::npos) {
-		i.implicitModText[0].setString("movement ability cooldown reduction");
-		i.implicitModText[1].setString("reduced mana usage");
-	}
-	else if (i.itemName.find("Studded Boots") != std::string::npos) {
-		i.implicitModText[0].setString("damage");
-		i.implicitModText[1].setString("damage reflect");
-	}
-	else if (i.itemName.find("Steelcapped Boots") != std::string::npos) {
-		i.implicitModText[0].setString("movement speed");
-		i.implicitModText[1].setString("more armor"); // % based
-	}
-	for (unsigned int j = 0; j < i.implicitStatText.size(); j++)
-		i.implicitStatText[j].setString(std::to_string(choice = rand() % 100));
-	for (unsigned int j = 0; j < 4; j++) {
-		if (i.implicitValues[0] > BootThresholds::thresholds[j]) i.implicitTierText[0].setString(j);
-		if (i.implicitValues[1] > BootThresholds::thresholds[j]) i.implicitTierText[1].setString(j);
-	}
-	PrefixStatGeneration(i, choice);
-	SuffixStatGeneration(i, choice);
-}
-
-void RingGen(Item &i, int choice) {
-	if (i.itemName.find("Leather Boots") != std::string::npos) {
-		i.implicitModText[0].setString("extra damage");
-		i.implicitModText[1].setString("crit chance");
-	}
-	else if (i.itemName.find("Leather Boots") != std::string::npos) {
-		i.implicitModText[0].setString("extra damage");
-		i.implicitModText[1].setString("crit chance");
-	}
-	else if (i.itemName.find("Leather Boots") != std::string::npos) {
-		i.implicitModText[0].setString("extra damage");
-		i.implicitModText[1].setString("crit chance");
-	}
-	for (unsigned int j = 0; j < i.implicitStatText.size(); j++)
-		i.implicitStatText[j].setString(std::to_string(choice = rand() % 100));
-	for (unsigned int j = 0; j < 4; j++) {
-		if (i.implicitValues[0] > BootThresholds::thresholds[j]) i.implicitTierText[0].setString(j);
-		if (i.implicitValues[1] > BootThresholds::thresholds[j]) i.implicitTierText[1].setString(j);
-	}
-	PrefixStatGeneration(i, choice);
-	SuffixStatGeneration(i, choice);
-}
-
-void ChestGen(Item& i, int choice) {
-	if (i.itemName.find("Leather Armor") != std::string::npos) {
-		i.implicitModText[0].setString("Increased armor");
-		i.implicitModText[1].setString("STR");
-	}
-	else if (i.itemName.find("Paladins Plate") != std::string::npos) { // Significantly more armor
-		i.implicitModText[0].setString("Increased armor");
-		i.implicitModText[1].setString("Light radius");
-	}
-	else if (i.itemName.find("Silk Robes") != std::string::npos) {
-		i.implicitModText[0].setString("Increased mana");
-		i.implicitModText[1].setString("Spell damage resistance");
-	}
-	else if (i.itemName.find("Rag Cloth") != std::string::npos) {
-		i.implicitModText[0].setString("DEX");
-		i.implicitModText[1].setString("Attack Speed");
-	}
-	PrefixStatGeneration(i, choice);
-	SuffixStatGeneration(i, choice);
-}
-
-void BeltGen(Item &i, int choice) {
-	if (i.itemName.find("Leather Armor") != std::string::npos) {
-		i.implicitModText[0].setString("Increased armor");
-		i.implicitModText[1].setString("STR");
-	}
-	else if (i.itemName.find("Paladins Plate") != std::string::npos) { // Significantly more armor
-		i.implicitModText[0].setString("Increased armor");
-		i.implicitModText[1].setString("Light radius");
-	}
-	else if (i.itemName.find("Silk Robes") != std::string::npos) {
-		i.implicitModText[0].setString("Increased mana");
-		i.implicitModText[1].setString("Spell damage resistance");
-	}
-	else if (i.itemName.find("Rag Cloth") != std::string::npos) {
-		i.implicitModText[0].setString("DEX");
-		i.implicitModText[1].setString("Attack Speed");
-	}
-	PrefixStatGeneration(i, choice);
-	SuffixStatGeneration(i, choice);
-}
-
+// Seperate loops for different tiering ?
 std::array<std::string, 5> GenerateName(char t) {
 	int choice = 0;
 	std::array<std::string, 5> nameTest{"", " ", "", " ", ""};
@@ -349,6 +226,42 @@ std::array<std::string, 5> GenerateName(char t) {
 		choice = rand() % BeltBaseNames::bases.size();
 		nameTest[2] = BeltBaseNames::bases[choice];
 	}
+	else if (t == 'o') {
+		choice = rand() % 5;
+		if (choice > 3) {
+			choice = rand() % BowPrefixNames::prefixes.size();
+			nameTest[0] = BowPrefixNames::prefixes[choice];
+		}
+		choice = rand() % BowBaseNames::bases.size();
+		nameTest[2] = BowBaseNames::bases[choice];
+	}
+	else if (t == 'f') {
+		choice = rand() % 5;
+		if (choice > 3) {
+			choice = rand() % StaffPrefixNames::prefixes.size();
+			nameTest[0] = StaffPrefixNames::prefixes[choice];
+		}
+		choice = rand() % StaffBaseNames::bases.size();
+		nameTest[2] = StaffBaseNames::bases[choice];
+	}
+	else if (t == 'h') {
+		choice = rand() % 5;
+		if (choice > 3) {
+			choice = rand() % HelmetPrefixNames::prefixes.size();
+			nameTest[0] = HelmetPrefixNames::prefixes[choice];
+		}
+		choice = rand() % HelmetBaseNames::bases.size();
+		nameTest[2] = HelmetBaseNames::bases[choice];
+	}
+	else if (t == 'a') {
+		choice = rand() % 5;
+		if (choice > 3) {
+			choice = rand() % AmuletPrefixNames::prefixes.size();
+			nameTest[0] = AmuletPrefixNames::prefixes[choice];
+		}
+		choice = rand() % AmuletBaseNames::bases.size();
+		nameTest[2] = AmuletBaseNames::bases[choice];
+	}
 	// Suffix generation
 	choice = rand() % 5;
 	if (choice > 3) {
@@ -358,133 +271,321 @@ std::array<std::string, 5> GenerateName(char t) {
 	return nameTest;
 }
 
-void ConfirmSelection(Item &item) {
-	char input = 0;
-	std::cout << "Stash?: Y/N\n";
-	std::cin >> input;
-	char i = std::tolower(input);
-	switch (i) {
-		case 'y': c.itemStash->push_back(item); break;
-		case 'n': delete &item; RollItem(); break;
-	}
-}
-
 void RollItem() { // Optimise! 	
-	system("cls"); // Remove eventually
+	system("cls"); // Remove eventually?
 	int choice = 0;
-	choice = rand() % 5;
+	choice = rand() % 9;
 	if (choice == 0) {
 		std::array<std::string, 5> itemName = GenerateName('s');
 		Sword *s = new Sword(itemName, screenWidth, screenHeight);
 		RarityGen(*s, choice);
-		SwordGen(*s, choice);
+		s->GenerateStats(SwordThresholds::thresholds, choice);
+		PrefixStatGeneration(*s, choice);
+		SuffixStatGeneration(*s, choice);
 		Interface(*s); // Check!
-		ConfirmSelection(*s);
 	}
 	else if (choice == 1) {
 		std::array<std::string, 5> itemName = GenerateName('b');
 		Boots *b = new Boots(itemName, screenWidth, screenHeight);
 		RarityGen(*b, choice);
-		BootGen(*b, choice);
+		b->GenerateStats(BootThresholds::thresholds, choice);
+		PrefixStatGeneration(*b, choice);
+		SuffixStatGeneration(*b, choice);
 		Interface(*b);
-		ConfirmSelection(*b);
 	}
 	else if (choice == 2) {
 		std::array<std::string, 5> itemName = GenerateName('r');
 		Ring *r = new Ring(itemName, screenWidth, screenHeight);
 		RarityGen(*r, choice);
-		RingGen(*r, choice);
+		r->GenerateStats(SwordThresholds::thresholds, choice);
+		PrefixStatGeneration(*r, choice);
+		SuffixStatGeneration(*r, choice);
 		Interface(*r);
-		ConfirmSelection(*r);
 	}
 	else if (choice == 3) {
 		std::array<std::string, 5> itemName = GenerateName('c');
 		Chest *c = new Chest(itemName, screenWidth, screenHeight);
 		RarityGen(*c, choice);
-		ChestGen(*c, choice);
+		c->GenerateStats(SwordThresholds::thresholds, choice);
+		PrefixStatGeneration(*c, choice);
+		SuffixStatGeneration(*c, choice);
 		Interface(*c);
-		ConfirmSelection(*c);
 	}
 	else if (choice == 4) {
 		std::array<std::string, 5> itemName = GenerateName('w');
 		Belt *b = new Belt(itemName, screenWidth, screenHeight);
 		RarityGen(*b, choice);
-		BeltGen(*b, choice);
+		b->GenerateStats(SwordThresholds::thresholds, choice);
+		PrefixStatGeneration(*b, choice);
+		SuffixStatGeneration(*b, choice);
 		Interface(*b);
-		ConfirmSelection(*b);
+	}
+	else if (choice == 5) {
+		std::array<std::string, 5> itemName = GenerateName('o');
+		Bow* bo = new Bow(itemName, screenWidth, screenHeight);
+		RarityGen(*bo, choice);
+		bo->GenerateStats(SwordThresholds::thresholds, choice);
+		PrefixStatGeneration(*bo, choice);
+		SuffixStatGeneration(*bo, choice);
+		Interface(*bo);
+	}
+	else if (choice == 6) {
+		std::array<std::string, 5> itemName = GenerateName('f');
+		Staff* st = new Staff(itemName, screenWidth, screenHeight);
+		RarityGen(*st, choice);
+		st->GenerateStats(SwordThresholds::thresholds, choice);
+		PrefixStatGeneration(*st, choice);
+		SuffixStatGeneration(*st, choice);
+		Interface(*st);
+	}
+	else if (choice == 7) {
+		std::array<std::string, 5> itemName = GenerateName('h');
+		Helmet* h = new Helmet(itemName, screenWidth, screenHeight);
+		RarityGen(*h, choice);
+		h->GenerateStats(SwordThresholds::thresholds, choice);
+		PrefixStatGeneration(*h, choice);
+		SuffixStatGeneration(*h, choice);
+		Interface(*h);
+	}
+	else if (choice == 8) {
+		std::array<std::string, 5> itemName = GenerateName('a');
+		Amulet* a = new Amulet(itemName, screenWidth, screenHeight);
+		RarityGen(*a, choice);
+		a->GenerateStats(SwordThresholds::thresholds, choice);
+		PrefixStatGeneration(*a, choice);
+		SuffixStatGeneration(*a, choice);
+		Interface(*a);
 	}
 }
 
 void Interface(Item &i) { // Add SFML here
 	int choice = 0;
 	window.setFramerateLimit(24);
+	// window.setMouseCursorVisible(false);
 
 	while (window.isOpen()) {
 		window.clear();
+
+		// cursor.setPosition(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
+
 		while (window.pollEvent(event)) {
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) // Delete previous item if not saved!
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && printInventory) // Inventory
+				printInventory = false;
+			else if(sf::Keyboard::isKeyPressed(sf::Keyboard::I) && !printInventory)
+				printInventory = true;
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::C) && printStats) // Character Screen
+				printStats = false;
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::C) && !printStats)
+				printStats = true;
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) { // Delete previous item if not saved!
 				RollItem();
+			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) {
 				std::cout << "Agony\n";
-				c.materialsStash[0].Use(i);
+				switch (i.type) {
+					case 0: c.materialsStash[0].Use(i, SwordThresholds::thresholds, choice); break;
+					case 1: c.materialsStash[0].Use(i, SwordThresholds::thresholds, choice); break;
+					case 2: c.materialsStash[0].Use(i, SwordThresholds::thresholds, choice); break;
+					case 3: c.materialsStash[0].Use(i, BootThresholds::thresholds,  choice); break;
+					case 4: c.materialsStash[0].Use(i, SwordThresholds::thresholds, choice); break;
+					case 5: c.materialsStash[0].Use(i, SwordThresholds::thresholds, choice); break;
+					case 6: c.materialsStash[0].Use(i, SwordThresholds::thresholds, choice); break;
+					case 7: c.materialsStash[0].Use(i, SwordThresholds::thresholds, choice); break;
+				}
+				Interface(i);
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) {
 				std::cout << "Perfection\n";
-				c.materialsStash[1].Use(i);
+				// c.materialsStash[1].Use(i);
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) {
 				std::cout << "Lament\n";
-				c.materialsStash[2].Use(i);
+				// c.materialsStash[2].Use(i);
 			}
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) { // Fix!
 				for (unsigned int i = 0; i < c.materialsStash.size(); i++) {
-					std::cout << c.materialsStash[i].debugTex.getPosition().x << "|" << c.materialsStash[i].debugTex.getPosition().y << '\n';
-					std::cout << sf::Mouse::getPosition().x << "|" << sf::Mouse::getPosition().y << '\n';
 					for (unsigned int j = 0; j < c.materialsStash[i].debugTex.getSize().x; j++) {
-						if (sf::Mouse::getPosition().x == c.materialsStash[i].debugTex.getPosition().x - j || sf::Mouse::getPosition().x == c.materialsStash[i].debugTex.getPosition().x + j) {
-							std::cout << "HIT\n";
+						if (sf::Mouse::getPosition(window).x == c.materialsStash[i].debugTex.getPosition().x - j || sf::Mouse::getPosition(window).x == c.materialsStash[i].debugTex.getPosition().x + j) {
+							//c.materialsStash[i].Use(i, SwordThresholds::thresholds, choice);
+							continue;
 						}
 					}
 					for (unsigned int j = 0; j < c.materialsStash[i].debugTex.getSize().y; j++) {
-						if (sf::Mouse::getPosition().y == c.materialsStash[i].debugTex.getPosition().y - j || sf::Mouse::getPosition().y == c.materialsStash[i].debugTex.getPosition().y + j) {
-							std::cout << "HIT\n";
+						if (sf::Mouse::getPosition(window).y == c.materialsStash[i].debugTex.getPosition().y - j || sf::Mouse::getPosition(window).y == c.materialsStash[i].debugTex.getPosition().y + j) {
+							//c.materialsStash[i].Use(i, SwordThresholds::thresholds, choice);
+							continue;
+						}
+					}
+				}
+				// Take Item | Prevent multiple inputs!!
+				for (unsigned int j = 0; j < takeItem.getSize().x; j++) {
+					if (sf::Mouse::getPosition(window).x == takeItem.getPosition().x - j || sf::Mouse::getPosition(window).x == takeItem.getPosition().x + j) {
+						c.itemStash.push_back(&i);
+						c.itemStashMap.insert(std::pair<int, Item>(c.itemStashMap.size()+1, i));
+						c.SetInventory();
+						RollItem();
+					}
+				}
+				for (unsigned int j = 0; j < takeItem.getSize().y; j++) {
+					if (sf::Mouse::getPosition(window).y == takeItem.getPosition().y - j || sf::Mouse::getPosition(window).y == takeItem.getPosition().y + j) {
+						c.itemStash.push_back(&i);
+						c.itemStashMap.insert(std::pair<int, Item>(c.itemStashMap.size()+1, i));
+						c.SetInventory();
+						RollItem();
+					}
+				}
+				// Roll Item
+				for (unsigned int i = 0; i < rollItem.getSize().x; i++) {
+					if (sf::Mouse::getPosition(window).x == rollItem.getPosition().x - i || sf::Mouse::getPosition(window).x == rollItem.getPosition().x + i) 
+						RollItem();
+				}
+				for (unsigned int i = 0; i < rollItem.getSize().y; i++) {
+					if (sf::Mouse::getPosition(window).y == rollItem.getPosition().y - i || sf::Mouse::getPosition(window).y == rollItem.getPosition().y + i)
+						RollItem();
+				}
+				// Search
+				for (unsigned int i = 0; i < searchButton.getSize().x; i++) {
+					if (sf::Mouse::getPosition(window).x == searchButton.getPosition().x - i || sf::Mouse::getPosition(window).x == searchButton.getPosition().x + i) {
+						switch (isSearching) {
+							case true: isSearching = false; break;
+							case false: isSearching = true; break;
+						}
+					}
+				}
+				for (unsigned int i = 0; i < searchButton.getSize().y; i++) {
+					if (sf::Mouse::getPosition(window).y == searchButton.getPosition().y - i || sf::Mouse::getPosition(window).y == searchButton.getPosition().y + i) {
+						switch (isSearching) {
+							case true: isSearching = false; break;
+							case false: isSearching = true; break;
 						}
 					}
 				}
 			}
 			for (unsigned int i = 0; i < c.materialsStash.size(); i++) {
 				for (unsigned int j = 0; j < c.materialsStash[i].debugTex.getSize().x; j++) {
-					if (sf::Mouse::getPosition().x == c.materialsStash[i].debugTex.getPosition().x - j || sf::Mouse::getPosition().x == c.materialsStash[i].debugTex.getPosition().x + j) {
+					if (sf::Mouse::getPosition(window).x == c.materialsStash[i].debugTex.getPosition().x - j || sf::Mouse::getPosition(window).x == c.materialsStash[i].debugTex.getPosition().x + j) {
 						hoverText.setString(c.materialsStash[i].itemName);
-						hoverText.setPosition(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
+						hoverText.setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 					}
 				}
 				for (unsigned int j = 0; j < c.materialsStash[i].debugTex.getSize().y; j++) {
-					if (sf::Mouse::getPosition().y == c.materialsStash[i].debugTex.getPosition().y - j || sf::Mouse::getPosition().y == c.materialsStash[i].debugTex.getPosition().y + j) {
+					if (sf::Mouse::getPosition(window).y == c.materialsStash[i].debugTex.getPosition().y - j || sf::Mouse::getPosition(window).y == c.materialsStash[i].debugTex.getPosition().y + j) {
 						hoverText.setString(c.materialsStash[i].itemName);
-						hoverText.setPosition(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
+						hoverText.setPosition(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 					}
 				}
 			}
+			// Keyboard input
+			//switch(event.type) {
+				//case sf::Event::Closed(): window.close(); break;
+			//}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && isSearching) {
+				std::cout << "Not Searching\n";
+				isSearching = false;
+				break;
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && !isSearching) {
+				std::cout << "Searching\n";
+				isSearching = true;
+				break;
+			}
+			if (isSearching) {
+				switch (event.type) {
+					case sf::Keyboard::A: 
+						searchString += 'a'; 
+						searchText.setString(searchString); 
+						c.SearchItemStash(searchString);
+							break;
+					case sf::Keyboard::B:
+						searchString += 'b';
+						searchText.setString(searchString);
+						c.SearchItemStash(searchString);
+							break; 
+					case sf::Keyboard::C:
+						searchString += 'c';
+						searchText.setString(searchString);
+						c.SearchItemStash(searchString);
+							break;
+				}
+			}
 		}
-		c.PrintStats(window);
+
+		if (isSearching)
+			window.draw(searchText);
+		if (printInventory)
+			c.PrintItemStash(window);
+		if(printStats)
+			c.PrintStats(window);
 		i.Draw(window);
 		c.PrintMatStash(window);
-		window.draw(hoverText);
+		// window.draw(hoverText);
+		window.draw(takeItem);
+		window.draw(rollItem);
+		window.draw(searchButton);
+		window.draw(takeItemText);
+		window.draw(rollItemText);
+		window.draw(searchButtonText);
+
+		// window.draw(cursor);
+
 		window.display();
 	}
 }
 
-int main() {
+void Setup() {
 	if (!font.loadFromFile("Fonts/Roboto-Bold.ttf"))
 		std::cerr << "Failed to load hover text font!\n";
 	hoverText.setFont(font);
-	hoverText.setOrigin(hoverText.getLocalBounds().width - hoverText.getLocalBounds().width, hoverText.getLocalBounds().height/2);
+	hoverText.setOrigin(hoverText.getLocalBounds().width - hoverText.getLocalBounds().width, hoverText.getLocalBounds().height / 2);
+
+	takeItem.setFillColor(sf::Color::Green);
+	takeItem.setSize(sf::Vector2f(100.0f, 50.0f));
+	takeItem.setOrigin(takeItem.getSize().x / 2, takeItem.getSize().y / 2);
+	takeItem.setPosition(screenWidth / 3, screenHeight - 150.0f);
+
+	rollItem.setFillColor(sf::Color::Red);
+	rollItem.setSize(sf::Vector2f(100.0f, 50.0f));
+	rollItem.setOrigin(takeItem.getSize().x / 2, takeItem.getSize().y / 2);
+	rollItem.setPosition(screenWidth / 1.5, screenHeight - 150.0f);
+
+	searchButton.setFillColor(sf::Color::White);
+	searchButton.setSize(sf::Vector2f(150.0f, 50.0f));
+	searchButton.setOrigin(searchButton.getSize().x/2, searchButton.getSize().y/2);
+	searchButton.setPosition(100.0f, 50.0f);
+
+	takeItemText.setFont(font);
+	takeItemText.setString("TAKE ITEM");
+	takeItemText.setOrigin(takeItemText.getLocalBounds().width / 2, takeItemText.getLocalBounds().height / 2);
+	takeItemText.setPosition(takeItem.getPosition().x, takeItem.getPosition().y);
+
+	rollItemText.setFont(font);
+	rollItemText.setString("ROLL ITEM");
+	rollItemText.setOrigin(rollItemText.getLocalBounds().width / 2, rollItemText.getLocalBounds().height / 2);
+	rollItemText.setPosition(rollItem.getPosition().x, rollItem.getPosition().y);
+
+	searchButtonText.setFont(font);
+	searchButtonText.setString("SEARCH");
+	searchButtonText.setFillColor(sf::Color::Black);
+	searchButtonText.setOrigin(searchButtonText.getLocalBounds().width / 2, searchButtonText.getLocalBounds().height / 2);
+	searchButtonText.setPosition(searchButton.getPosition().x, searchButton.getPosition().y);
+
+	searchText.setFont(font);
+	searchText.setString("TEST");
+	searchText.setPosition(searchButton.getPosition().x - searchButton.getLocalBounds().width/2, searchButton.getPosition().y + 50.0f);
+
+	mouseCursor.loadFromFile("Images/Cursor.png");
+
+	cursor.setTexture(mouseCursor);
+	cursor.setOrigin(cursor.getLocalBounds().width/2, cursor.getLocalBounds().height/2);
 
 	srand(time(0));
-	std::array<std::string, 5> defaultName{"", "", "Default Item", "", ""};
+	std::array<std::string, 5> defaultName{ "", "", "Default Item", "", "" };
 	Item defaultItem(defaultName, screenWidth, screenHeight);
 	Interface(defaultItem);
+}
+
+int main() {
+	Setup();
 
 	return 0;
 }

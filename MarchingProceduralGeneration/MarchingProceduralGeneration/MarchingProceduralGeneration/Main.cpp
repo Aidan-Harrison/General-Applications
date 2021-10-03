@@ -31,9 +31,36 @@ namespace TILESET {
 	std::vector<sf::Color> colours{};
 	std::vector<sf::RectangleShape> tiles{};
 	std::vector<int> tileID{};
+	std::vector<sf::Vector2f> nodePositions{};
+	std::vector<sf::CircleShape> nodes{};
 }
 
 using namespace Global;
+
+void GenerateTileContent() {
+	int amount = 0;
+	std::tuple<sf::RectangleShape, sf::CircleShape> shapes{};
+	int choice = rand() % 2;
+	TILESET::nodePositions.resize(choice);
+	// Fill nodes
+	for (unsigned int i = 0; i < TILESET::tiles.size(); i++) {
+		int width = TILESET::tiles[i].getSize().x;
+		choice = rand() % width;
+		TILESET::nodePositions[0].x = choice;
+		int height = TILESET::tiles[i].getSize().y;
+		choice = rand() % height;
+		TILESET::nodePositions[0].y = choice;
+		TILESET::nodes[0].setRadius(10.0f);
+		TILESET::nodes[0].setOrigin(TILESET::nodes[0].getRadius()/2, TILESET::nodes[0].getRadius()/2);
+		TILESET::nodes[0].setPosition(sf::Vector2f(TILESET::nodePositions[0].x, TILESET::nodePositions[0].y));
+		// Prevent overlap
+	}
+	for (unsigned int i = 0; i < TILESET::tiles.size(); i++) {
+		for (unsigned int j = 0; j < TILESET::nodePositions.size(); j++) {
+			sf::RectangleShape* newNode = new sf::RectangleShape;
+		}
+	}
+}
 
 void GenerateColours() {
 	int r = 0, g = 0, b = 0;
@@ -71,6 +98,8 @@ void Draw(std::vector<sf::RectangleShape> &grid) {
 		window.draw(grid[i]);
 	for (unsigned int i = 0; i < TILESET::tiles.size(); i++)
 		window.draw(TILESET::tiles[i]);
+	for (unsigned int i = 0; i < TILESET::nodes.size(); i++)
+		window.draw(TILESET::nodes[i]);
 	window.draw(std::get<0>(marcherPosText));
 	window.draw(std::get<1>(marcherPosText));
 	window.draw(marcherPos);

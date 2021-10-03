@@ -12,19 +12,19 @@ void CraftingItem::Draw(sf::RenderWindow &window) const {
 	// window.draw(nameText);
 }
 
-void AgonyOrb::Use(Item &i) {
-	RollItem();
+void AgonyOrb::Use(Item &i, int thresholds[4], int choice) {
+	i.GenerateStats(thresholds, choice);
 }
 
-void PerfectionOrb::Use(Item &i) {
+void PerfectionOrb::Use(Item &i, int thresholds[4], int choice) {
 	i.rarity++;
 	if(i.rarity >= 4)
 		i.rarity = 4;
 }
 
-void LamentGem::Use(Item &i) {
+void LamentGem::Use(Item &i, int thresholds[4], int choice) { // Re-do this!
 	// Removes a random suffix
-	int choice = rand() % 3; // Get suffix size, removing will reduce options
+	choice = rand() % 3; // Get suffix size, removing will reduce options
 	choice++;
 	i.suffixValues[0] = 0; // Check!
 	i.suffixStatText[choice].setString("");

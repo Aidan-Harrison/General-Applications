@@ -17,6 +17,10 @@ private:
 	sf::Texture tex;
 	sf::Sprite img;
 public:	
+	sf::RectangleShape itemPrevBack;
+	sf::RectangleShape GREY_OUT;
+	sf::Sprite itemPreview;
+
 	std::string itemName;
 	sf::RectangleShape rarityVisual;
 	sf::Text rarityText;
@@ -27,6 +31,7 @@ public:
 	int type = 0;
 
 	int iLevel = 1;
+	bool stashSet = false;
 	// Stats: Fundamental
 	std::tuple<int, int, int> typeValue{0, 0, 0}; // STRENGTH, AGILITY, INTELLIGENCE | Scales with iLevel
 	std::tuple<int, int, int> requirements{0, 0, 0}; // STRENGTH, AGILITY, INTELLIGENCE | Scales with iLevel
@@ -176,12 +181,20 @@ public:
 			suffixTierText[i].setFillColor(sf::Color(70, 130, 180, 255));
 			offset += 25.0f;
 		}
+
+		itemPrevBack.setSize(sf::Vector2f(50.0f, 70.0f));
+		itemPrevBack.setOrigin(itemPrevBack.getSize().x/2, itemPrevBack.getSize().y/2);
+
+		GREY_OUT.setSize(sf::Vector2f(itemPrevBack.getSize().x, itemPrevBack.getSize().y));
+		GREY_OUT.setOrigin(GREY_OUT.getSize().x/2, GREY_OUT.getSize().y/2);
+		GREY_OUT.setFillColor(sf::Color(0,0,0,128));
 	}
 	~Item() {};
 
 	void Draw(sf::RenderWindow &window) const; // Prints everything about the item in an ordered format | SFML based
 	// virtual void GenerateStats(std::vector<std::string>& suffixes); // Implicit and Prefix | Suffix generation is global
-	void GenerateSuffixStats(std::vector<std::string> &suffixes); // Merge?
+	virtual void GenerateStats(int thresholds[4], int choice) {} // Check!
+	void StashDraw(sf::RenderWindow &window) const;
 };
 
 class Sword : public Item {
@@ -190,8 +203,9 @@ public:
 	Sword(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
 		:Item(name, screenWidth, screenHeight)
 	{
+		type = 0;
 	}
-	void GenerateStats(std::vector<std::string>& suffixes);
+	void GenerateStats(int thresholds[4], int choice);
 };
 
 class Boots : public Item {
@@ -200,7 +214,9 @@ public:
 	Boots(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
 		:Item(name, screenWidth, screenHeight)
 	{
+		type = 3;
 	}
+	void GenerateStats(int thresholds[4], int choice);
 };
 
 class Ring : public Item {
@@ -209,16 +225,9 @@ public:
 	Ring(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
 		:Item(name, screenWidth, screenHeight)
 	{
+		type = 5;
 	}
-};
-
-class Amulet : public Item {
-private:
-public:
-	Amulet(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
-		:Item(name, screenWidth, screenHeight)
-	{
-	}
+	void GenerateStats(int thresholds[4], int choice);
 };
 
 class Chest : public Item {
@@ -227,7 +236,9 @@ public:
 	Chest(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
 		:Item(name, screenWidth, screenHeight)
 	{
+		type = 4;
 	}
+	void GenerateStats(int thresholds[4], int choice);
 };
 
 class Belt : public Item {
@@ -236,7 +247,9 @@ public:
 	Belt(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
 		:Item(name, screenWidth, screenHeight)
 	{
+		type = 7;
 	}
+	void GenerateStats(int thresholds[4], int choice);
 };
 
 class Bow : public Item {
@@ -245,7 +258,9 @@ public:
 	Bow(std::array<std::string, 5> &name, int screenWidth, int screenHeight)
 		:Item(name, screenWidth, screenHeight)
 	{
+		type = 2;
 	}
+	void GenerateStats(int thresholds[4], int choice);
 };
 
 class Staff : public Item {
@@ -255,6 +270,7 @@ public:
 		:Item(name, screenWidth, screenHeight)
 	{
 	}
+	void GenerateStats(int thresholds[4], int choice);
 };
 
 class Helmet : public Item {
@@ -264,6 +280,18 @@ public:
 		:Item(name, screenWidth, screenHeight)
 	{
 	}
+	void GenerateStats(int thresholds[4], int choice);
+};
+
+class Amulet : public Item {
+private:
+public:
+	Amulet(std::array<std::string, 5>& name, int screenWidth, int screenHeight)
+		:Item(name, screenWidth, screenHeight)
+	{
+		type = 6;
+	}
+	void GenerateStats(int thresholds[4], int choice);
 };
 
 #endif

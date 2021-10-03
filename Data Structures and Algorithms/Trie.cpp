@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <vector>
 
 // Lowercase only
 
@@ -65,9 +66,54 @@ public:
     ~aTrie() {}
 };
 
+// Node based
+struct trieNode {
+    bool terminal = false; // Is end of word
+    std::vector<trieNode*> children;
+    trieNode() {}
+    ~trieNode() {}
+};
+
+trieNode* CreateNode() {
+    trieNode *newNode = new trieNode;       
+    return newNode;
+}
+
+bool Insert(trieNode **root, std::string &text) { // Check double pointer
+    if(*root == nullptr) // Change root pointer
+        *root = CreateNode();
+    trieNode *traverseNode = *root;
+    for(unsigned int i = 0; i < text.length(); i++) {
+        if(traverseNode->children[text[i]] == nullptr) // If it doesn't exist, add it
+            traverseNode->children[text[i]] = CreateNode();
+        traverseNode = traverseNode->children[text[i]]; // Else keep going
+    }
+    if(traverseNode->terminal)
+        return false;
+    else  {
+        traverseNode->terminal = true;
+        return true;
+    }
+}
+
+void PrintTrieRec(trieNode *node, std::string &prefix, int length) {
+    std::string newPrefix;
+    newPrefix.resize(prefix.length());
+    if(node->terminal)
+        std::cout << "WORD: " << prefix;
+}
+
+void PrintTrie(trieNode *root) {
+    // Print all children correctly
+
+}
+
 int main() {
     aTrie t;
     t.Insert("cat");
+
+    // Node based
+    trieNode newNode;
 
     return 0;
 }

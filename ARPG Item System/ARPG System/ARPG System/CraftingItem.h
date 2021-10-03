@@ -4,8 +4,6 @@
 #include <iostream>
 #include "Item.h"
 
-void RollItem();
-
 class CraftingItem {
 private:
 	sf::Font font;
@@ -40,7 +38,7 @@ public:
 	}
 	~CraftingItem() = default;
 
-	virtual void Use(Item &i) {}
+	virtual void Use(Item &i, int thresholds[4], int choice) {}
 	virtual void Draw(sf::RenderWindow& window) const;
 
 	float GetPosX() { return spr.getPosition().x; }
@@ -57,7 +55,7 @@ public:
 	{
 	}
 	~AgonyOrb() = default;
-	void Use(Item& i);
+	void Use(Item& i, int thresholds[4], int choice);
 	void Draw(sf::RenderWindow &window, float offset); // Check const?
 };
 
@@ -69,7 +67,7 @@ public:
 	{
 	}
 	~PerfectionOrb() = default;
-	void Use(Item& i);
+	void Use(Item& i, int thresholds[4], int choice);
 	void Draw(sf::RenderWindow& window, float offset);
 };
 
@@ -81,7 +79,7 @@ public:
 	{
 	}
 	~LamentGem() = default;
-	void Use(Item& i);
+	void Use(Item& i, int thresholds[4], int choice);
 	void Draw(sf::RenderWindow& window, float offset);
 };
 

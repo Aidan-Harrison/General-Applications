@@ -299,7 +299,7 @@ char FindFirstNonDuplicate(std::string &&str) {
     else {
         std::unordered_map<char,int> m;
         for(int i = 0; i < str.length(); i++)
-            m.insert(std::pair<char, int>(str[i], i));
+            m.insert(std::pair<char, int>(str[i], i)); // Check, int seems wrong??
         for(unsigned int i = 0; i < str.length(); i++) {
             if(m.count(str[i]) == 1)
                 return str[i];
@@ -367,7 +367,7 @@ bool AnagramMap(std::string &&str1, std::string &&str2) {
             char c = std::tolower(i);
             m[c]++;
         }
-        for(int i = 0; i < str2.length(); i++) {
+        for(unsigned int i = 0; i < str2.length(); i++) {
             char c = std::tolower(str2[i]);
             if(m.count(c) == 0)
                 return false;
