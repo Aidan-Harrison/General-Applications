@@ -31,7 +31,7 @@ void DepthFirstSearchIterative(gNode *n) { // CHANGE!
     }
 }
 
-void DepthFirstSearchRecursive(gNode *n) {
+void DepthFirstSearchRecursive(gNode *n) { // No base case, missing elements
     n->isVisited = true; 
     std::cout << n->key << " ";
     for(unsigned int i = 0; i < n->connectedNodes.size(); i++)
@@ -65,9 +65,9 @@ int main() {
 
     /*=== Comment one out ===*/
     std::cout << "Iterative: ";
-    DepthFirstSearchIterative(&root);
-    std::cout << "\nRecrusive: ";
-    // DepthFirstSearchRecursive(&root);
+    // DepthFirstSearchIterative(&root);
+    std::cout << "\nRecursive: ";
+    DepthFirstSearchRecursive(&root);
 
     return 0;
 }

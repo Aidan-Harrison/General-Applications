@@ -12,25 +12,27 @@ Interface interface(screenWidth, screenHeight);
 
 void StructureCreation();
 
-void TreeCreation(tNode *parent, int value, int size) { // Change value/data part
-	if (size == 0)
-		return;
+void TreeCreation(tNode *parent, int value) { // Re-add size?
 	if (value <= parent->data) {
 		if (parent->lChild == nullptr) {
-			tNode* lChild = new tNode(0, parent->circle.getPosition(), true);
+			tNode* lChild = new tNode(value, parent->circle.getPosition(), true);
+			std::cout << lChild->data << '\n';
+			std::cout << parent->circle.getPosition().x << ", " << parent->circle.getPosition().y;
+			std::cout << lChild->circle.getPosition().x << ", " << lChild->circle.getPosition().y;
 			parent->lChild = lChild;
 		}
 		else {
-			TreeCreation(parent->lChild, parent->lChild->data, size--);
+			TreeCreation(parent->lChild, parent->lChild->data);
 		}
 	}
-	else { // Have always happen?
+	else {
 		if (parent->rChild == nullptr) {
-			tNode* rChild = new tNode(0, parent->circle.getPosition(), false);
+			tNode* rChild = new tNode(value, parent->circle.getPosition(), false);
+			std::cout << rChild->data << '\n';
 			parent->rChild = rChild;
 		}
 		else {
-			TreeCreation(parent->rChild, parent->rChild->data, size--);
+			TreeCreation(parent->rChild, parent->rChild->data);
 		}
 	}
 }
@@ -84,14 +86,13 @@ void StructureCreation() {
 	else if (choice == 4) { // Tree
 		Tree newTree(screenWidth, screenHeight);
 		int size = 0;
-		std::cout << "Tree size:\t";
-		std::cin >> size;
 		tNode* parent = new tNode;
-		parent->data = 16;
-		parent->circle.setPosition(sf::Vector2f((float)screenWidth/2, (float)screenHeight/2));
+		parent->data = 20;
+		parent->data++;
+		parent->circle.setPosition(sf::Vector2f((float)screenWidth/2, (float)screenHeight/2)); // Remove?
 		newTree.root = parent;
-		TreeCreation(newTree.root, 12, size);
-		Draw(newTree);
+		TreeCreation(newTree.root, 12);
+		Draw(newTree); // Change!
 	}
 	else { // Graph
 		std::vector<int> data{1,2,3,4,5,6,7};

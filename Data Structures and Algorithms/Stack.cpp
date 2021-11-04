@@ -12,15 +12,11 @@ struct stack {
 };
 
 bool stack::IsFull() {
-    if(top == 10)
-        return true;
-    return false;
+    return (top == 10) ? true : false;
 }
 
 bool stack::IsEmpty() {
-    if(top == -1)
-        return true;
-    return false;
+    return (top == -1) ? true : false;
 }
 
 void stack::Push(int item) {

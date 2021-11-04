@@ -21,11 +21,19 @@ struct sList {
     void Print(node *n) const;
     void Clear(node *n);
 
+    void PrintMiddle(node *head);
     void PrintMiddle(node *head, int size);
+    void PrintMiddleOther(node *head);
+
     void DeleteMiddle(node *head, int size);
+    void DeleteMiddleOther(node *head);
+
     void Increment(node *n);
     node* NthFromEnd(node* head, int n, int total); // Node instead?
+
     void ReverseList(node *n);
+    node* ReverseListBetter(node *n);
+
     void SortList(); // DO! | Merge Sort
     void RotateList();
     int SumOfLinkedList(node *n1, node *n2);
@@ -60,20 +68,58 @@ void sList::Print(node *n) const {
     delete tempNode;
 }
 
+void sList::PrintMiddle(node *head) {
+    int size = 0;
+    node *traverseNode = head;
+    while(traverseNode != nullptr) {
+        traverseNode = traverseNode->next;
+        size++;
+    }
+    traverseNode = head;
+    for(unsigned int i = 0; i < size/2; i++) {
+        traverseNode = traverseNode->next;
+    }
+    std::cout << traverseNode->data;
+}
+
 void sList::PrintMiddle(node *head, int size) { // Rounded up
     node *tempNode = head;
     for(unsigned int i = 0; i < size/2; i++)
         tempNode = tempNode->next;
     std::cout << tempNode->data;
-    delete tempNode;
+    // delete tempNode;
 }
 
+void sList::PrintMiddleOther(node *head) {
+    node *firstNode = head;
+    node *secondNode = head;
+    while(secondNode != nullptr) {
+        secondNode = secondNode->next->next; // Increment second node by two
+        firstNode = firstNode->next;
+    }
+    std::cout << firstNode->data << '\n';
+}
+
+// Re-Do this!
 void sList::DeleteMiddle(node *head, int size) { // Wrong! Temporary node doesn't work | Formula is also wrong, change to use actual list, not temp iterator
-    node *tempNode = head;
-    for(unsigned int i = 0; i < size/2-2; i++) // Go back one before mid
-        tempNode = tempNode->next;
-    tempNode->next = tempNode->next->next;
-    delete tempNode;
+    node *newNode = head;
+    int mid = size/2;
+    while(mid > 1) {
+        head=head->next;
+        mid--;
+    }
+    head->next = head->next->next;
+}
+
+void sList::DeleteMiddleOther(node *head) {
+    node *fastNode = head;
+    node *slowNode = head;
+    while(fastNode != nullptr) {
+        fastNode = fastNode->next->next;
+        slowNode = slowNode->next;
+    } 
+    head = slowNode;
+    head->next = head->next->next;
 }
 
 void sList::Increment(node *n) {
@@ -95,21 +141,35 @@ void sList::Clear(node *n) {
 }
 
 void sList::ReverseList(node *n) {
-   if(n->next == nullptr)
+    if(n->next == nullptr)
         return;
-   node *root = n;
-   std::vector<int> temp{};
-   while(n != nullptr) {
-       temp.push_back(n->data);
-       n = n->next;
-   }
-   n = root;
-   Clear(n);
-   for(unsigned int i = 0; i < temp.size(); i++) {
-       node *newNode = new node(i);
-       n->next = newNode;
-       n = n->next;
-   }
+    node *root = n;
+    std::vector<int> temp{};
+    while(n != nullptr) {
+        temp.push_back(n->data);
+        n = n->next;
+    }
+    n = root;
+    Clear(n);
+    for(unsigned int i = 0; i < temp.size(); i++) {
+        node *newNode = new node(i);
+        n->next = newNode;
+        n = n->next;
+    }
+}
+
+node* sList::ReverseListBetter(node *n) {
+    node *cur = n;
+    node *follow = n;
+    node *prev = nullptr;
+    while(cur != nullptr) {
+        follow = follow->next;
+        cur->next = prev;
+        prev = cur;
+        cur = follow;
+    }
+    // Prev = head
+    return prev;
 }
 
 void sList::RotateList() {
@@ -180,10 +240,12 @@ void dList::PrintMiddle(dNode *head, int size) {
 
 void dList::DeleteMiddle(dNode *head, int size) {
     dNode *tempNode = head;
-    for(unsigned int i = 0; i < size/2; i++)
-        tempNode = tempNode->next;
-    tempNode->prev->next = tempNode->next;
-    delete tempNode;
+    int mid = size / 2;
+    while(mid > 1) { // Cleaner then a for loop
+        head = head->next;
+        mid--;
+    }
+    head->next = head->next->next;
 }
 
 // Given the head node and the element of another node, increment the node which holds the matching element
@@ -262,6 +324,26 @@ int SumofListsIndependent(sList &n1, sList &n2) {
     return sum;
 }   
 
+std::vector<int> GetDuplicates(node *head) {
+    std::vector<int> duplicates{};
+    node* traverseNode = head;
+    while(traverseNode != nullptr) {
+        int cur = traverseNode->data;
+        if(traverseNode->next->data == cur)
+            duplicates.push_back(cur);
+        traverseNode = traverseNode->next;
+    }
+    
+}
+
+// List cannot be sorted
+void DeleteDuplicates(node *head) {
+    // Find all duplicates in list
+    // shift next pointers until only pointing to single element
+    //  - or shift so all elements are removed (easier)
+
+}
+
 int main() {
     // Singly-Linked List
     sList l;
@@ -279,12 +361,27 @@ int main() {
 
     l.Print(head);
     putchar('\n');
-    // l.PrintMiddle(head, 5);
+    std::cout << "Print Middle:\n";
+    l.PrintMiddle(head);
+    std::cout << "\nPrint Middle 2:\n";
+    l.PrintMiddle(head, 5);
+    std::cout << "\nPrint Middle (other):\n";
+    // l.PrintMiddleOther(head); // Fix!
+    std::cout << "\nDelete Middle:\n";
     l.DeleteMiddle(head, 5);
+    std::cout << "\nReverse:\n";
     //l.ReverseList(head);
+    l.Print(head);
+    std::cout << "\nReverse Better:\n";
+    head = l.ReverseListBetter(head);
     l.Print(head);
 
     // SumofListsIndependent(l, l2);
+
+    std::cout << "\nFind Duplicates:\n";
+
+    std::cout << "\nRemove Duplicates:\n";
+
 
     // Doubly-Linked List
     std::cout << "\nDouble:\n";

@@ -17,9 +17,9 @@ struct tNode {
 		circle.setRadius(25.0f);
 		circle.setOrigin(circle.getRadius()/2, circle.getRadius()/2);
 		if(left)
-			circle.setPosition(pos.x - 50.0f, pos.y + 50.0f);
+			circle.setPosition(pos.x - 50.0f, pos.y - 50.0f);
 		else
-			circle.setPosition(pos.x + 50.0f, pos.y + 50.0f);
+			circle.setPosition(pos.x + 50.0f, pos.y - 50.0f);
 	}
 	~tNode() {}
 };

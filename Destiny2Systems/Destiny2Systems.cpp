@@ -1,9 +1,5 @@
-#include <iostream>
 #include <unordered_map>
-#include <array>
-#include <vector>
 #include <conio.h>
-#include <cassert>
 
 #include "Character.h"
 
@@ -19,7 +15,7 @@ bool StringParser(const std::string &str) { // ?
     return true;
 }
 
-// ================= Weapons =================
+// ================= Weapons ================= | Remove legendary and exotics
 namespace handCannonNames {
     std::vector<std::string> hcNames{"Proxima-M1", "A Cold Sweat", "Agamid", "Acienct Gospel", "Annual Skate", "Austringer", "Bad News", "Better Devils",
                                      "Bottom Dollar", "D.F.A", "Dire Promise", "Fatebringer", "Finite Impactor", "Judgement", "IKELOS_HC_v1.0.1"};
@@ -88,10 +84,14 @@ namespace artifactNames {
 
 using namespace globalSettings;
 
-// Weapon Perks
-// Armor Mods
+namespace PerkPool { // Push to vector at start, call after main()
+    std::vector<WeaponPerk*> globalPerks{};    
+    WeaponPerk *deadeye = new WeaponPerk("Deadeye");
+}
 
-namespace ItemPool {
+namespace ModPool {
+    std::vector<ArmorMod*> globalMods{};
+    ArmorMod *fastHands = new ArmorMod("Fast Hands", 1);
 }
 
 void RollWeapon(Character &c) {
@@ -107,52 +107,63 @@ void RollWeapon(Character &c) {
     switch(newWeapon->type) {
         case newWeapon->HAND_CANNON: 
             std::cout << "Type: Hand Cannon\n"; 
+            newWeapon->weaponType = "HAND CANNON"; break;
             value = rand() % handCannonNames::hcNames.size();
             newWeapon->weaponName = handCannonNames::hcNames[value];
             break;
         case newWeapon->SIDEARM: 
             std::cout << "Type: Sidearm\n"; 
+            newWeapon->weaponType = "SIDEARM"; break;
             break;
         case newWeapon->SHOTGUN: 
             std::cout << "Type: Shotgun\n";
+            newWeapon->weaponType = "SHOTGUN"; break;
             value = rand() % shotgunNames::sNames.size();
             newWeapon->weaponName = shotgunNames::sNames[value];
             break;
         case newWeapon->SNIPER_RIFLE: 
             std::cout << "Type: Sniper Rifle\n"; 
+            newWeapon->weaponType = "SNIPER RIFLE"; break;
             value = rand() % sniperNames::snNames.size();
             newWeapon->weaponName = sniperNames::snNames[value];
             break;
         case newWeapon->AUTO_RIFLE: 
             std::cout << "Type: Auto Rifle\n"; 
+            newWeapon->weaponType = "AUTO RIFLE"; break;
             value = rand() % autoRifleNames::arNames.size();
             newWeapon->weaponName = autoRifleNames::arNames[value];
             break;
         case newWeapon->SMG: 
             std::cout << "Type: SMG\n"; 
+            newWeapon->weaponType = "SMG"; break;
             break;
         case newWeapon->SCOUT_RIFLE: 
             std::cout << "Type: Scout Rifle\n"; 
+            newWeapon->weaponType = "SCOUT RIFLE"; break;
             value = rand() % scoutNames::scNames.size();
             newWeapon->weaponName = scoutNames::scNames[value];
             break;
         case newWeapon->FUSION_RIFLE: 
             std::cout << "Type: Fusion Rifle\n"; 
+            newWeapon->weaponType = "FUSION RIFLE"; break;
             value = rand() % fusionNames::fNames.size();
             newWeapon->weaponName = fusionNames::fNames[value];
             break;
         case newWeapon->ROCKET_LAUNCHER: 
             std::cout << "Type: Rocket Launcher\n"; 
+            newWeapon->weaponType = "ROCKET LAUNCHER"; break;
             value = rand() % rocketNames::rNames.size();
             newWeapon->weaponName = rocketNames::rNames[value];
             break;
         case newWeapon->GRENADE_LAUNCHER: 
             std::cout << "Type: Grenade Launcher\n"; 
+            newWeapon->weaponType = "GRENADE LAUNCHER"; break;
             value = rand() % grenadeNames::gNames.size();
             newWeapon->weaponName = grenadeNames::gNames[value];
             break;
         case newWeapon->SWORD: 
             std::cout << "Type: Sword"; 
+            newWeapon->weaponType = "SWORD"; break;
             break;
     }
     for(unsigned int i = 0; i < newWeapon->weaponStats.size(); i++) {
@@ -176,31 +187,37 @@ void RollArmor(Character &c) {
     switch(newArmor->type) {
         case newArmor->HELMET:
             std::cout << "Type: Helmet\n";
+            newArmor->armorType = "HELMET"; break;
             value = rand() % helmetNames::hNames.size();
             newArmor->armorName = helmetNames::hNames[value];
             break;
         case newArmor->CHEST:
             std::cout << "Type: Chest\n";
+            newArmor->armorType = "CHEST"; break;
             value = rand() % chestNames::cNames.size();
             newArmor->armorName = chestNames::cNames[value];
             break;
         case newArmor->LEGS:        
             std::cout << "Type: Legs\n";
+            newArmor->armorType = "LEGS"; break;
             value = rand() % legNames::lNames.size();
             newArmor->armorName = legNames::lNames[value];
             break;
         case newArmor->GAUNTLETS:   
             std::cout << "Type: Gauntlets\n";
+            newArmor->armorType = "GAUNTLETS"; break;
             value = rand() % gauntletNames::gNames.size();
             newArmor->armorName = gauntletNames::gNames[value];
             break;
         case newArmor->CLASS_PIECE: 
             std::cout << "Type: Class Piece\n";
+            newArmor->armorType = "CLASS PIECE"; break;
             value = rand() % classItemNames::cINames.size();
             newArmor->armorName = classItemNames::cINames[value];
             break;
         case newArmor->ARTIFACT:    
             std::cout << "Type: Artifact\n";
+            newArmor->armorType = "ARTIFACT"; break;
             value = rand() % artifactNames::aNames.size();
             newArmor->armorName = artifactNames::aNames[value];
             break;
@@ -239,12 +256,10 @@ void Interface(Character &c) {
 int main() {
     // F1 = 3b
     // F2 = 3c
-    
-    // Initialise modPool | Move to function!
-    for(unsigned int i = 0; i < 5; i++) {
-        ArmorMod *newMod = new ArmorMod;
-        // ItemPool::modPool.push_back(*newMod);
-    }
+
+    // Write auto function for this, don't want to manually be adding every single perk and/or mod
+    PerkPool::globalPerks.push_back(PerkPool::deadeye);
+    ModPool::globalMods.push_back(ModPool::fastHands);
 
     Character c;
     Interface(c);

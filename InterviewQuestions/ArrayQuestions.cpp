@@ -9,7 +9,7 @@
 void AllPossiblePairs(std::vector<int> &arr) {
     for(unsigned int i = 0; i < arr.size(); i++)
         for(unsigned int j = 0; j < arr.size(); j++)
-            std::cout << arr[i] << ", " << arr[j] << "    ";
+            std::cout << arr[i] << ", " << arr[j] << "   ";
 }
 
 // Find missing number n - n assuming order of 1,2,3,4,5,etc...
@@ -17,19 +17,21 @@ int FindMissing(std::vector<int> &arr) {
 	if(arr.size() == 0)
 		return -1;
 	else {
-		std::sort(arr.begin(), arr.end());
-		int difference = 0;
-		for(unsigned int i = 0; i < arr.size(); i++) {
-			// Check difference, if greater then 1, missing
-			for(unsigned int j = 0; j < arr.size(); j++) {
-				difference = arr[j] - arr[j++];
-				if(difference > 1)
-					return arr[j++];
-				difference = 0;
-			}
-		}
+        int difference = 0;
+        for(unsigned int i = 2; i < arr.size()-1; i++) {
+            int fVal = arr[i];
+            int sVal = arr[i+1];
+            if(fVal > sVal) {
+                difference = fVal - sVal;
+                if(difference > 1)
+                    return fVal-1;
+            }
+            difference = sVal - fVal;
+            if(difference > 1)
+                return sVal-1;
+        }
 	}	
-	return -1; // Failed
+	return -1;
 }
 
 bool FindDuplicateOfTarget(std::vector<int> &arr, const int target) {
@@ -50,7 +52,7 @@ bool FindDuplicateOfTargetMap(std::vector<int> &arr, const int target) {
         return false;
     else {
         std::unordered_map<int,int> map;
-        for(unsigned int i = 0; i < arr.size(); i++)
+        for(int i = 0; i < arr.size(); i++)
             map.insert(std::pair<int,int>(i, arr[i]));
         for(auto i : arr)
             if(i == target)
@@ -60,8 +62,23 @@ bool FindDuplicateOfTargetMap(std::vector<int> &arr, const int target) {
     return false;
 }
 
-// Find all values which have duplicates
-std::vector<int> FindAllDuplicates(std::vector<int> &arr) { // Optimise | Should be a much more efficient way
+std::vector<int> FindAllDuplicatesNaive(std::vector<int> &arr) {
+    if(arr.size() <= 1)
+        return arr;
+    else {
+        std::vector<int> duplicates{};
+        for(unsigned int i = 0; i < arr.size(); i++) {
+            for(unsigned int j = 0; j < arr.size()-1; j++) {
+                if(arr[j] > arr[j+1])
+                    duplicates.push_back(arr[j]);
+            }
+        }
+    }
+    return arr;
+}
+
+// Find all values which have duplicate members
+std::vector<int> FindAllDuplicates(std::vector<int> &arr) {
     if(arr.size() <= 1)
         return arr;
     else {
@@ -69,29 +86,52 @@ std::vector<int> FindAllDuplicates(std::vector<int> &arr) { // Optimise | Should
         std::unordered_map<int,int> map;
         for(auto i : arr)
             map[i]++;
-        for(auto i : arr) {
-            if(map.count(i) > 1) {
-                for(auto j : duplicates)
-                    if(i == j)
-                        continue;
-                    else {
-                        duplicates.push_back(i);
-                        break;
-                    }
-            }
+        for(auto it = map.begin(); it != map.end(); it++) {
+            if(it->second > 1)
+                duplicates.push_back(it->first);
         }
-
-        for(auto i : duplicates)
-            std::cout << i << ", ";
-
         return duplicates;
     }
     return arr;
 }
 
+void RemoveElement(std::vector<int> &arr, const int target) {
+    for(unsigned int i = 0; i < arr.size(); i++) {
+        if(arr[i] == target) {
+            // Shift all elements down by one starting from here
+            for(unsigned int j = i; j < arr.size()-1; j++) {
+                arr[j] = arr[j+1];
+            }
+        }
+    }
+    arr.pop_back();
+}
 
+void RemoveDuplicates(std::vector<int> &arr) {
+    // Find duplicate
+    // Shift all elements assuming next element is not also a duplicate
+    //  - If the above case is true, store cur duplicate position and iterate until a non-duplicate is found
+    //  - Then swap and return iterating from where the original duplicate was found
+    // Repeat
+    // Map version is superior?
+    // Need to account for duplicate adjacent elements
+    std::set<int> s;
+    for(int i = 0; i < arr.size(); i++) {
+        s.insert(arr[i]);
+    }
+}
 
-// Given an unsorted array, find the largest and smallest numbers, (THE ARRAY IS NOT ALLOWED TO BE SORTED) | Sort then return first & last otherwise
+void RemoveDuplicatesMap(std::vector<int> &arr) {
+    std::unordered_map<int,int> map;
+    for(auto i : arr)
+        map[i]++;
+    for(unsigned int i = 0; i < arr.size()-1; i++) {
+        if(map.count(arr[i]) > 1 && arr[i] != arr[i+1])
+            arr[i] = arr[i+1];
+    }
+}
+
+// Given an unsorted array, find the largest and smallest numbers, (THE ARRAY IS NOT ALLOWED TO BE SORTED) | Sort then return first and/or last otherwise
 // Iterative version: Base algorithm, compare values to one another until the largest and smallest are found
 std::tuple<int,int> LargestSmallestUnsorted(std::vector<int> &arr) {
 	std::tuple<int,int> values;
@@ -99,47 +139,18 @@ std::tuple<int,int> LargestSmallestUnsorted(std::vector<int> &arr) {
 		return values;
 	}
 	else {
-		std::vector<int> copy(arr); // We need a copy else the 'smallest' calculation will be working on an altered array
-		int largest = 0, smallest = 0;
-		for(int i = 0; i < copy.size(); i++) {
-			for(int j = 0; j < copy.size(); j++) {
-				if(copy[j] > copy[i]) {
-					largest = copy[j];
-					copy[i] = largest; // Compare against new value
-				}
-			}
-		}
-		for(int i = 0; i < arr.size(); i++) {
-			for(int j = 0; j < arr.size(); j++) {
-				if(arr[j] < arr[i]) {
-					smallest = arr[j];
-					arr[i] = smallest;
-				}
-			}
-		} 
+		int largest = INT_MIN, smallest = INT_MAX; 
+        for(unsigned int i = 0; i < arr.size(); i++) {
+            if(arr[i] > largest)
+                largest = arr[i];
+            if(arr[i] < smallest)
+                smallest = arr[i];
+        }
+
 		std::get<0>(values) = largest;
 		std::get<1>(values) = smallest;
 	}
 	return values;
-}
-
-std::tuple<int,int> LargestSmallestUnsortedBetter(std::vector<int> &arr) {
-    std::tuple<int,int> results;
-	if(arr.size() <= 1)
-		return results;
-	else { 
-        int smallest = INT_MAX;
-        int largest = INT_MIN;
-        for(unsigned int i = 0; i < arr.size(); i++) {
-            if(arr[i] < smallest)
-                smallest = arr[i];
-            if(arr[i] > largest)
-                largest = arr[i];
-        }
-        std::get<0>(results) = smallest;
-        std::get<1>(results) = largest;
-	}
-    return results;
 }
 
 // Effcient Version: (Map). Given that we cannot do any sorting, we can use an unordered map to quickly search for the largest and smallest
@@ -208,26 +219,23 @@ std::vector<int> CommonElements(std::vector<int> &arr, int times) { // Fix! | Ge
 }
 
 // Converts a regular array into a circular one | Do!
-std::vector<int> CyclicArray(int element, std::vector<int> &arr, int size) {
+std::vector<int> CyclicArray(std::vector<int> &arr, const int element) {
 	if(arr.size() == 0)
 		return arr;
 	else {
-		arr.push_back(element); // Check! overwrite
-		if(arr.size() == size) {
-			arr.resize(size);
-			arr[0] = element;
-		}
+		// Do!
+		arr[0] = element;
 	}
 	return arr;
 }
 
 // Assuming their are two non-empty arrays, check if one array is a sub-array of the other, in relative order
 bool ValidSubSequence(std::vector<int> &arr1, std::vector<int> &arr2) {
-	int check = 0;
+	int correct = 0;
 	for(unsigned int i = 0; i < arr2.size(); i++) {
-		if(arr1[check] == arr2[i])
-			check++;
-		if(check == arr1.size())
+		if(arr1[correct] == arr2[i])
+			correct++;
+		if(correct == arr1.size())
 			return true;
 	}
 	return false;
@@ -261,10 +269,29 @@ std::vector<int> SortedSquaredArray(std::vector<int> &arr) {
 	return arr;
 }
 
-// Move the first element to the end | Do a one liner!
-void MoveElementToEnd(std::vector<int> &arr) {
-	arr.push_back(arr[0]);
-	arr.erase(arr.begin());
+void MoveElementToEndSimple(std::vector<int> &arr, int element) {
+	for(unsigned int i = 0; i < arr.size(); i++) {
+        if(arr[i] == element) {
+            arr.push_back(arr[i]);
+            arr.erase(arr.begin() + i);
+        }
+    }
+}
+
+void MoveToEnd(std::vector<int> &arr, int element) {
+    int moveElement = 0;
+    int shiftPos = 0;
+    for(unsigned int i = 0; i < arr.size(); i++) {
+        if(arr[i] == element) {
+            moveElement = arr[i];
+            shiftPos = i;
+            break;
+        }
+    }
+    for(unsigned int i = shiftPos; i < arr.size()-1; i++) {
+        arr[i] = arr[i+1];
+    }
+    arr[arr.size()-1] = moveElement;
 }
 
 bool MonotonicArray(std::vector<int> &arr) {
@@ -282,67 +309,64 @@ bool MonotonicArray(std::vector<int> &arr) {
 // Find exactly 3 numbers in an array whose sum is equal to the target
 std::tuple<int,int,int> ThreeNumberSumIter(std::vector<int> &arr, int sum) { // Iterative approach using pointers
     std::tuple<int,int,int> numbers{0,0,0};
-	std::sort(arr.begin(), arr.end());
-	for(int i = 0; i < arr.size(); i++) {
-		int left = i + 1;
-		int right = arr.size()-1;
-		while(left < right) {
-			if(arr[i] + arr[left] + arr[right] == sum) {
-                std::cout << arr[i] << ", " << arr[left] << ", " << arr[right] << "\n";
-                std::get<0>(numbers) = arr[i];
-                std::get<1>(numbers) = arr[left];
-                std::get<2>(numbers) = arr[right];
-				return numbers;
-			}
-			else if (arr[i] + arr[left] + arr[right] < sum)
-				left++;
-			else
-				right--;
-		}
-	}
+    if(arr.size() < 3)
+        return numbers;
+    else {
+        std::sort(arr.begin(), arr.end());
+        for(int i = 0; i < arr.size(); i++) {
+            int left = i + 1;
+            int right = arr.size()-1;
+            while(left < right) {
+                if(arr[i] + arr[left] + arr[right] == sum) {
+                    std::cout << arr[i] << ", " << arr[left] << ", " << arr[right] << "\n";
+                    std::get<0>(numbers) = arr[i];
+                    std::get<1>(numbers) = arr[left];
+                    std::get<2>(numbers) = arr[right];
+                    return numbers;
+                }
+                else if (arr[i] + arr[left] + arr[right] < sum)
+                    left++;
+                else
+                    right--;
+            }
+        }
+        return numbers;
+    }
     return numbers;
 }
 
-bool ThreeNumberSumMap(std::vector<int> &arr, int sum) { // Come back to this
-	std::map<int, int> m;
-	for(auto i : arr)
-		m[i]++;
-	for(int i = 0; i < arr.size(); i++) {
-		// Same as before but using a map instead of a while loop
-		int left = i + 1;
-		int right = arr.size()-1;
-		if(sum - m[i] == sum) // Check!
-			return true;
-	}
+bool ThreeNumberSumMap(std::vector<int> &arr, int sum) { // Change return!
+    if(arr.size() < 3)
+        return false;
+    else {
+        std::map<int, int> m;
+        for(auto i : arr)
+            m[i]++;
+        for(int i = 0; i < arr.size(); i++) {
+            int left = i + 1;
+            int right = arr.size()-1;
+            if(sum - m[i] == sum) // Check!
+                return true;
+        }
+    }
 	return false;
 }
 
 // Does not take into account flat peaks
 int LongestPeakNonStrict(std::vector<int> &arr) { // Check, seems totally fine, can't figure out the issue
-	if(arr.size() < 3) // Mountain sub-arrays can only exist in sizes >= 3
-		return -1;
-	else {
-		int length = 0, longest = 0;
-		bool incrementing = true;
-		for(int i = 0; i < arr.size(); i++) {
-			std::cout << incrementing;
-			if(arr[i] < arr[i++]) {
-				length++;
-				incrementing = true;
-			}
-			else if(arr[i] > arr[i++]) {
-				length++;
-				incrementing = false;
-			}
-			if(arr[i] < arr[i++] && !incrementing) { // New mountain
-				if(length > longest)
-					longest = length;
-				length = 0;
-			}
-		}
-		return longest;
-	}
-	return -1;
+	int longest = 0;
+    int curPeak = 1;
+    for(unsigned int i = 0; i < arr.size()-1; i++) {
+        if(arr[i+1] > arr[i]) {
+            curPeak++;
+            if(curPeak > longest)
+                longest = curPeak;
+        }
+        if(arr[i+1] < arr[i]) {
+            curPeak = 0;
+        }
+    }
+    return longest;
 }
 
 int BinarySearch(std::vector<int> &arr, const int target) { // Assuming the array is already sorted
@@ -422,6 +446,59 @@ int FindUnsortedSubArray(std::vector<int> &arr) {
     return right - left + 1;
 }
 
+int ShortestUnsortedSubArray(std::vector<int> &arr) {
+    int left = arr.size();
+    int right = 0;
+    for(int i = 0; i < arr.size()-1; i++) {
+        for(int j = i+1; j < arr.size(); j++) {
+            if(arr[j] < arr[i]) {
+                right = std::max(right, j);
+                left = std::max(left, i);
+            }
+        }
+    }
+    return right - left < 0 ? 0 : right - left;
+}
+
+int ShortestUnsortedSubArrayBetter(std::vector<int> &arr) {
+    // Create a clone of the array
+    // Sort that array
+    // Use that sorted array in place of the non sorted array
+    // This lets us use a single iteration instead of a nested loop
+    // We can use a single because we know what the sorted array is 
+    // supposed to be
+    std::vector<int> copyArr(arr);
+    std::sort(copyArr.begin(), copyArr.end());
+    int start = arr.size();
+    int end = 0;
+    for(int i = 0; i < copyArr.size(); i++) {
+        if(copyArr[i] != arr[i]) {
+            start = std::min(start, i);
+            end = std::max(end, i);
+        }
+    }
+    return start - end < 0 ? 0 : start - end;
+}
+
+std::vector<int> FindUnsortedSubArrayVector(std::vector<int> &arr) {
+    if(arr.size() == 0)
+        return arr;
+    else {
+        int left = 0;
+        int right = 0;
+        std::vector<int> sortedArray(arr);
+        std::sort(sortedArray.begin(), sortedArray.end());
+        for(unsigned int i = 0; i < arr.size(); i++)
+            if(arr[i] == sortedArray[i])
+                left = i;
+        for(unsigned int j = arr.size(); j > 0; j--)
+            if(arr[j] == sortedArray[j])
+                right = j;
+        return sortedArray;
+    }
+    return arr; 
+}
+
 // Given an array of n elements, where each element is at most k away from its target position. Sort the array efficiently
 std::vector<int> SortKSortedArray(std::vector<int> &arr, const int k) {
     // Insertion Sort
@@ -489,8 +566,49 @@ int StaircaseTraversal(const int n) {
     
 }
 
+void ReverseArray(std::vector<int> &arr) {
+    for(unsigned int i = 0; i < arr.size() / 2; i++) {
+        int temp = arr[i];
+        arr[i] = arr[arr.size() - i -1];
+        arr[arr.size() -i - 1] = temp;
+    }
+}
+
+int SmallestDifference(std::vector<int> &arr) {
+    int curDiff = 0;
+    int smallDiff = INT_MAX;
+    for(unsigned int i = 0; i < arr.size()-1; i++) {
+        if(arr[i] > arr[i+1])
+            curDiff = arr[i] - arr[i+1];
+        else
+            curDiff = arr[i+1] - arr[i];
+        if(curDiff < smallDiff)
+            smallDiff = curDiff;
+    }
+    return smallDiff;
+}
+
+int NonAdjacentMaxSum(std::vector<int> &arr) {
+    int incl = arr[0];
+    int excl = 0;
+    int excl_new;
+    for(int i = 1; i < arr.size(); i++) {
+        excl_new = incl> excl ? incl : excl;
+
+        incl = excl + arr[i];
+        excl = excl_new;
+    }
+    return ((incl > excl) ? incl : excl);
+}
+
 int main() {
-    std::cout << "All possible pairs:\n";
+    std::vector<int> testArray{1,2,3,4,5,6,7,8,9,10};
+    std::cout << "Reverse Array:\n";
+    ReverseArray(testArray);
+    for(auto i : testArray)
+        std::cout << i << ',';
+
+    std::cout << "\nAll possible pairs:\n";
     std::vector<int> array{1,2,3};
     AllPossiblePairs(array);
 

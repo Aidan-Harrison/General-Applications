@@ -44,7 +44,7 @@ void bTree::Insert(int data, node *n) {
 
 node* bTree::Search(int data, node *n) {
     if(n != nullptr) {
-        if(data = n->data)
+        if(data == n->data)
             return n;
         if(data < n->data)
             return Search(data, n->lChild); // Check left child instead

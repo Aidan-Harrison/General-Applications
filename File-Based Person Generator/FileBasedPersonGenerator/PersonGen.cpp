@@ -42,7 +42,7 @@ void FileParser(const std::string &filePath, const bool display) {
     }
 }
 
-bool CheckExemptJob(std::string &str) {
+bool CheckExemptJob(const std::string &str) {
     if(str == "MMA")                  return false;
     else if(str == "Boxer")           return false;
     else if(str == "Athlete")         return false;

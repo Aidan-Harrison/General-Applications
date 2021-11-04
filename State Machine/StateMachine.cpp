@@ -2,7 +2,6 @@
 #include <iostream>
 #include <algorithm>
 
-int state = 0;
 enum states {
     STOP_ENGINE = 1, 
     START_ENGINE, 
@@ -12,6 +11,7 @@ enum states {
     TURN_RIGHT
 };
 
+int state = 0;
 std::string engineState = "";
 bool engine = false;
 float speed = 0.0f;

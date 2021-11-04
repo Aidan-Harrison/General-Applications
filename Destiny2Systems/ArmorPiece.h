@@ -14,12 +14,14 @@ class ArmorPiece {
 private:
     int choice = 0;
 public:
-    std::string armorName = "";
     std::array<ArmorMod, 5> mods{};
     enum TYPE{HELMET = 1, CHEST, LEGS, GAUNTLETS, CLASS_PIECE, ARTIFACT};
     int type = 1;
     int rarity = 0;
     int lightLevel = 100;
+    std::string armorName = "";
+    std::string armorType = "";
+    std::string itemDescription = "";
     // Class Stats
     int mobility = 1; // Hunter
     int resillience = 1; // Titan

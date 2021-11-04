@@ -20,7 +20,7 @@ public:
     int lightPower = 100;
     float hunterModifier = 1.0f, titanModifier = 1.0f, warlockModifier = 1.0f;
     // std::array<Weapon, 20> vault;
-    std::unordered_map<int, Weapon> weapons;
+    std::unordered_map<int, Weapon> weapons; // Change to array, map is pointless here
     std::unordered_map<int, ArmorPiece> armor;
     std::unordered_map<int, std::array<Weapon, 9>> wepGearSlotInvent;
     std::unordered_map<int, std::array<ArmorPiece, 9>> armGearSlotInvent;
@@ -54,7 +54,10 @@ public:
     void ChangeSubClass();
     void ModifySubClass();
 
-    ~Character() {}
+    ~Character() 
+    {
+        delete[] mainStats;
+    }
 };
 
 #endif

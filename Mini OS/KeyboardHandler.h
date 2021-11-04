@@ -13,19 +13,26 @@ void FileSearch(const std::string &&str);
 void DUMP();
 void Home();
 
-class KEYINPUT { // Singleton
+class KEYINPUT { // Make Singleton
 private:
 public:
+    static KEYINPUT& getInstance() 
+    {
+        static KEYINPUT instance; // Test
+        return instance;
+    }
+    int top = -1;
+    int BACKLOGSIZE = 10; // Extra buffer
+    int STACK_SIZE = 20;
+    std::vector<char> input{};
+    std::vector<std::string> shortcuts{"Clear Screen"};
+    std::vector<char> backlog{};
+
     KEYINPUT() 
     {
         shortcuts[0] = "l";
         shortcuts[1] = "cls";
     } // Move to private
-    int top = -1;
-    int BACKLOGSIZE = 10;
-    std::array<char, 20> input{};
-    std::vector<std::string> shortcuts{"clear"};
-    std::vector<char> backlog{};
 
     std::vector<std::string> storage{};
     // Add to storage vector:
@@ -34,10 +41,13 @@ public:
         // - Move to DUMP or PERSONAL
         // - Write + Overwrite
 
+    void Wrapper();
+
     inline bool IsFull();
     inline bool IsEmpty();
     void Push(const char c, bool parse);
     char Pop();
+    int CurrentSize();
     void Parser();
     void StoreInput();
 
@@ -45,19 +55,26 @@ public:
     void ShortcutParser(const std::string &&str);
     void PrintShortcuts() const;
 
+    // Modifications
+    void ChangeShortcuts();
+    void ChangeStackSize();
+    void ChangeBufferSize();
+
     ~KEYINPUT() {}
 };
 
+void KEYINPUT::Wrapper() {
+    if(IsFull()) {
+        input.resize(STACK_SIZE);
+    }
+}
+
 inline bool KEYINPUT::IsFull() {
-    if(top == 20) // Change!
-        return true;
-    return false;
+    return (top == STACK_SIZE) ? true : false;
 }
 
 inline bool KEYINPUT::IsEmpty() {
-    if(top == 0)
-        return true;
-    return false;
+    return (top == -1) ? true : false;
 }
 
 void KEYINPUT::Push(const char c, bool parse) {
@@ -65,7 +82,7 @@ void KEYINPUT::Push(const char c, bool parse) {
         std::cerr << "Keyboard stack is full!\n"; // Stop input
     else {
         top++;
-        input[top] = c; // Check every other implementation of stack with this 'top++' | May be an std::array specific issue
+        input[top] = c;
     }
     if(parse)
         Parser(); // Have bool to check whether to run parser per push
@@ -76,13 +93,17 @@ char KEYINPUT::Pop() {
         putchar('\n');
     else {
         char item = input[top];
-        backlog.push_back(input[top]); // Check!
+        backlog.push_back(input[top]);
         if(backlog.size() == BACKLOGSIZE)
             backlog.pop_back();
         top--;
         return item;
     }
     return ' ';
+}
+
+int KEYINPUT::CurrentSize() {
+    return top;
 }
 
 void KEYINPUT::Parser() {
@@ -115,6 +136,27 @@ void KEYINPUT::PrintStack() {
 
 void KEYINPUT::PrintShortcuts() const {
     std::cout << shortcuts[1] << " - Clears screen\n";
+}
+
+// Modifications
+void KEYINPUT::ChangeShortcuts() {
+    PrintShortcuts();
+}
+
+void KEYINPUT::ChangeStackSize() {
+    int sizeInput = 0;
+    std::cin >> sizeInput;
+    if(sizeInput < CurrentSize()) {
+        std::cerr << "New max size of " << sizeInput << " must exceed current input size " << CurrentSize() << '\n';
+    }   
+    else {
+        // Change from std::array to vector and write a wrapper instead
+    }
+}
+
+void KEYINPUT::ChangeBufferSize() {
+    int newSize = 0;
+    std::cin >> newSize;
 }
 
 #endif

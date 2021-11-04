@@ -10,18 +10,40 @@ void Swap(int *a, int *b) {
 }
 
 // ======================= Bubble Sort =======================
-std::vector<int> BubbleSort(std::vector<int> &arr) {
-    if(arr.size() <= 1) 
-        return arr;
-    else {
-        for(unsigned int i = 0; i < arr.size(); i++) {
-            for(unsigned int j = 0; j < arr.size()-1; j++) {
-                if(arr[j] > arr[j+1])
-                    Swap(&arr[j], &arr[j+1]);
+void BubbleSort(std::vector<int> &arr) {
+    for(unsigned int i = 0; i < arr.size(); i++) {
+        for(unsigned int j = 0; j < arr.size()-1; j++) {
+            if(arr[j] > arr[j+1])
+                Swap(&arr[j], &arr[j+1]);
+        }
+    }
+}
+
+void BubbleSortBetter(std::vector<int> &arr) {
+    bool hasSwapped = true;
+    while(hasSwapped) {
+        hasSwapped = false;
+        for(unsigned int i = 0; i < arr.size()-1; i++) {
+            if(arr[i] > arr[i+1]) {
+                Swap(&arr[i], &arr[i+1]);
+                hasSwapped = true;
             }
         }
     }
-    return arr;
+}
+
+void BubbleSortBest(std::vector<int> &arr) {
+    bool hasSwapped = true;
+    int nIterations = 0;
+    while(hasSwapped) {
+        hasSwapped = false;
+        for(unsigned int i = 0; i < arr.size() - nIterations - 1; i++) {
+            if(arr[i] > arr[i+1]) {
+                Swap(&arr[i], &arr[i+1]);
+                hasSwapped = true;
+            }
+        }
+    }
 }
 
 // ======================= Selection Sort ========================
@@ -103,21 +125,55 @@ void QuickSort(std::vector<int> &arr, int left, int right) {
 }
 
 // ======================= Merge Sort =======================
-void Merge(std::vector<int> &arr, int left, int mid, int right) {
-    std::vector<int> temp;
+void Merge(std::vector<int> &arr, int l, int m, int r) {
+    int n1 = m - l + 1; // First sub array
+    int n2 = r - m;
 
+    std::vector<int> L(n1);
+    std::vector<int> M(n2);
+
+    // Set (Copy) elements of sub arrays
+    for(unsigned int i = 0; i < n1; i++)
+        L[i] = arr[l+i];
+    for(unsigned int j = 0; j < n2; j++)
+        M[j] = arr[m + 1 + j];
+
+    int i, j = 0;
+    int k = l;
+
+    while(i < n1 && j < n2) {
+        if(L[i] < M[j]) {
+            arr[k] = L[i];
+            i++;
+        }
+        else {
+            arr[k] = M[j];
+            j++;
+        }
+        k++;
+    }
+
+    // Push remaining elements
+    while(i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+    while(j < n2) {
+        arr[k] = M[j];
+        j++;
+        k++;
+    }
 }
 
-void MergeSort(std::vector<int> &arr, int left, int right) {
-    if(arr.size() <= 1) return;
-    else {
-        if(left > right) {
-            int mid = left + (right - left) / 2;
+void MergeSort(std::vector<int> &arr, int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
 
-            MergeSort(arr, left, mid); // '-1'?
-            MergeSort(arr, mid+1, right);
-            Merge(arr, left, mid, right);
-        }
+        MergeSort(arr, l, m-1);
+        MergeSort(arr, m+1, r);
+
+        Merge(arr, l, m, r);
     }
 }
 
@@ -169,11 +225,12 @@ int main() {
     PrintArray(array);
 
     // BubbleSort(array);
+    // BubbleSortBetter(array);
     // SelectionSort(array);
     // InsertionSortSwap(array);
     // QuickSort(array, 0, array.size());
-    // MergeSort()
-    HeapSort(array);
+    MergeSort(array, 0, array.size()-1); // Fix! Minor issue
+    // HeapSort(array);
     PrintArray(array);
 
 

@@ -49,35 +49,33 @@ struct bNode {
     bool isVisited = false;
     bNode *lChild;
     bNode *rChild;
-    std::tuple<bNode*, bNode*> children; // First always = left
     bNode() : data(0), lChild(nullptr), rChild(nullptr) {}
     bNode(int d) : data(d), lChild(nullptr), rChild(nullptr) {}
 };
 
-// Branch Sum
-// Continue!
-int CalculateBranch(bNode *n, int sum) {
-    if(n->lChild != nullptr) 
-        sum += n->lChild->data;
-    if(n->rChild != nullptr)
-        sum += n->rChild->data;
-    if(n->lChild != nullptr) 
-        CalculateBranch(n->lChild, sum);
-    if(n->rChild != nullptr)
-        CalculateBranch(n->rChild, sum);
-    return sum;
+// Branch Sums
+int CalculateBranch(bNode *n, int runningSum, std::vector<int> sums) { // Wrong! Assumes every node has two children
+    if(n == nullptr)
+        return 0;
+    else {
+        int newRunningSum = runningSum + n->data;
+        if(n->lChild == nullptr && n->rChild == nullptr)
+            sums.push_back(newRunningSum);
+        else {
+            CalculateBranch(n->lChild, newRunningSum, sums);
+            CalculateBranch(n->rChild, newRunningSum, sums);
+        }
+    }
 }
 
-int BranchSums(bNode *root) {
-    int sum = 0;
-    if(root != nullptr) {
-        CalculateBranch(root, sum);
-    }
-    return sum;
+std::vector<int> BranchSums(bNode *root) {
+    std::vector<int> sums{};
+    CalculateBranch(root, 0, sums);
+    return sums;
 }
 
 // Binary Tree Depth First Search
-void BinaryDepthFirstSearchIterative(bNode *n) {
+void BinaryDepthFirstSearchIterative(bNode *n) { // Re-do | Looks completely wrong
     stack<bNode> s;
     if(n != nullptr) {
         if(!n->isVisited) {
@@ -107,6 +105,14 @@ void BinaryDepthFirstSearchRecursive(bNode *n) {
         BinaryDepthFirstSearchRecursive(n->lChild);
     if(n->rChild != nullptr) 
         BinaryDepthFirstSearchRecursive(n->rChild);
+}
+
+void BinaryBreadthFirstIterative(bNode *n) {
+
+}
+
+void BinaryBreadthFirstRecursive(bNode *n) {
+
 }
 
 // Graph
@@ -164,7 +170,7 @@ int TreeDiameterIterative(bNode *root, int vertex) { // Branch == left or right 
     std::vector<bool> markedVerts{}; // Allocate memory equal to tree size!
     // Do depth-first search
     // Count max distance based on how far each search went, example-
-        // - If one branch pushed 4 vertices to the stack and one brach pushed 5, the latter branch is larger
+        // - If one branch pushed 4 vertices to the stack and one branch pushed 5, the latter branch is larger
     s.Push(root);
     while(!s.IsEmpty() && visitedVertices.size() > 0) { // Check!
         visitedVertices.push_back(s.Pop());
@@ -172,9 +178,9 @@ int TreeDiameterIterative(bNode *root, int vertex) { // Branch == left or right 
             root->isVisited = true;
             markedVerts[vertex] = true;
             if(!markedVerts[0])
-                s.Push(std::get<0>(root->children));
+                s.Push(root->lChild);
             if(!markedVerts[1])
-                s.Push(std::get<1>(root->children));
+                s.Push(root->rChild);
         }
     }
     return distance;
@@ -182,7 +188,7 @@ int TreeDiameterIterative(bNode *root, int vertex) { // Branch == left or right 
 
 std::vector<int> branchLengths{};
 
-int TreeDiameter(bNode *n, int sum) {
+int TreeDiameter(bNode *n, int sum) { // ?
     n->isVisited = true;
     sum++;
     if(n->lChild == nullptr && n->rChild == nullptr) {
@@ -193,6 +199,10 @@ int TreeDiameter(bNode *n, int sum) {
         TreeDiameter(n, sum);
     else if(n->rChild != nullptr && !n->rChild->isVisited)
         TreeDiameter(n, sum); 
+}
+
+int TreeDiameterNew(bNode *n, int sum) {
+    int distance = 0;
 }
 
 int main() {
@@ -220,7 +230,12 @@ int main() {
     n2.lChild = &n4;
     n2.rChild = &n5;
 
-    BinaryDepthFirstSearchRecursive(&root);
+    // BinaryDepthFirstSearchRecursive(&root);
+
+    //std::vector<int> branchResult(BranchSums(&root));
+    //for(auto i : branchResult)
+       // std::cout << i << ',';
+
     TreeDiameter(&root, 0);
 
     return 0;

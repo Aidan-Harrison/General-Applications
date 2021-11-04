@@ -4,3 +4,11 @@ England
 France
 Germany
 Canada
+Brazil
+Portugal
+Bulgaria
+Hungary
+Russia
+Greenland
+China
+Taiwan

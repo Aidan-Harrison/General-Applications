@@ -222,6 +222,26 @@ void VowelsConsonants(const std::string &&str) {
     }
 }
 
+// Assuming string ONLY contains letters, we can omit one of the arrays
+std::vector<char> VowelsConsonantsBetter(const std::string &&str) {
+    std::vector<char> vowConst;
+    if(str.length() == 0)
+        return vowConst;
+    else {
+        char vow[5] = {'a','e','i','o','u'};
+        std::unordered_map<char,int> map;
+        for(char i : str) {
+            char c = std::tolower(i);
+            map[c]++;
+        }
+        for(char i : vow) {
+            std::unordered_map<char,int>::iterator it = map.find(i);
+            
+        }
+    }
+    return vowConst;
+}
+
 // Prints ALL vowels and consonants for the amount of times they appear
 void VowelsConsonantsAll(const std::string &&str) {  // Check, not counting map properly!
     if(str.length() == 0)
@@ -463,6 +483,54 @@ std::string LongestPalindromicSubString(std::string &&str) {
         }
     }
     return "";
+}
+
+char FindFirstRecurringNaive(const std::string &&str) {
+    if(str.length() == 0)
+        return ' ';
+    else {
+        for(unsigned int i = 0; i < str.length(); i++) {
+            for(unsigned int j = i; j < str.length(); j++) {
+                if(str[i] == str[j] && j != i)
+                    return str[i];
+            }
+        }
+    }
+    return ' ';
+}
+
+char FindFirstRecurring(const std::string &&str) {
+    if(str.length() == 0)
+        return ' ';
+    else {
+        std::unordered_map<char,int> characters;
+        for(auto i : str)
+            characters[i]++;
+        for(unsigned int i = 0; i < str.length(); i++) {
+            std::unordered_map<char,int>::iterator it = characters.find(str[i]);
+            if(it->second > 1)
+                return str[i];
+        }
+    } 
+    return ' ';
+}
+
+std::string MatchingCharacters(const std::string &&str) {
+    if(str.length() == 0)
+        return str;
+    else {
+        std::string matchingChars = "";
+        std::unordered_map<char,int> characters;
+        for(auto i : str)
+            characters[i]++;
+        for(unsigned int i = 0; i < str.length(); i++) {
+            std::unordered_map<char,int>::iterator it = characters.find(str[i]);
+            if(it->second > 1)
+                matchingChars.push_back(str[i]);
+        }
+        return matchingChars;
+    }
+    return str;
 }
 
 int main() {

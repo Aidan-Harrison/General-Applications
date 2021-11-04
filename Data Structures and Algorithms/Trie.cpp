@@ -82,16 +82,16 @@ trieNode* CreateNode() {
 bool Insert(trieNode **root, std::string &text) { // Check double pointer
     if(*root == nullptr) // Change root pointer
         *root = CreateNode();
-    trieNode *traverseNode = *root;
+    trieNode *tempNode = *root;
     for(unsigned int i = 0; i < text.length(); i++) {
-        if(traverseNode->children[text[i]] == nullptr) // If it doesn't exist, add it
-            traverseNode->children[text[i]] = CreateNode();
-        traverseNode = traverseNode->children[text[i]]; // Else keep going
+        if(tempNode->children[text[i]] == nullptr) // If it doesn't exist, add it | Check indexing
+            tempNode->children[text[i]] = CreateNode();
+        tempNode = tempNode->children[text[i]]; // Else keep going
     }
-    if(traverseNode->terminal)
+    if(tempNode->terminal)
         return false;
     else  {
-        traverseNode->terminal = true;
+        tempNode->terminal = true;
         return true;
     }
 }
