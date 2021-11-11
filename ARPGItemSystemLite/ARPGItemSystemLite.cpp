@@ -4,10 +4,19 @@
 #include <array>
 #include <string>
 #include <fstream>
+#include <set>
 
-// Add file streaming
 #include "Player.h"
 #include "CraftingItem.h"
+
+// TO_DO:
+// Fix certain crafting items and add new ones
+// File streaming and moving data to files
+    // Add new item content after
+// Change mutation system and player  constructor to a vector and index one by one to set values
+// Improve interface
+// Write a solution to stat safety checking to avoid generating the same stats
+    // Write a crafting item which breaks this rule and copies an existing stat
 
 namespace Global {
     int choice = 0;
@@ -29,10 +38,16 @@ bool FileParser(const std::string &filePath, bool printContents) {
         return false;
     }
     Global::fileHandler.open(filePath);
+    std::string line;
     if(printContents) {
         std::cout << "======" << filePath << "======\n";
         while(!Global::fileHandler.eof()) {
-            // Print contents
+            Global::fileHandler >> line;
+            std::cout << line << '\n'; 
+            for(int i = 0; i < line.length(); i++) {
+                if(line[i] == ':')
+                    std::cout << "BREAKER!\n";
+            }
         }
     }
     return true;
@@ -40,17 +55,17 @@ bool FileParser(const std::string &filePath, bool printContents) {
 
 // Applys global modifiers and tweaks global settings
 void MutationModifier() {
-    if(FileParser("Mutation.txt", false))  {
+    if(FileParser("Mutations.txt", false))  {
         std::cout << "'Mutation.txt' loaded successfully!\n\t" 
                   << "Press ENTER to continue: ";
         std::cin.get();
         std::cin.get();
     } 
     else {
-        std::cout << "'Mutation.txt' failed to load, either corrupt or missing!\n";
+        std::cout << "'Mutations.txt' failed to load, either corrupt or missing!\n";
         return;
     }
-    FileParser("Mutation.txt", true); // Expensive but cleaner
+    FileParser("Mutations.txt", true); // Expensive but cleaner
 }
 
 void FileSystem() {
@@ -66,6 +81,7 @@ void FileSystem() {
 
 namespace Characters {
     Player curPlayer; // Pointer
+    std::vector<Player*> allChars{};
 }
 
 namespace CraftingItems {
@@ -73,25 +89,50 @@ namespace CraftingItems {
     DivineOrb dOrb("Divine Orb");
     LamentGem lGem("Lament Gem");
     MoltenCore mCor("Molten Core");
+    Mirror mir("Mirror");
 }
 
 namespace Prefixes {
     std::vector<std::string> gPrefixes{"Seething ", "Lamenting ", "Ridden ", "Prismatic ", "Imbued "};
 }
 
+// Change naming scheme to original system
+// tuple {prefix, base, suffix}!
 namespace BaseNames{
     // Swords
-    std::tuple<std::string,int,int,int> steelLongsword{"Steel Longsword", 15, 15, 1};
-    std::tuple<std::string,int,int,int> twistedSword{"Twisted Sword", 15, 15, 1};
-    std::vector<std::tuple<std::string,int,int,int>> swordBases{steelLongsword, twistedSword};
+
+    // Re-write test:
+    // Remove type??
+    typedef std::tuple<std::array<std::string, 3>, int> itemBase;
+
+    itemBase steelLongswordTest{{"", "Steel Longsword", ""}, 1}; // Check!
+    itemBase twistedSwordTest{{"", "Twisted Sword", ""}, 1};
+    std::vector<itemBase> swordBasesTest{steelLongswordTest};
+
+    std::tuple<std::string,int> steelLongsword{"Steel Longsword",1};
+    std::tuple<std::string,int> twistedSword{"Twisted Sword",1};
+    std::vector<std::tuple<std::string,int>> swordBases{steelLongsword, twistedSword};
     // Axes
-    std::tuple<std::string,int,int,int> greatAxe{"Great Axe", 15, 15, 2};
-    std::tuple<std::string,int,int,int> execAxe{"Executioners Axe", 15, 15, 2};
-    std::vector<std::tuple<std::string,int,int,int>> axeBases{greatAxe, execAxe};
+    std::tuple<std::string,int> greatAxe{"Great Axe",2};
+    std::tuple<std::string,int> execAxe{"Executioners Axe",2};
+    std::vector<std::tuple<std::string,int>> axeBases{greatAxe, execAxe};
     // Shields
-    std::tuple<std::string,int,int,int> buckler{"Buckler", 15, 15, 3};
-    std::tuple<std::string,int,int,int> towerShield{"Tower Shield", 15, 15, 3};
-    std::vector<std::tuple<std::string,int,int,int>> shieldBases{buckler, towerShield};
+    std::tuple<std::string,int> buckler{"Buckler",3};
+    std::tuple<std::string,int> towerShield{"Tower Shield",3};
+    std::vector<std::tuple<std::string,int>> shieldBases{buckler, towerShield};
+}
+
+// Seperated for readability
+namespace ImplicitStats {
+    // Swords
+    std::string steelLongswordImp[2] = {"Increased Physical Damage", "DEX"};
+    std::string twistedSwordImp[2] = {"STR", "Increased Physical Damage Per 10 STR"};
+    // Axes
+    std::string greatAxeImp[2] = {"Increased Physical Damage", "Increased Attack Range"};
+    std::string execAxeImp[2] = {"Chance to Bleed", "Damage over time"};
+    // Shields
+    std::string bucklerImp[2] = {"Chance to Block", "Damage Reduction"};
+    std::string towerShieldImp[2] = {"+20 Increased Health per 10 STR", "+5 Block chance per 20 STR"}; // Add value exceptions??
 }
 
 namespace Suffixes {
@@ -100,6 +141,7 @@ namespace Suffixes {
 
 // Handle bases and implicits
 namespace Stats {
+    
     std::vector<std::string> suffixStats{"Increased Fire Damage", "Increased Cold Damage", "Increased Lightning Damage", "Increased Holy Damage", "Increased Dark Damage", "Increased Void Damage",
     "Increased Poison Damage", "Increased Thunder Damage", "STR", "DEX", "INT", "Increased Dodge Rating", "Increased Evasion Rating", "Increased Movement Speed", "Increased Armor"};    
 }
@@ -117,10 +159,47 @@ void PrintItem(Item &item) { // Possibly just move to object?
     }
 }
 
-Item* Generate() {
+// Also have to handle implicits
+void RegenerateType(Item &i) {
+    int base = 0;
+
+    // Re-write test
+    switch(i.type) {
+        case 1: {
+
+            break;
+        }
+    }
+
+    switch (i.type) {
+        case 1: { // Sword
+            base = rand() % BaseNames::swordBases.size();
+            while(!i.SafetyCheck(std::get<0>(BaseNames::swordBases[base]), true)) {
+                base = rand() % BaseNames::swordBases.size();
+            }
+            // Has found suitable base
+            // Search for base start and end, remove and replace
+            i.m_ItemName = std::get<0>(BaseNames::swordBases[base]);
+            int endingLoc = INT_MAX;
+            for(int j = 0; j < BaseNames::swordBases.size(); j++) {
+                std::size_t startingLoc = i.m_ItemName.find(std::get<0>(BaseNames::swordBases[j]));
+                if(startingLoc != std::string::npos) {
+                    std::cout << startingLoc << '\n';
+                }
+            }
+            // Change implicits
+            break; 
+        }
+    }
+    // Safety check so it doesn't generate same base
+
+}
+
+void Generate() { // Return item??
     bool hasTaken = false;
     char choice = 0; // ?
     std::tuple<std::string,int,int,int> core;
+    std::array<std::tuple<std::string, int, int>, 5> stats;
     std::string baseName = "";
     int prefix = 0;
     bool hasPrefix = rand() % 2;
@@ -138,28 +217,45 @@ Item* Generate() {
         baseName += Prefixes::gPrefixes[prefix];
     }
     // === BASE/IMPLICIT ===
-    switch (base) {
+    switch (base) { // Fix find function, only functioning on first, 'else if' shouildn't cause any issues
         case 0: {
             base = rand() % BaseNames::swordBases.size(); 
             baseName += std::get<0>(BaseNames::swordBases[base]);
+            if(baseName.find("Steel Longsword"))
+                for(int i = 0; i < 2; i++)
+                    std::get<0>(stats[i]) = ImplicitStats::steelLongswordImp[i];
+            else if(baseName.find("Twisted Sword"))
+                for(int i = 0; i < 2; i++)
+                    std::get<0>(stats[i]) = ImplicitStats::twistedSwordImp[i];
             break;
         }
         case 1: {
             base = rand() % BaseNames::axeBases.size(); 
             baseName += std::get<0>(BaseNames::axeBases[base]);
+            if(baseName.find("Great Axe"))
+                for(int i = 0; i < 2; i++)
+                    std::get<0>(stats[i]) = ImplicitStats::greatAxeImp[i];
+            else if(baseName.find("Executioners Axe"))
+                for(int i = 0; i < 2; i++)
+                    std::get<0>(stats[i]) = ImplicitStats::execAxeImp[i];
             break;
         }
         case 2: {
             base = rand() % BaseNames::shieldBases.size(); 
             baseName += std::get<0>(BaseNames::shieldBases[base]);
+            if(baseName.find("Buckler"))
+                for(int i = 0; i < 2; i++)
+                    std::get<0>(stats[i]) = ImplicitStats::bucklerImp[i];
+            else if(baseName.find("Tower Shield"))
+                for(int i = 0; i < 2; i++)
+                    std::get<0>(stats[i]) = ImplicitStats::towerShieldImp[i];
             break;   
         }
     }
     int suffix = rand() % Suffixes::suffixes.size();
     std::get<0>(core) = baseName += Suffixes::suffixes[suffix];
-    std::array<std::tuple<std::string, int, int>, 5> stats;
     // Stat generation
-    for(unsigned int i = 0; i < stats.size(); i++) {
+    for(unsigned int i = 2; i < stats.size(); i++) { // Implicits are already done
         choice = rand() % Stats::suffixStats.size();
         int value = rand() % Mutations::STAT_CAP;
         value++;
@@ -174,8 +270,8 @@ Item* Generate() {
         else
             std::get<2>(stats[i]) = 4;
     }
-    Item *newItem = new Item(iLevel, core, stats);
-    PrintItem(*newItem);
+    Item newItem(iLevel, core, stats);
+    PrintItem(newItem);
     std::cout << "Do you want to take this item?\n\t (Y/N)\n";
     std::cout << "Enter: ";
     std::cin >> choice;
@@ -185,20 +281,18 @@ Item* Generate() {
         std::cin >> choice;
     }
     if(choice == 'y') {
-        std::cout << "You took " << newItem->m_ItemName << "!\n";
+        std::cout << "You took " << newItem.m_ItemName << "!\n";
         // Auto equip if relevent gear slot is empty
         for(int i = 0; i < Characters::curPlayer.gear.size(); i++) {
             if(std::get<2>(Characters::curPlayer.gear[i]) && std::get<0>(Characters::curPlayer.gear[i])) { // Do ID matching!
-                std::get<1>(Characters::curPlayer.gear[i]) = newItem;
+                std::get<1>(Characters::curPlayer.gear[i]) = &newItem;
                 hasTaken = true;
             }
         }
         if(!hasTaken)
-            Characters::curPlayer.inventory.push_back(newItem);
-        return newItem;
+            Characters::curPlayer.inventory.push_back(&newItem);
     }
     Interface();
-    return nullptr; // Check!
 }
 
 void ChangeGear() { // Format better, have inventory and gear side by side, ncurses?
@@ -295,8 +389,10 @@ void Interface() {
 }
 
 void Setup() { // Add file handling here!
-    Player *newPlayer = new Player(); // Change how players are handled due to having multiple
+    Player *newPlayer = new Player(Mutations::BASE_LEVEL, "Default Player"); // Change how players are handled due to having multiple
     Interface();
+
+    delete newPlayer;
 }
 
 int main() {

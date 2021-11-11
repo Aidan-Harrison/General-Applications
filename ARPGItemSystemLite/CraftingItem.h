@@ -4,9 +4,12 @@
 #include <iostream>
 
 // Improve construction
+// Value/currency system??
+    // If so add to mutations as an option
 
 struct CraftingItem {
     std::string itemName = "";
+    
     CraftingItem() {}
     ~CraftingItem() {}
 };
@@ -47,6 +50,15 @@ struct MoltenCore : public CraftingItem {
         itemName = name;
     }
     ~MoltenCore() {}
+};
+
+// Takes an existing stat and duplicates it, overwriting another stat and re-rolling its value
+struct Mirror : public CraftingItem {
+    Mirror(const std::string &name)
+    {
+        itemName = name;
+    }
+    ~Mirror() {}
 };
 
 #endif

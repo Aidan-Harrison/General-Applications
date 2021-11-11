@@ -14,7 +14,8 @@ struct Player {
     std::vector<std::tuple<std::string, int>> stats;
     std::string playerName = "";
     Player() {}
-    Player(const std::string &name) : playerName(name) 
+    Player(const int baseLevel, const std::string &name) 
+        : level(baseLevel), playerName(name) 
     {
         gear.resize(9);
         stats.resize(15);
