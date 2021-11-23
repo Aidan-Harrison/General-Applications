@@ -62,7 +62,7 @@ void Keyboard::Parse(Player &p) {
         case 50: p.curWand = 2; break; // 2
         case 51: p.curWand = 3; break; // 3
         case 52: p.curWand = 4; break; // 4
-        case 101: p.wands[p.curWand--]->Fire(); break; // FIRE
+        case 101: p.wands[p.curWand-1]->Fire(); break; // FIRE
         // case 114: break; // RESTART | Need linker to function correctly
     }
 }

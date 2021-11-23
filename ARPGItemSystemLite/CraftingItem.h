@@ -11,7 +11,7 @@ struct CraftingItem {
     std::string itemName = "";
     
     CraftingItem() {}
-    ~CraftingItem() {}
+    virtual ~CraftingItem() {} // Check!
 };
 
 // Corrupts the item, preventing it from being corrupted, but

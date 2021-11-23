@@ -36,11 +36,31 @@ struct SpellQueue {
     ~SpellQueue() {}
 };
 
+void PurchaseSpells() {
+    std::cout << "===SPELLS===\n";
+}
+
+void ModiyWands(Player &p) {
+    std::cout << "===MODIFY WANDS===\n";
+    std::cout << "Choose a wand to modify: \n";
+    for(int i = 0; i < p.wands.size(); i++) {
+        
+    }
+}
+
 void Interface(Keyboard &key, Player &p) {
     char keyInput;
     while(1) {
         system("cls");
+        std::cout << "Current Wand: " << p.curWand << '\n';
         std::cout << "===NOITA WAND SYSTEM===\n";
+        for(int i = 1; i <= 4; i++) {
+            if(i == p.curWand)
+                std::cout << "| " << 'x' << " |";
+            else
+                std::cout << "| " << i << " |";
+        }
+        putchar('\n');
         std::cin >> keyInput;
         key.Push((int)keyInput);
         key.Parse(p);

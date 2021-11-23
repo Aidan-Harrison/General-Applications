@@ -6,6 +6,7 @@
 
 #include <vector>
 #include "Item.h"
+#include "Keyboard.h"
 
 struct Player {
     int level = 1;
@@ -54,14 +55,14 @@ void Player::CharacterScreen() {
 
 void Player::GearScreen() { // Make look like standard ARPG layout
     std::cout << "====== GEAR ======\n";
-    for(int i = 0; i < gear.size(); i++)
-        std::cout << "ID: " << stat_F(gear[i]) << " | " << stat_S(gear[i])->m_ItemName << '\n';
+    //for(int i = 0; i < gear.size(); i++)
+        //std::cout << "ID: " << stat_F(gear[i]) << " | " << stat_S(gear[i])->m_ItemName << '\n';
 }
 
 void Player::PrintInventory() const {
-    for(int i = 0; i < inventory.size(); i++) {
-        std::cout << i << "| " << inventory[i]->m_ItemName << '\n';
-    }
+    //for(int i = 0; i < inventory.size(); i++) {
+        //std::cout << i << "| " << inventory[i]->m_ItemName << '\n';
+   // }
 }
 
 #endif
