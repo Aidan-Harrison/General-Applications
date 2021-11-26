@@ -1,5 +1,6 @@
 #include <unordered_map>
-#include <conio.h>
+#include <iostream>
+// #include <conio.h>
 
 #include "Character.h"
 
@@ -105,66 +106,69 @@ void RollWeapon(Character &c) {
     value++;
     newWeapon->type = value;
     switch(newWeapon->type) {
-        case newWeapon->HAND_CANNON: 
+        case newWeapon->HAND_CANNON:  {
             std::cout << "Type: Hand Cannon\n"; 
-            newWeapon->weaponType = "HAND CANNON"; break;
-            value = rand() % handCannonNames::hcNames.size();
-            newWeapon->weaponName = handCannonNames::hcNames[value];
+            newWeapon->weaponType = "HAND CANNON";
+            newWeapon->weaponName = handCannonNames::hcNames[value = rand() % handCannonNames::hcNames.size()];
             break;
-        case newWeapon->SIDEARM: 
+        }
+        case newWeapon->SIDEARM:  {
             std::cout << "Type: Sidearm\n"; 
-            newWeapon->weaponType = "SIDEARM"; break;
+            newWeapon->weaponType = "SIDEARM";
             break;
-        case newWeapon->SHOTGUN: 
+        }
+        case newWeapon->SHOTGUN: {
             std::cout << "Type: Shotgun\n";
-            newWeapon->weaponType = "SHOTGUN"; break;
-            value = rand() % shotgunNames::sNames.size();
-            newWeapon->weaponName = shotgunNames::sNames[value];
+            newWeapon->weaponType = "SHOTGUN";
+            newWeapon->weaponName = shotgunNames::sNames[value = rand() % shotgunNames::sNames.size()];
             break;
-        case newWeapon->SNIPER_RIFLE: 
+        }
+        case newWeapon->SNIPER_RIFLE: {
             std::cout << "Type: Sniper Rifle\n"; 
-            newWeapon->weaponType = "SNIPER RIFLE"; break;
-            value = rand() % sniperNames::snNames.size();
-            newWeapon->weaponName = sniperNames::snNames[value];
+            newWeapon->weaponType = "SNIPER RIFLE";
+            newWeapon->weaponName = sniperNames::snNames[value = rand() % sniperNames::snNames.size()];
             break;
-        case newWeapon->AUTO_RIFLE: 
+        }
+        case newWeapon->AUTO_RIFLE:  {
             std::cout << "Type: Auto Rifle\n"; 
-            newWeapon->weaponType = "AUTO RIFLE"; break;
-            value = rand() % autoRifleNames::arNames.size();
-            newWeapon->weaponName = autoRifleNames::arNames[value];
+            newWeapon->weaponType = "AUTO RIFLE"; 
+            newWeapon->weaponName = autoRifleNames::arNames[value = rand() % autoRifleNames::arNames.size()];
             break;
-        case newWeapon->SMG: 
+        }
+        case newWeapon->SMG: {
             std::cout << "Type: SMG\n"; 
-            newWeapon->weaponType = "SMG"; break;
+            newWeapon->weaponType = "SMG";
             break;
-        case newWeapon->SCOUT_RIFLE: 
+        }
+        case newWeapon->SCOUT_RIFLE: {
             std::cout << "Type: Scout Rifle\n"; 
-            newWeapon->weaponType = "SCOUT RIFLE"; break;
-            value = rand() % scoutNames::scNames.size();
-            newWeapon->weaponName = scoutNames::scNames[value];
+            newWeapon->weaponType = "SCOUT RIFLE";
+            newWeapon->weaponName = scoutNames::scNames[value = rand() % scoutNames::scNames.size()];
             break;
-        case newWeapon->FUSION_RIFLE: 
+        }
+        case newWeapon->FUSION_RIFLE: {
             std::cout << "Type: Fusion Rifle\n"; 
-            newWeapon->weaponType = "FUSION RIFLE"; break;
-            value = rand() % fusionNames::fNames.size();
-            newWeapon->weaponName = fusionNames::fNames[value];
+            newWeapon->weaponType = "FUSION RIFLE"; 
+            newWeapon->weaponName = fusionNames::fNames[value = rand() % fusionNames::fNames.size()];
             break;
-        case newWeapon->ROCKET_LAUNCHER: 
+        }
+        case newWeapon->ROCKET_LAUNCHER: {
             std::cout << "Type: Rocket Launcher\n"; 
-            newWeapon->weaponType = "ROCKET LAUNCHER"; break;
-            value = rand() % rocketNames::rNames.size();
-            newWeapon->weaponName = rocketNames::rNames[value];
+            newWeapon->weaponType = "ROCKET LAUNCHER"; 
+            newWeapon->weaponName = rocketNames::rNames[value = rand() % rocketNames::rNames.size()];
             break;
-        case newWeapon->GRENADE_LAUNCHER: 
+        }
+        case newWeapon->GRENADE_LAUNCHER: {
             std::cout << "Type: Grenade Launcher\n"; 
-            newWeapon->weaponType = "GRENADE LAUNCHER"; break;
-            value = rand() % grenadeNames::gNames.size();
-            newWeapon->weaponName = grenadeNames::gNames[value];
+            newWeapon->weaponType = "GRENADE LAUNCHER";
+            newWeapon->weaponName = grenadeNames::gNames[value = rand() % grenadeNames::gNames.size()];
             break;
-        case newWeapon->SWORD: 
+        }
+        case newWeapon->SWORD: {
             std::cout << "Type: Sword"; 
-            newWeapon->weaponType = "SWORD"; break;
+            newWeapon->weaponType = "SWORD";
             break;
+        }
     }
     for(unsigned int i = 0; i < newWeapon->weaponStats.size(); i++) {
         value = rand() % c.lightPower;  
@@ -185,42 +189,48 @@ void RollArmor(Character &c) {
     value++;
     newArmor->type = value;
     switch(newArmor->type) {
-        case newArmor->HELMET:
+        case newArmor->HELMET: {
             std::cout << "Type: Helmet\n";
-            newArmor->armorType = "HELMET"; break;
+            newArmor->armorType = "HELMET";
             value = rand() % helmetNames::hNames.size();
             newArmor->armorName = helmetNames::hNames[value];
             break;
-        case newArmor->CHEST:
+        }
+        case newArmor->CHEST: {
             std::cout << "Type: Chest\n";
-            newArmor->armorType = "CHEST"; break;
+            newArmor->armorType = "CHEST"; 
             value = rand() % chestNames::cNames.size();
             newArmor->armorName = chestNames::cNames[value];
             break;
-        case newArmor->LEGS:        
+        }
+        case newArmor->LEGS: {
             std::cout << "Type: Legs\n";
-            newArmor->armorType = "LEGS"; break;
+            newArmor->armorType = "LEGS"; 
             value = rand() % legNames::lNames.size();
             newArmor->armorName = legNames::lNames[value];
             break;
-        case newArmor->GAUNTLETS:   
+        }
+        case newArmor->GAUNTLETS: {  
             std::cout << "Type: Gauntlets\n";
-            newArmor->armorType = "GAUNTLETS"; break;
+            newArmor->armorType = "GAUNTLETS"; 
             value = rand() % gauntletNames::gNames.size();
             newArmor->armorName = gauntletNames::gNames[value];
             break;
-        case newArmor->CLASS_PIECE: 
+        }
+        case newArmor->CLASS_PIECE: {
             std::cout << "Type: Class Piece\n";
-            newArmor->armorType = "CLASS PIECE"; break;
+            newArmor->armorType = "CLASS PIECE"; 
             value = rand() % classItemNames::cINames.size();
             newArmor->armorName = classItemNames::cINames[value];
             break;
-        case newArmor->ARTIFACT:    
+        }
+        case newArmor->ARTIFACT: {
             std::cout << "Type: Artifact\n";
-            newArmor->armorType = "ARTIFACT"; break;
+            newArmor->armorType = "ARTIFACT"; 
             value = rand() % artifactNames::aNames.size();
             newArmor->armorName = artifactNames::aNames[value];
             break;
+        }
     }
     std::cout << newArmor->armorName << '\n';
     for(unsigned int i = 0; i < newArmor->stats.size(); i++) {

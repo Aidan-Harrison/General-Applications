@@ -16,10 +16,11 @@
 // Write a solution to stat safety checking to avoid generating the same mods
     // Write a crafting item which breaks this rule and copies an existing stat
 // Improve keyboard parser, merge all input to be handled via the parser
-// Rarity system
+// Rarity alters amount of mods on item!
 
 // Typedefs
-typedef std::array<std::tuple<int, std::string, int>, 5> itemMods;
+typedef std::vector<std::tuple<int, std::string, int>> itemMods;
+typedef std::array<std::string, 3> itemName;
 
 namespace Global {
     Keyboard *keyboard;
@@ -153,10 +154,18 @@ namespace Mods {
 
 // Move to own file
 namespace Uniques {
-    Item *testUnique = new Item(std::array<std::string, 3>{"","Test Unique",""});
-    Item *testUnique2 = new Item(std::array<std::string, 3>{"","Test Unique 2",""});
+    Item *testUnique = new Item(itemName{"","Test Unique",""}, 4); // Check empty space!
+    Item *testUnique2 = new Item(itemName{"","Test Unique 2",""}, 4);
     
     std::vector<Item*> uniqueItems{testUnique, testUnique2}; 
+}
+
+int const KeyboardParser(const int key) {
+    switch (key) {
+        case 49: break;
+        case 50: break;
+        case 101: exit(0); break;
+    }
 }
 
 // Make printing in-line
@@ -230,6 +239,7 @@ void Generate() { // Return item??
     bool hasPrefix = rand() % 2;
     int base = rand() % 3;
     int rarity = rand() % 4; // If unique, generate from unique pool, else just alter stats
+    rarity++;
     // === ilevel ===
     if(Characters::curPlayer.level > 5)
         Global::choice = rand() % Characters::curPlayer.level - 5;
@@ -334,8 +344,8 @@ void Generate() { // Return item??
         else
             std::get<2>(mods[i]) = 4;
     }
-    Item newItem(iLevel, name, mods);
-    newItem.SafetyCheck(); // Intergrate
+    Item newItem(rarity, iLevel, name, mods);
+    newItem.SafetyCheck(); // Intergrate into constructor and generation
     Pickup(newItem);
 }
 
@@ -381,7 +391,7 @@ void Craft() { // Remove tempItem?? | Messy but safe
     std::cin >> Global::choice;
     if(isInvent) {
         while(Characters::curPlayer.inventory[Global::choice]->isCorrupted) {
-            std::cout << "This item is corrupted!\n";
+            std::cout << "This item is corrupted!\nEnter: ";
             std::cin >> Global::choice;
         }
         tempItem = Characters::curPlayer.inventory[Global::choice];

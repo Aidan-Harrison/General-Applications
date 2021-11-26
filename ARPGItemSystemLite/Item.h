@@ -9,7 +9,8 @@
 
 #include "CraftingItem.h"
 
-typedef std::array<std::tuple<int, std::string, int>, 5> itemMods;
+typedef std::vector<std::tuple<int, std::string, int>> itemMods;
+typedef std::array<std::string, 3> itemName;
 
 // Not the cleanest but functional
 // Generate stats differently as these are mostly multipliers!
@@ -24,24 +25,52 @@ struct Item {
     enum TYPE{SWORD = 1, AXE, SHIELD};
     enum RARITY{COMMON = 1, MAGIC, RARE, UNIQUE}; // Add more legendaries?
     bool isCorrupted = false;
-    std::array<std::string, 3> m_ItemName{"", "", ""};
-    // Stat - Value - Tier // In-order instead?
+    int maxMods = 5; // Opens up some interesting crafting | Pointless?
+    itemName m_ItemName{"", "", ""};
     itemMods m_Mods{};
     Item() = default;
-    Item(const std::array<std::string, 3> &&name) noexcept
+    Item(const itemName &&name, const int rarity = 1) noexcept // Check! Might not want to do rvalue
         : m_ItemName(name)
     {
     }
-    Item(const int iL, const std::array<std::string, 3> &name, itemMods &mods) 
-        : iLevel(iL), m_ItemName(name), m_Mods(mods)
+    Item(const int rar, const int iL, const itemName &name, itemMods &mods) 
+        : rarity(rar), iLevel(iL), m_ItemName(name), m_Mods(mods)
     {
+        RarityChecker();
     }
+
+    void RarityChecker();
 
     bool SafetyCheck(std::string newGen, bool baseCheck);
     void Apply(CraftingItem &cItem, std::vector<std::string> &modifiers);
 
     ~Item() {}
 };
+
+void Item::RarityChecker() {
+    switch(rarity) {
+        case 0: {
+            rarity = 1;
+            m_Mods.resize(2);
+            break;
+        }
+        case 2: {
+            rarity = 2;
+            m_Mods.resize(4);
+            break;
+        }
+        case 3: {
+            rarity = 3;
+            m_Mods.resize(6);
+            break;
+        }
+        case 4: {
+            rarity = 4;
+            m_Mods.resize(6);
+            break;
+        }
+    }
+}
 
 bool Item::SafetyCheck(std::string newGen = "", bool baseCheck = false) {
     if(baseCheck) {
@@ -133,6 +162,8 @@ void Item::Apply(CraftingItem &cItem, std::vector<std::string> &modifiers) {
             modToSwap = rand() % m_Mods.size();
         }
         m_Mods[modToSwap] = m_Mods[modToCopy];
+    }
+    else if(cItem.itemName == "Extension Orb") {
     }
 }
 

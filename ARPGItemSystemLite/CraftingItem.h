@@ -61,4 +61,13 @@ struct Mirror : public CraftingItem {
     ~Mirror() {}
 };
 
+// If common, magic or rare, add an extra item slot
+struct ExtensionOrb : public CraftingItem {
+    ExtensionOrb(const std::string &name) 
+    {
+        itemName = name;
+    }
+    ~ExtensionOrb() {}
+};
+
 #endif
