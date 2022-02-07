@@ -1,6 +1,12 @@
 #ifndef Player_h
 #define Player_h
 
+// Gear
+#define gear_ID       std::get<0>
+#define gear_Item     std::get<1>
+#define gear_Equipped std::get<2>
+
+// Stats
 #define stat_F std::get<0>
 #define stat_S std::get<1>
 
@@ -11,7 +17,7 @@
 struct Player {
     int level = 1;
     std::vector<Item*> inventory{};
-    std::vector<std::tuple<int, Item*, bool>> gear{}; // First index of tuple = ID, defines slot
+    std::vector<std::tuple<int, Item*, bool>> gear{}; // First index of tuple = ID, defines slot | Change to array | Remove equipped??
     std::vector<std::tuple<std::string, int>> stats;
     std::string playerName = "";
     Player() {}
@@ -20,6 +26,7 @@ struct Player {
     {
         gear.resize(9);
         stats.resize(15);
+
         // ==== CORE ====
         stat_F(stats[0]) = "INT"; stat_S(stats[0]) = 20;
         stat_F(stats[1]) = "DEX"; stat_S(stats[1]) = 20;
@@ -55,14 +62,23 @@ void Player::CharacterScreen() {
 
 void Player::GearScreen() { // Make look like standard ARPG layout
     std::cout << "====== GEAR ======\n";
-    //for(int i = 0; i < gear.size(); i++)
-        //std::cout << "ID: " << stat_F(gear[i]) << " | " << stat_S(gear[i])->m_ItemName << '\n';
+    for(int i = 0; i < gear.size(); i++) {
+        std::cout << "HIT";
+        if(i % 4 == 0 && i != 0)
+            putchar('\n');
+        if(gear_Item(gear[i]) != nullptr)
+            std::cout << "ID: " << stat_F(gear[i]) << " | " << stat_S(gear[i])->m_ItemName[0] << stat_S(gear[i])->m_ItemName[1] << stat_S(gear[i])->m_ItemName[2] << '\t';
+        else 
+            std::cout << "  ...  \t";
+    }
 }
 
+// Fix printing!
 void Player::PrintInventory() const {
-    //for(int i = 0; i < inventory.size(); i++) {
-        //std::cout << i << "| " << inventory[i]->m_ItemName << '\n';
-   // }
+    std::cout << "====== INVENTORY ======\n";
+    for(int i = 0; i < inventory.size(); i++) {
+        std::cout << i+1 << "| " << inventory[i]->m_ItemName[0] << inventory[i]->m_ItemName[1] << inventory[i]->m_ItemName[2] << '\n';
+    }
 }
 
 #endif

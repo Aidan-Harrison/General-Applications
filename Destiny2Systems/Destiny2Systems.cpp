@@ -4,10 +4,19 @@
 
 #include "Character.h"
 
+void Interface();
+
 namespace globalSettings {
     const int MAXVAULTSIZE = 20;
     int choice = 0;
     enum RARITY{COMMON = 1, RARE, LEGENDARY, EXOTIC};
+    Character curCharacter;
+
+    // Test Characters
+    Character *testChar1 = new Character("Test Character 1");
+    Character *testChar2 = new Character("Test Character 2");
+
+    std::vector<Character*> characters{}; 
 }
 
 bool StringParser(const std::string &str) { // ?
@@ -16,10 +25,49 @@ bool StringParser(const std::string &str) { // ?
     return true;
 }
 
-// ================= Weapons ================= | Remove legendary and exotics
+// ================= Perk ================= 
+namespace PerkPool {
+    // Global Perks
+    WeaponPerk * deadeye = new WeaponPerk("Deadeye");
+    std::vector<WeaponPerk*> globalPerks{deadeye};    
+
+    // Hand-Cannone Perks
+    WeaponPerk * triggerFinger = new WeaponPerk("Trigger Finger");
+    std::vector<WeaponPerk*> handCannonPerks{triggerFinger};
+
+    WeaponPerk * fastBolt = new WeaponPerk("Fast Bolt");
+    std::vector<WeaponPerk*> autoRiflePerks{fastBolt};
+}
+// ================= Weapons =================
+// Re-Write
+// ==== Hand-Cannons ====
+namespace LegendaryHandCannons {
+    Weapon * fateBringer  = new Weapon("Fatebringer",      3, 4); 
+    Weapon * direPromise  = new Weapon("Dire Promise",     3, 3);
+    Weapon * betterDevils = new Weapon("Better Devils",    3, 3);
+    Weapon * ikelosHC_v1  = new Weapon("IKELOS_HC_v1.0.1", 3, 5);
+    std::vector<Weapon*> legendary_HandCannons{fateBringer, direPromise, betterDevils, ikelosHC_v1};
+}
+
+namespace ExoticHandCannons {
+    Weapon * lastWord    = new Weapon("The Last Word", 4, 4);
+    Weapon * thorn       = new Weapon("Thorn",         4, 4);
+    Weapon * hawkmoon    = new Weapon("Hawkmoon",      4, 4);
+    Weapon * aceOfSpades = new Weapon("Ace of Spades", 4, 4);
+    std::vector<Weapon*> exotic_HandCannons{lastWord, thorn, hawkmoon, aceOfSpades};
+}
+
+namespace LegendaryAutoRifles {
+    Weapon * hardLight     = new Weapon("Hard Light",     3, 3);
+    Weapon * monteCarlo    = new Weapon("Monte Carlo",    3, 3);
+    Weapon * surosRegime   = new Weapon("SUROS Regime",   3, 3);
+    Weapon * sweetBusiness = new Weapon("Sweet Business", 3, 3);
+    std::vector<Weapon*> legendary_AutoRifles{hardLight, monteCarlo, surosRegime, sweetBusiness};
+}
+
 namespace handCannonNames {
-    std::vector<std::string> hcNames{"Proxima-M1", "A Cold Sweat", "Agamid", "Acienct Gospel", "Annual Skate", "Austringer", "Bad News", "Better Devils",
-                                     "Bottom Dollar", "D.F.A", "Dire Promise", "Fatebringer", "Finite Impactor", "Judgement", "IKELOS_HC_v1.0.1"};
+    std::vector<std::string> legendary_hcNames{"Proxima-M1", "A Cold Sweat", "Agamid", "Acienct Gospel", "Annual Skate", "Austringer", "Bad News", "Better Devils",
+                                    "Bottom Dollar", "D.F.A", "Dire Promise", "Fatebringer", "Finite Impactor", "Judgement", "IKELOS_HC_v1.0.1"};
     std::vector<std::string> exotic_hcNames{"The Last Word", "Thorn", "Hawkmoon", "Ace of Spades", "Lumina", "Crimson", "Sturm", "Sunshot", "Malfeasance", "Eriana's Vow"};
 }
 
@@ -83,24 +131,85 @@ namespace artifactNames {
     std::vector<std::string> aNames{""};
 }
 
+// ================= Armor Mods =================
+namespace ModPool {
+    ArmorMod *fastHands = new ArmorMod("Fast Hands", 1);
+    std::vector<ArmorMod*> globalMods{fastHands};
+}
+
 using namespace globalSettings;
 
-namespace PerkPool { // Push to vector at start, call after main()
-    std::vector<WeaponPerk*> globalPerks{};    
-    WeaponPerk *deadeye = new WeaponPerk("Deadeye");
+void RollWeaponNew(Character &c) { // Replace value with choice?
+    int value = 0;
+    value = rand() % 50;
+    value++;
+    Weapon *copyWep;
+    if(value > 45) { // Exotic
+        value = rand() % 2;
+        switch (value) {
+            case 0: copyWep = LegendaryHandCannons::legendary_HandCannons[value = rand() % LegendaryHandCannons::legendary_HandCannons.size()]; break;
+            case 1: copyWep = LegendaryAutoRifles::legendary_AutoRifles[value = rand() % LegendaryAutoRifles::legendary_AutoRifles.size()]; break;
+        }
+    }
+    else if(value < 45 && value > 30) {
+        value = rand() % 2;
+        switch (value) {
+            case 0: copyWep = LegendaryHandCannons::legendary_HandCannons[value = rand() % LegendaryHandCannons::legendary_HandCannons.size()]; break;
+            case 1: copyWep = LegendaryAutoRifles::legendary_AutoRifles[value = rand() % LegendaryAutoRifles::legendary_AutoRifles.size()]; break;
+        }
+    }
+    // Randomize perks from a set pool
+        // Uses operator overloaded '='
+    // Perks
+    // Add global perks also
+    switch (copyWep->type) {
+        // Hand-Cannon
+        case 1: for(int i = 0; i <= copyWep->perkCount; i++) copyWep->perks.push_back(PerkPool::handCannonPerks[0]); break; 
+        // Auto-Rifle
+        case 5: for(int i = 0; i <= copyWep->perkCount; i++) copyWep->perks.push_back(PerkPool::autoRiflePerks[0]); break;
+    }
+    c.AddEquipment(copyWep);
 }
 
-namespace ModPool {
-    std::vector<ArmorMod*> globalMods{};
-    ArmorMod *fastHands = new ArmorMod("Fast Hands", 1);
+void DisplayWeapon(Weapon &wep) {
+    std::cout << "\n========" << wep.weaponName << "========\n"; 
+    std::cout << wep.weaponType << '\n'; 
+    for(auto i : wep.perks)
+        std::cout << i->isActive << " | " << i->perkName << '\n';
+    for(std::tuple<std::string, int> i : wep.weaponStats) {
+        std::cout << std::get<0>(i) << " | " << std::get<1>(i);
+    }
+    std::cout << wep.weaponDescription << '\n';
+    std::cout << "================\n";
 }
 
+
+void ChangeCharacters() {
+    std::cout << "Available characters: \n";
+    if(characters.size() <= 0) {
+        std::cout << "You have no available characters to swap to, make a new one\n";
+        Interface();
+    }
+    for(auto i : characters)
+        std::cout << i->className << " | " << i->charName << '\n';
+    std::cin >> choice;
+    curCharacter = *characters[choice-1]; // Check!
+    Interface();
+}
+
+/*
 void RollWeapon(Character &c) {
     int value = 0;
     std::string name;
     choice = rand() % 10;
     choice++;
     Weapon *newWeapon = new Weapon("Default Weapon", choice);
+    // Rarity
+        // Defines what can be rolled
+    value = rand() % 4;
+    value++;
+    switch (value) {
+    } 
     // Name & Type
     value = rand() % 11;
     value++;
@@ -173,11 +282,12 @@ void RollWeapon(Character &c) {
     for(unsigned int i = 0; i < newWeapon->weaponStats.size(); i++) {
         value = rand() % c.lightPower;  
         newWeapon->lightLevel = value;
-        // value = rand() % newWeapon.lightLevel / 3;
+        value = rand() % newWeapon->lightLevel / 3;
         newWeapon->weaponStats[i] = value;
         std::cout << newWeapon->statNames[i] << "| " << newWeapon->weaponStats[i] << std::string("/", newWeapon->weaponStats[i]/10);
     }
 }
+*/
 
 void RollArmor(Character &c) {
     int value = 0;
@@ -192,43 +302,37 @@ void RollArmor(Character &c) {
         case newArmor->HELMET: {
             std::cout << "Type: Helmet\n";
             newArmor->armorType = "HELMET";
-            value = rand() % helmetNames::hNames.size();
-            newArmor->armorName = helmetNames::hNames[value];
+            newArmor->armorName = helmetNames::hNames[value = rand() % helmetNames::hNames.size()];
             break;
         }
         case newArmor->CHEST: {
             std::cout << "Type: Chest\n";
             newArmor->armorType = "CHEST"; 
-            value = rand() % chestNames::cNames.size();
-            newArmor->armorName = chestNames::cNames[value];
+            newArmor->armorName = chestNames::cNames[value = rand() % chestNames::cNames.size()];
             break;
         }
         case newArmor->LEGS: {
             std::cout << "Type: Legs\n";
             newArmor->armorType = "LEGS"; 
-            value = rand() % legNames::lNames.size();
-            newArmor->armorName = legNames::lNames[value];
+            newArmor->armorName = legNames::lNames[value = rand() % legNames::lNames.size()];
             break;
         }
         case newArmor->GAUNTLETS: {  
             std::cout << "Type: Gauntlets\n";
             newArmor->armorType = "GAUNTLETS"; 
-            value = rand() % gauntletNames::gNames.size();
-            newArmor->armorName = gauntletNames::gNames[value];
+            newArmor->armorName = gauntletNames::gNames[value = rand() % gauntletNames::gNames.size()];
             break;
         }
         case newArmor->CLASS_PIECE: {
             std::cout << "Type: Class Piece\n";
             newArmor->armorType = "CLASS PIECE"; 
-            value = rand() % classItemNames::cINames.size();
-            newArmor->armorName = classItemNames::cINames[value];
+            newArmor->armorName = classItemNames::cINames[value = rand() % classItemNames::cINames.size()];
             break;
         }
         case newArmor->ARTIFACT: {
             std::cout << "Type: Artifact\n";
             newArmor->armorType = "ARTIFACT"; 
-            value = rand() % artifactNames::aNames.size();
-            newArmor->armorName = artifactNames::aNames[value];
+            newArmor->armorName = artifactNames::aNames[value = rand() % artifactNames::aNames.size()];
             break;
         }
     }
@@ -236,10 +340,11 @@ void RollArmor(Character &c) {
     for(unsigned int i = 0; i < newArmor->stats.size(); i++) {
         value = rand() % c.lightPower;  
         newArmor->lightLevel = value;
-        // value = rand() % newArmor.lightLevel / 3;
+        value = rand() % newArmor->lightLevel / 3;
         newArmor->stats[i] = value;
-        std::cout << newArmor->statNames[i] << "| " << newArmor->stats[i] << std::string('/', newArmor->stats[i]/10) << '\n';
     }
+    for(unsigned int i = 0; i < newArmor->stats.size(); i++)
+        std::cout << newArmor->statNames[i] << "| " << newArmor->stats[i] << std::string('/', newArmor->stats[i]/10) << '\n';
 }
 
 void Interface(Character &c) {
@@ -247,18 +352,24 @@ void Interface(Character &c) {
     c.DisplayGear();
     std::cout << "====================\n";
     std::cout << "1) ROLL WEAPON \t 2)ROLL ARMOR \t 3)CHARACTER\n";
+    std::cout << "Enter: ";
     std::cin >> choice;
     switch(choice) {
-        case 1: {
-            Weapon newWeapon;     
-            RollWeapon(c); 
+        case 1: {  
+            RollWeaponNew(c); 
             break;
         }
         case 2: {
             RollArmor(c);
+            break;
         }
         case 3: {
-            c.Interaction(); break;
+            c.Interaction(); 
+            break;
+        }
+        case 4: {
+            ChangeCharacters();
+            break;
         }
     }
 }
@@ -271,7 +382,8 @@ int main() {
     PerkPool::globalPerks.push_back(PerkPool::deadeye);
     ModPool::globalMods.push_back(ModPool::fastHands);
 
-    Character c;
+    // Add character loading and writing!
+    Character c("Test Character");
     Interface(c);
 
     return 0;

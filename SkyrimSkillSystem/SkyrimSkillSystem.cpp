@@ -2,8 +2,19 @@
 
 #include "Player.h"
 
-// Destructors arae being called!
+// Destructors are being called!
 // Fix memory management
+
+/*
+void PrintSkillTree(SkillNode *n) {
+    std::cout << n->nodeName << "->";
+    n->isPrinted = true;
+    for(auto i : n->children)
+        if(!i->isPrinted)
+            PrintSkillTree(i);
+    putchar('\n');
+}
+*/
 
 void Interface(Player &p) {
     std::cout << "=====SKYRIM=====\n";
@@ -24,14 +35,18 @@ void Setup() {
     Alteration *s_Alt = new Alteration;
     Conjuration *s_Con = new Conjuration;
 
-    s_Alt->PrintSkillTree(s_Alt->rootNode);
-    s_Con->PrintSkillTree(s_Con->rootNode);
+    // New Test:
+    
 
-    std::array<Skill*, 2> skills{s_Alt, s_Con};
 
-    Player p(skills, 100);
 
-    Interface(p);
+    // s_Con->PrintSkillTree(s_Con->rootNode);
+
+    // std::array<Skill*, 2> skills{s_Alt, s_Con};
+
+    // Player p(skills, 100);
+
+    // Interface(p);
 }
 
 int main() {

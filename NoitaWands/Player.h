@@ -7,11 +7,15 @@
 class Player { // make singleton
 private:
 public:
-    Player() {}
-    ~Player() {}
     int curWand = 1;
+    int expandInterface = 0;
+    int maxWands = 4;
     std::array<Wand*, 4> wands{};
     std::array<Spell*, 10> storedSpells{};
+    std::vector<Spell*> storedSpells_r{};
+        // Allow for empty spaces and fit it into system
+    Player() {}
+    ~Player() {}
 };
 
 #endif

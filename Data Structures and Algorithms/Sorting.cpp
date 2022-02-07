@@ -32,13 +32,14 @@ void BubbleSortBetter(std::vector<int> &arr) {
     }
 }
 
-void BubbleSortBest(std::vector<int> &arr) {
+void BubbleSortBest(std::vector<int> &arr) { // nIterations isn't changing, update!
     bool hasSwapped = true;
     int nIterations = 0;
     while(hasSwapped) {
         hasSwapped = false;
         for(unsigned int i = 0; i < arr.size() - nIterations - 1; i++) {
             if(arr[i] > arr[i+1]) {
+                nIterations++; // Check!
                 Swap(&arr[i], &arr[i+1]);
                 hasSwapped = true;
             }
@@ -50,15 +51,13 @@ void BubbleSortBest(std::vector<int> &arr) {
 std::vector<int> SelectionSort(std::vector<int> &arr) {
     if(arr.size() == 0)
         return arr;
-    else {
-        for(unsigned int i = 0; i < arr.size(); i++) {
-            int min = i;
-            for(unsigned int j = i+1; j < arr.size(); j++) 
-                if(arr[j] < arr[min])
-                    min = j;
-            if(min != i)
-                Swap(&arr[i], &arr[min]);
-        }
+    for(unsigned int i = 0; i < arr.size(); i++) {
+        int min = i;
+        for(unsigned int j = i+1; j < arr.size(); j++) 
+            if(arr[j] < arr[min])
+                min = j;
+        if(min != i)
+            Swap(&arr[i], &arr[min]);
     }
     return arr;
 }

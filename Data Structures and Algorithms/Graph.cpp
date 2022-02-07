@@ -69,37 +69,33 @@ void graph::BreadthFirstSearch(node *root) {
 
 // Adjacency Matrix:
 struct MatrixGraph {
-    MatrixGraph() {}
     std::array<std::array<int, 5>, 5> adjMatrix{};
 
-    void AddEdge(int x, int y) {
+    void AddEdge(const int x, const int y, bool isDirect = false) {
         if(x == y)
             std::cerr << "Same vertex!\n";
         adjMatrix[x][y] = 1;
-        adjMatrix[y][x] = 1;
+        if(isDirect)
+            adjMatrix[y][x] = 1;
     }
 
-    void DeleteEdge(int x, int y) {
+    void DeleteEdge(const int x, const int y) {
         if(adjMatrix[x][y] == 0)
-            std::cerr << "No edge exists!";
+            std::cerr << "No edge exists!\n";
         else {
             adjMatrix[x][y] = 0;
             adjMatrix[y][x] = 0;
         }
     }
 
-    void DisplayGraph(const int v) {
+    void DisplayGraph(const int v) const {
         for(unsigned int i = 0; i < v; i++) {
-            for(unsigned int j = 0; j < v; j++) {
+            for(unsigned int j = 0; j < v; j++)
                 std::cout << adjMatrix[i][j] << " ";
-            }
             putchar('\n');
         }
     }
-    ~MatrixGraph() {}
 };
-
-// Set
 
 // Adjacency List:
 struct listNode {
@@ -148,13 +144,13 @@ void PrintGraph(std::vector<int> graph[], int v) {
 
 // Adjacency List 2
 void AddEdge(std::vector<int> adj[], int s, int d) {
-  adj[s].push_back(d);
-  adj[d].push_back(s);
+    adj[s].push_back(d);
+    adj[d].push_back(s);
 }
 
 // Print the graph
 void PrintGraph2(std::vector<int> adj[], int verts) {
-    for (unsigned int i = 0; i < verts; i++) {
+    for(unsigned int i = 0; i < verts; i++) {
         std::cout << "Vertex " << i << "| ";
         for(auto x : adj[i])
             std::cout << "->" << x;
@@ -168,7 +164,7 @@ struct gNode {
     int data = 0;
     std::vector<gNode*> children{};
 
-    gNode(int d) :data(d) {}
+    gNode(const int d) :data(d) {}
     ~gNode() {}
 };
 
@@ -178,21 +174,17 @@ void Insert(gNode *n, int data) {
 }
 
 void DFSIter(gNode *n) {
-    // Create stack
-    // Check is stack is empty
-    // If not, pop from stack
-    // Loop through nodes children
-    // Push to stack if not visited
-    // Set node to visited
-    // Repeat
-    std::stack<gNode> s;
+    std::stack<gNode*> s;
+    s.push(n);
+    std::cout << n->data << '-';
     while(!s.empty()) {
+        gNode *cur = s.top();
         s.pop();
-        for(auto i : n->children) { // Check '&'
+        for(auto i : cur->children) {
             if(!i->isVisited) {
-                std::cout << i->data << ',';
+                std::cout << i->data << '-';
                 i->isVisited = true;
-                s.push(*i); // Check!
+                s.push(i);
             }
         }
     }
@@ -201,27 +193,31 @@ void DFSIter(gNode *n) {
 void DFS(gNode *n) {
     n->isVisited = true;
     std::cout << n->data << " - ";
+    for(auto i : n->children)
+        if(!i->isVisited)
+            DFS(i);
+}
+
+void Unvisit(gNode *n) {
+    n->isVisited = false;
     for(unsigned int i = 0; i < n->children.size(); i++) {
-        if(!n->children[i]->isVisited)
+        if(n->children[i]->isVisited)
             DFS(n->children[i]);
-    }
+    } 
 }
 
 bool Search(gNode *n, const int data) {
-    std::cout << data;
     if(n->data == data)
         return true;
-    else {
-        n->isVisited = true;
-        for(unsigned int i = 0; i < n->children.size(); i++) {
-            if(!n->children[i]->isVisited)
-                Search(n->children[i], data);
-        }
-    }
+    n->isVisited = true;
+    for(auto i : n->children)
+        if(!i->isVisited)
+            Search(i, data);
     return false;
 }
 
 int main() {
+    /*
     // Main
     graph newGraph;
     graph::node newRoot;
@@ -237,16 +233,39 @@ int main() {
     int vertexCount = 5; 
     MatrixGraph mGraph;
     mGraph.AddEdge(0,3);
-    mGraph.AddEdge(0,4);
-    mGraph.AddEdge(1,2);
-    mGraph.AddEdge(1,5);
+    mGraph.AddEdge(0,4, true);
+    mGraph.AddEdge(1,2, true);
+    mGraph.AddEdge(1,5, true);
     mGraph.AddEdge(2,4);
     mGraph.AddEdge(2,3);
     mGraph.DisplayGraph(vertexCount);
 
+    // Adj Matrix Other -
+    int n = 5, u, v, m;
+    // std::cin >> n;
+    int A[n][n];
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < n; j++)
+            A[i][j] = 0;
+
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            // std::cin >> u >> v;
+            A[u][v] = 1;
+            A[v][u] = 1; // Remove if directed
+        }
+    }
+
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            std::cout << A[i][j] << ", ";
+        }
+        putchar('\n');
+    }
+    
     // Set-
 
-    // Adjacency List-
+    // Adjacency List- | Check
     std::cout << "\nAdjacency List:\n";
     listGraph g(5);
     g.AddVertex(5, 0, 3);
@@ -264,6 +283,23 @@ int main() {
     AddEdge(adjList, 0, 3);
     AddEdge(adjList, 1, 2);
     PrintGraph2(adjList, 5);
+
+    // Adjacency List 3 -
+    std::cout << "\nAdjacency List 3:\n";
+    int jacenN = 5, jacenU, jacenV;
+    std::vector<std::vector<int>> jacenList(jacenN);
+    for(int i = 0; i < n; i++) {
+        std::cin >> jacenU >> jacenV;
+        jacenList[jacenU].push_back(jacenV);
+        jacenList[jacenV].push_back(jacenU); // Remove for directed
+    }
+    for(int i = 0; i < jacenList.size(); i++) {
+        std::cout << "---> ";
+        for(int j = 0; j < jacenList[i].size(); j++) 
+            std::cout << jacenList[i][j] << " --->";
+        putchar('\n');
+    }
+    */
 
     // Node Based
     std::cout << "\nPurely Node Based:\n";
@@ -283,12 +319,11 @@ int main() {
     n2.children.push_back(&n4);
     n2.children.push_back(&n5);
 
-    std::cout << "\nDepth First Search (Recursive):\n";
-    DFS(&root);
+    //std::cout << "\nDepth First Search (Recursive):\n"; // Comment out which one you don't want | Fix unvisit
+    //DFS(&root);
     std::cout << "\nDepth First Search (Iterative):\n";
     DFSIter(&root);
-    putchar('\n');
-    std::cout << Search(&root, 14);
+    std::cout << '\n' << Search(&root, 14);
 
     return 0;
 }

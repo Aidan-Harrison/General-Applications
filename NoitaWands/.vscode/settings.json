@@ -3,6 +3,8 @@
         "xstring": "cpp",
         "vector": "cpp",
         "thread": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "array": "cpp",
+        "iostream": "cpp"
     }
 }

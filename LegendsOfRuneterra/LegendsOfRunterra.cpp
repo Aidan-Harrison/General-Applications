@@ -169,9 +169,9 @@ void Game(Deck &pDeck, Deck &eDeck) {
 
     while(yourNexusHealth > 0 || enemyNexusHealth > 0) {
         // Start of Turn:
-        if(!yourHand.size() > 8)
+        if(yourHand.size() < 8)
             yourHand.push_back(pDeck.Draw());
-        if(!enemyHand.size() > 8)
+        if(enemyHand.size() < 8)
             enemyHand.push_back(eDeck.Draw());
 
         std::cout << "Turn: " << curTurn;

@@ -4,19 +4,30 @@ struct node {
     int data;
     node *next;
     node() :data(0), next(nullptr) {}
-    node(int val) :data(val), next(nullptr) {}
+    node(const int val) :data(val), next(nullptr) {}
 };
 
-node* Add(node *curNode, int val) {
+node* Add(node *curNode, const int val) {
     node *newNode = new node(val);
     newNode->next = curNode->next;
     curNode->next = newNode;
     return newNode;
 }
 
-void Delete(node *n) { // Due to being singly linked, must provide prev and current node
+void Delete(node *n) { // Deletes next node
     n->next = n->next->next;
     // Possibly add 'delete'
+}
+
+void DeleteOther(node * head, const int n) { // Deletes nth node from start
+    node *tempNode = head;
+    int counter = 0;
+    while(tempNode != nullptr) {
+        if(counter == n)
+            tempNode->next = tempNode->next->next;
+        tempNode = tempNode->next;
+        counter++;
+    }
 }
 
 void PrintList(node *n) {
@@ -36,7 +47,7 @@ struct dNode {
 };
 
 dNode* Add(dNode *curNode, int val) {
-    dNode *newNode = new dNode(val);
+    dNode * newNode = new dNode(val);
     newNode->prev = curNode;
     newNode->next = curNode->next;
     curNode->next = newNode;

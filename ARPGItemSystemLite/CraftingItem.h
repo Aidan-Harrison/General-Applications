@@ -8,8 +8,9 @@
     // If so add to mutations as an option
 
 struct CraftingItem {
+    int type = 0;
     std::string itemName = "";
-    
+
     CraftingItem() {}
     virtual ~CraftingItem() {} // Check!
 };
@@ -28,6 +29,7 @@ struct AgonyOrb : public CraftingItem {
 struct DivineOrb : public CraftingItem {
     DivineOrb(const std::string &name) 
     {
+        type = 1;
         itemName = name;
     }
     ~DivineOrb() {}
@@ -37,6 +39,7 @@ struct DivineOrb : public CraftingItem {
 struct LamentGem : public CraftingItem {
     LamentGem(const std::string &name) 
     {
+        type = 2;
         itemName = name;
     }
     ~LamentGem() {}
@@ -47,6 +50,7 @@ struct LamentGem : public CraftingItem {
 struct MoltenCore : public CraftingItem {
     MoltenCore(const std::string &name) 
     {
+        type = 3;
         itemName = name;
     }
     ~MoltenCore() {}
@@ -56,6 +60,7 @@ struct MoltenCore : public CraftingItem {
 struct Mirror : public CraftingItem {
     Mirror(const std::string &name)
     {
+        type = 4;
         itemName = name;
     }
     ~Mirror() {}
@@ -65,6 +70,7 @@ struct Mirror : public CraftingItem {
 struct ExtensionOrb : public CraftingItem {
     ExtensionOrb(const std::string &name) 
     {
+        type = 5;
         itemName = name;
     }
     ~ExtensionOrb() {}

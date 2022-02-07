@@ -6,6 +6,7 @@
 struct Spell {
     std::string spellName = "";
     std::string description = "";
+    std::string properties = "";
     int ID = 0; // Set to global ID board
     Spell(const std::string &name) 
         : spellName(name)

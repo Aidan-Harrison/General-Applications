@@ -6,37 +6,46 @@
 #include <map>
 #include <unordered_map>
 
-// Returns all duplicate characters in string format (Case insensitive) | Fix! Not pushing to map!
+// Returns all duplicate characters in string format (Case insensitive)
 std::string GetDuplicates(const std::string &&str) {
     if(str.length() == 0)
         return "";
     else {
         std::string dupStr = "";
-        std::unordered_map<int, char> m;
+        std::unordered_map<char, int> m;
         for(char i : str) {
             char c = std::tolower(i);
             m[c]++;
         }
-        for(char i = 'a'; i <= 'z'; i++) // Account for appending same char
-            if(m.count(i) > 1)
-                dupStr.append(std::to_string(i));
+        for(auto it = m.begin(); it != m.end(); it++)
+            if(it->second > 1)
+                dupStr += it->first;
         return dupStr;
     }
     return "";
 }
 
-std::string DeleteDuplicates(std::string &str) {
-   if(str.length() == 0)
-    return str;
+std::string DeleteDuplicates(std::string &str) { // Manual deletion | Continue
+    if(str.length() == 0)
+        return "String is invalid: " + str;
     else {
-        std::map<int, char> m;
+        std::map<char, int> m;
         for(auto i : str)
             m[i]++;
-        for(char i = 'a'; i < 'z'; i++)
-            if(m.count(i) > 0)
-                str.erase(i); // Check!
+        for(auto it = m.begin(); it != m.end(); it++) {
+            if(it->second > 1) {
+                for(int i = str.length(); i > 0; i--) {
+                    if(str[i] == it->first) {
+                        str[i] == ' ';
+                        char temp = str[i-1];
+                        str[i-1] = str[i];
+                        str[str.length()-1] = ' ';
+                    }
+                }
+            }
+        }
     }
-    return str;
+    return "No duplicates found in " + str;
 }
 
 // Rotate a string x amount of times either left or right
@@ -44,20 +53,19 @@ std::string RotateString(std::string &str, char dir, int amount) {
     if(dir == 'l') {
         for(int i = 0; i < amount; i++) {
             char starter = str[0];
-            for(int j = 0; j < str.length(); j++) {
+            for(int j = 0; j < str.length()-1; j++) {
                 str[j] = str[j+1];
             }
             str[str.length()-1] = starter;
-            // std::cout << str;
         }
     }
-    else if(dir == 'r') { // Check!
+    else if(dir == 'r') { // CHANGE!!!
         for(int i = 0; i < amount; i++) {
-            char starter = str[0];
-            for(int j = 0; j < str.length(); j++) {
+            char starter = str[str.length()-1];
+            for(int j = str.length(); j > 1; j--) {
                 str[j] = str[j-1];
             }
-            str[str.length()-1]; 
+            str[0] = starter; 
         }    
     }
     return str;
@@ -68,7 +76,6 @@ bool StringRotation(std::string &&str1, const std::string &&str2) { // Check!
     if(str1.length() == 0 || str2.length() == 0 || str1.length() != str2.length())
         return false;
     else {
-        int passedChars = 0;
         int amount = 1;
         char direction = 'l';
         while(amount < str1.length()) {
@@ -78,40 +85,28 @@ bool StringRotation(std::string &&str1, const std::string &&str2) { // Check!
                 direction = 'r';
                 amount = 1;
             }
-            for(unsigned int i = 0; i < curRotation.length(); i++) {
-                if(curRotation[i] == str2[i]) {
-                    passedChars++; // Should reset at some point!
-                    if(passedChars == curRotation.length())
-                        return true;
-                }
-            }
-            passedChars = 0;
+            for(unsigned int i = 0; i < curRotation.length(); i++)
+                if(curRotation[i] != str2[i])
+                    return false;
         }
     }
-    return false;
+    return true;
 }
 
-// Remove any character from str1 which is found in str2 (Case sensitive) | Have remove all instance of a letter!
-std::string RemoveFirstFromSecondSlow(std::string &&str1, std::string &&str2) {
-    if(str1.length() == 0 || str2.length() == 0)
-        return "";
-    else {
-        std::sort(str1.begin(), str1.end());
-        std::sort(str2.begin(), str2.end());    
-        for(unsigned int i = 0; i < str1.size(); i++)
-            if(str1[i] == str2[i])
-                for(unsigned int j = 0; j < str2.size(); j++)
-                    if(str2[j] == str1[i])
-                        str2.erase(str2.begin()+j);
-    }
+// Remove any character from str1 which is found in str2 (Case sensitive)
+std::string RemoveFirstFromSecondSlow(const std::string &&str1, std::string &&str2) {
+    for(unsigned int i = 0; i < str2.length(); i++) 
+        for(unsigned int j = 0; j < str1.length(); j++)
+            if(str1[j] == str2[i])
+                str2.erase(str2.begin()+i);
     return str2;
 }
 
-std::string RemoveFirstFromSecond(const std::string &&str1, std::string &&str2) { // Fix!
-   if(str1.length() == 0 || str2.length() == 0)
+std::string RemoveFirstFromSecond(const std::string &&str1, std::string &&str2) { // Over-engineered
+    if(str1.length() == 0 || str2.length() == 0)
         return "";
     else {
-        std::unordered_map<int,char> m;
+        std::unordered_map<char,int> m;
         for(auto i : str2)
             m[i]++;
         str2.clear();
@@ -119,24 +114,27 @@ std::string RemoveFirstFromSecond(const std::string &&str1, std::string &&str2) 
             if(m.count(str1[i]) > 0)
                 m.erase(i);
         }
-        for(std::unordered_map<int,char>::iterator it; it != m.end(); it++) {
-            str2.append(&it->second);
-            std::cout<< it->second << '\n';
-        }
+        for(auto it = m.begin(); it != m.end(); it++)
+            str2 += it->first;
     }
     return str2; 
 }
 
+std::string RemoveFirstFromSecondOther(const std::string &&str1, std::string &&str2) {
+
+}
+
 // Check if the specified char exists in the string
 bool CheckExists(const char target, const std::string &&str) { // Pointer char???
-    if(str.size() == 0)
+    if(str.size() == 0 || target == ' ')
         return false;
     else {
-        std::unordered_map<int,char> m;
+        std::unordered_map<char,int> m;
         for(char i : str)
             m[i]++;
-        if(m.count(target) > 0)
-            return true;
+        for(auto it = m.begin(); it != m.end(); it++)
+            if(it->first == target)
+                return true;
     }
     return false;
 }
@@ -206,7 +204,7 @@ void VowelsConsonants(const std::string &&str) {
     if(str.length() == 0)
         std::cerr << "String is empty!\n";
     else {
-        std::unordered_map<int,char> m;
+        std::unordered_map<char,int> m;
         char vow[5] = {'a','e','i','o','u'};
         char con[21] = {'b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','w','v','x','y','z'};
         for(char i : str) {
@@ -214,7 +212,7 @@ void VowelsConsonants(const std::string &&str) {
             m[c]++;
         }
         for(char i : vow)
-            if(m.count(i) > 0)
+            if(m.count(i) > 0) // Check!
                 std::cout << i << ", ";
         for(char i : con)
             if(m.count(i) > 0)
@@ -222,21 +220,36 @@ void VowelsConsonants(const std::string &&str) {
     }
 }
 
-// Assuming string ONLY contains letters, we can omit one of the arrays
+void VowelsConstonantsOther(const std::string &&str) {
+    char vow[5] = {'a', 'e', 'i', 'o', 'u'};
+    for(unsigned int i = 0; i < str.length(); i++) {
+        for(unsigned int j = 0; j < 5; j++)
+            if(str[i] != vow[j])
+                std::cout << "Consonant: "<< str[i];
+            else
+                std::cout << "Vowel: "<< str[i];
+    }
+}
+
+// We can omit the consonants array
 std::vector<char> VowelsConsonantsBetter(const std::string &&str) {
     std::vector<char> vowConst;
     if(str.length() == 0)
         return vowConst;
     else {
+        int count = 0;
         char vow[5] = {'a','e','i','o','u'};
         std::unordered_map<char,int> map;
         for(char i : str) {
             char c = std::tolower(i);
             map[c]++;
         }
-        for(char i : vow) {
-            std::unordered_map<char,int>::iterator it = map.find(i);
-            
+        for(auto it = map.begin(); it != map.end() && count != 5; it++) {
+            if(it->first != vow[count])
+                vowConst.push_back(it->first);
+            count++;
+            if(count == 4)
+                count = 0;
         }
     }
     return vowConst;
@@ -532,6 +545,168 @@ std::string MatchingCharacters(const std::string &&str) {
     }
     return str;
 }
+
+bool isPrefix(std::string word, std::string prefix) {
+    int pCounter = 0;
+    int prevPos = -1;
+    for(int i = 0; i < word.length(); i++) {
+        if(pCounter == prefix.length())
+            return true;
+        if(i == prevPos+1 && word[i] == prefix[i]) {
+            std::cout << word[i] << ", ";
+            prevPos = i;
+            pCounter++;
+        }
+    }
+    return false;
+}
+
+// Get words with repeating letters
+std::vector<std::string> GetRepeatingBrute(std::vector<std::string> &arr) {
+    std::vector<std::string> repeatingStrings{};
+    for(int i = 0; i < arr.size(); i++) {
+        if(arr[i].length() == 1)
+            repeatingStrings.push_back(arr[i]);
+        std::sort(arr[i].begin(), arr[i].end());
+        for(int j = 0; j < arr[i].length(); j++) {
+            if(arr[i].at(j) == arr[i].at(j+1))
+                repeatingStrings.push_back(arr[i]);
+        }
+    }
+}
+
+
+std::vector<std::string> GetRepeating(std::vector<std::string> &arr) {
+    // Avoid sorting
+    // Use map
+    std::unordered_map<int, std::string> map;
+    std::vector<std::string> repeatingStrings{};
+    for(int i = 0; i < arr.size(); i++) {
+        if(arr[i].length() == 1)
+            repeatingStrings.push_back(arr[i]);
+        // Don't sort
+        // Check with map instead of loop? | Possibly other methods
+    }
+}
+
+std::string WordFind(const std::string &&sentence, const std::string &&wordToFind = "") {
+    bool hasStarted = true;
+    std::string word;
+    std::vector<std::string> words{};
+    for(int i = 0; i < sentence.length(); i++) {
+        if(sentence[i] != ' ' && !hasStarted) {
+            hasStarted = true;
+            word.push_back(sentence[i]);
+        }
+        else if(sentence[i] != ' ' && hasStarted)
+            word.push_back(sentence[i]);
+        if(sentence[i] == ' ' || sentence[i] == '.' || sentence[i] == '!' || sentence[i] == '?' || i == sentence.length()-1) {
+            hasStarted = false;
+            words.push_back(word);
+            word.clear();
+        }
+    }
+    for(auto i : words)
+        if(i == wordToFind)
+            return i;
+    return "Not Found!";
+}
+
+std::vector<std::string> FindSyllables(const std::string &&arr) {
+    std::vector<std::string> syllables{};
+    std::string curWord = "";
+    for(unsigned int i = 0; i < arr.size(); i++) {
+        curWord += arr[i];
+        if(arr[i] == '-') {
+            syllables.push_back(curWord);
+            curWord.clear();
+        }
+    }
+    return syllables;
+}
+
+// Given a sentence with missing capital letters, capitalise
+void Capitalise(std::string &&sentence) {
+    for(unsigned int i = 0; i < sentence.length(); i++) {
+        if(i == 0 && !std::isupper(sentence[i]))
+            sentence[i] = std::toupper(sentence[i]);
+        if(sentence[i] == '.' || sentence[i] == '!' || sentence[i] == '?' && i != sentence.length()) {
+            if(isalnum(sentence[i+1])) {
+                sentence.insert(i+1, " ");
+                sentence[i+1] = std::toupper(sentence[i+1]);
+            }
+            else
+                sentence[i+2] = std::toupper(sentence[i+2]);
+        }
+    }
+}
+
+// Given a sentence, rotate every word n amount | Works! But, look into improving performance
+std::vector<std::string> RotationWordFind(const std::string &&sentence) {
+    bool hasStarted = true;
+    std::string word;
+    std::vector<std::string> words{};
+    for(int i = 0; i < sentence.length(); i++) {
+        if(sentence[i] != ' ' && !hasStarted) {
+            hasStarted = true;
+            word.push_back(sentence[i]);
+        }
+        else if(sentence[i] != ' ' && hasStarted)
+            word.push_back(sentence[i]);
+        if(sentence[i] == ' ' || sentence[i] == '.' || sentence[i] == '!' || sentence[i] == '?' || i == sentence.length()-1) {
+            hasStarted = false;
+            words.push_back(word);
+            word.clear();
+        }
+    }
+    return words;
+}
+
+std::string RotateWord(std::string &word, const int amount) {
+    for(int i = 0; i < amount; i++) {
+        char starter = word[0];
+        for(int j = 0; j < word.length()-1; j++)
+            word[j] = word[j+1];
+        word[word.length()-1] = starter;
+    }
+    return word;
+}
+
+std::string WordRotation(std::string &&sentence, const int amount) {
+    // Find words
+    std::string rotatedSentence;
+    std::vector<std::string> words;
+    words = RotationWordFind(std::forward<std::string>(sentence));
+    for(int i = 0; i < words.size(); i++) {
+        // Standard array rotation ran per word
+        words[i] = RotateWord(words[i], amount);
+        rotatedSentence.append(words[i]);
+        if(i != sentence.length()-1)
+            rotatedSentence.append(" ");
+    }
+    return rotatedSentence;
+}
+
+// Get Pairs
+    // Given a string, find all pair characters
+std::vector<std::pair<char,char>> FindPairs(const std::string &&str) {
+    // Find duplicates, if pair is available, create and push
+    std::vector<std::pair<char,char>> pairs{};
+    std::unordered_map<char,int> map;
+    for(auto i : str)
+        map[i]++;
+    for(auto it = map.begin(); it != map.end(); it++) { // Avoid nested if possible! Else just run loop and check when even
+        for(unsigned int i = 0; i < it->second; i++) {
+            if(it->second % 2 == 0) {
+                std::pair<char,char> newPair{it->first, it->first};
+                pairs.push_back(newPair);
+            }
+        }
+    }
+    return pairs;
+}
+
+// 
 
 int main() {
     std::cout << "Get Duplicates:\n";

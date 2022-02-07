@@ -5,6 +5,47 @@
 #include <vector>
 
 struct SkillNode {
+    std::string nodeName = "";
+    std::vector<SkillNode*> children{};
+    SkillNode(const std::string &name) : nodeName(name) {}
+    SkillNode(const std::string &name, SkillNode *other) :nodeName(name) {}
+    ~SkillNode() {}
+};
+
+struct SkillTree {
+    int curLevel = 0;
+    std::string skillName = "";
+    SkillNode *root;
+    SkillTree(const std::string &name, SkillNode *root) 
+        :skillName(name)
+    {
+    }
+    ~SkillTree() {}
+
+    void Insert(SkillNode *first, SkillNode *other) {
+        first->children.push_back(other);
+    }
+
+    void PrintSkill() const;
+};
+
+void SkillTree::PrintSkill() const {
+    for(unsigned int i = 0; i < nodes.size(); i++) {
+        SkillNode *traverseNode = nodes[i];
+        while(traverseNode != nullptr) {
+            std::cout << traverseNode->nodeName << "->";
+            traverseNode = traverseNode->next;
+        }
+    }
+}
+
+class Alteration : public SkillTree {
+    Alteration() {}
+    ~Alteration() {}
+}
+
+/*
+struct SkillNode {
     bool isPrinted = false;
     std::string nodeName = "Default Node";
     std::vector<SkillNode*> children{};
@@ -21,9 +62,10 @@ struct SkillNode {
 };  
 
 void SkillNode::AddNode(SkillNode *n) {
-    if(!children.size() > 3)
+    if(children.size() < 3)
         children.push_back(n);
 }
+*/
 
 class Skill {
 protected:
@@ -47,9 +89,7 @@ public:
     }
 };
 
-void Skill::PrintSkillTree(SkillNode *n){
-    for(auto i : n->children)
-        std::cout << i->nodeName << ", ";
+void Skill::PrintSkillTree(SkillNode *n) { // Remove!
     std::cout << n->nodeName << "->";
     n->isPrinted = true;
     for(auto i : n->children) {
@@ -76,8 +116,10 @@ struct Alteration : public Skill {
         alterationRoot->AddNode(spellDamage);
         alterationRoot->AddNode(range);
 
-        Skill(alterationRoot);
+        // PrintSkillTree(alterationRoot);
+
         skillName = "Alteration";
+        Skill(alterationRoot);
     }
     ~Alteration() 
     {

@@ -62,6 +62,7 @@ bool FindDuplicateOfTargetMap(std::vector<int> &arr, const int target) {
     return false;
 }
 
+// Can push back multiple of the same
 std::vector<int> FindAllDuplicatesNaive(std::vector<int> &arr) {
     if(arr.size() <= 1)
         return arr;
@@ -69,8 +70,8 @@ std::vector<int> FindAllDuplicatesNaive(std::vector<int> &arr) {
         std::vector<int> duplicates{};
         for(unsigned int i = 0; i < arr.size(); i++) {
             for(unsigned int j = 0; j < arr.size()-1; j++) {
-                if(arr[j] > arr[j+1])
-                    duplicates.push_back(arr[j]);
+                if(arr[i] > arr[j])
+                    duplicates.push_back(arr[j]); // Can push either
             }
         }
     }
@@ -601,6 +602,102 @@ int NonAdjacentMaxSum(std::vector<int> &arr) {
     return ((incl > excl) ? incl : excl);
 }
 
+// Order array into a matrix
+std::vector<std::vector<int>> MatrixPack(std::vector<int> &array) {
+    int counter = 0;
+    std::vector<std::vector<int>> matrix{};
+    matrix.resize(array.size()/2);
+    int test = array.size() + 1;
+    int otherTest = array.size()/2 + 1;
+    int amount = test / otherTest;
+    for(int i = 0; i < amount; i++)
+        matrix[i].resize(array.size()/2);
+    std::sort(array.begin(), array.end());
+    for(int i = 0; i < matrix.size(); i++) {
+        for(int j = 0; j < matrix[i].size(); j++) {
+            matrix[i][j] = array[counter];
+            counter++;
+        }
+        counter++;
+    }
+    
+    for(int i = 0; i < matrix.size(); i++) {
+        for(int j = 0; j < matrix[i].size(); j++)
+            std::cout << matrix[i][j] << '|';
+        putchar('\n');
+    }
+    return matrix;
+}
+
+// Encrpyts an array by scrambling the elements and decrpyts by knowing how it was scrambled
+std::vector<int> ScrambleEncrypt(std::vector<int> &arr) {
+    std::vector<int> moves{};
+    int sRandIndex = 0;
+    int fRandIndex = 0;
+    for(int i = 0; i < arr.size(); i++) {
+        sRandIndex = rand() % arr.size();
+        fRandIndex = rand() % arr.size();
+        moves.push_back(fRandIndex);
+        moves.push_back(sRandIndex);
+        int temp = arr[fRandIndex];
+        arr[fRandIndex] = arr[sRandIndex];
+        arr[sRandIndex] = temp;
+    }
+    return moves;
+}
+
+void ScrambleDecrypt(std::vector<int> &arr, std::vector<int> &moves) {
+    for(int i = 0; i < arr.size(); i++) {
+        arr[moves[i]] == arr[moves[i+1]];
+    }
+}
+
+// Split Array -- DO
+    // Given a threshold number, split an array into two sub-arrays
+    // Quick sort esque partition, have a pivot/middle element
+void Pivot(std::vector<int> &arr, const int value, const int threshold) {
+    while(value < threshold) {
+        Swap(&arr[value], &arr[value+1]);
+    }
+}
+
+void SplitArray(std::vector<int> &arr, const int threshold) {
+    std::vector<int> splitArr{};
+    for(unsigned int i = 0; i < arr.size(); i++) {
+        if(arr[i] > threshold)
+            return;
+        else
+            return;
+    }
+}
+
+// Blip
+    // Given an integers position n, increase values by 1 from n's position - n and + n
+void Blip(std::vector<int> &arr, const int n) {
+    int leftBlip = n - n - 1;
+    int rightBlip = n + n - 1;
+    if(rightBlip > arr.size() || leftBlip < 0)
+        return;
+    for(unsigned int i = leftBlip; i < rightBlip; i++)
+        if(i != n)
+            arr[i]++;
+}
+
+void Blip2(std::vector<int> &arr, const int n, bool right = true) {
+    int leftBlip = n - n - 1;
+    int rightBlip = n + n - 1;
+    if(rightBlip * 2 > arr.size() || leftBlip - leftBlip < 0)
+        return;
+    if(right)
+        for(unsigned int i = n; i < rightBlip * 2; i++)
+            if(i != n)
+                arr[i]+=n;
+    else 
+        for(unsigned int i = n; i < leftBlip - leftBlip; i++)
+            if(i != n)
+                arr[i]+=n; 
+}
+
 int main() {
     std::vector<int> testArray{1,2,3,4,5,6,7,8,9,10};
     std::cout << "Reverse Array:\n";
@@ -627,6 +724,7 @@ int main() {
 
     std::vector<int> commonData{2,2,2,2,1,6,7,7,5,5,5,5,5,5,5,9,3,8};
     std::vector<int>result(CommonElements(commonData, 4)); // Check initialisation
+
     for(auto i : result)
         std::cout << i << ", ";
 

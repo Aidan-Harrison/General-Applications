@@ -5,7 +5,7 @@
 int minute = 0, second = 0;
 bool running = true;
 
-struct clockSym {
+namespace digits {
     char num0[7][4] = { {'#','#','#','#'},
                         {'#',' ',' ','#'},
                         {'#',' ',' ','#'},
@@ -85,8 +85,9 @@ struct clockSym {
                         {' ',' ',' ','#'},
                         {' ',' ',' ','#'},
                         {' ',' ',' ','#'} };
-};
-clockSym c;
+}
+
+using namespace digits;
 
 void PrintNumber(char message[7][4]) {
     for(unsigned int i = 0; i < 7; i++) {
@@ -104,9 +105,11 @@ void PrintNumber(char message[7][4]) {
                 // "=\n";
 }
 
+
+
 void Run() {
-    system("cls");
-    std::cout << "ASCII clock\n";
+    system("clear");
+    std::cout << "ASCII clock\n\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
     second++;
     if(second == 60) {
@@ -114,21 +117,22 @@ void Run() {
         minute++;
     }
     switch(second) {
-        case 0: PrintNumber(c.num0); break;
-        case 1: PrintNumber(c.num1); break;
-        case 2: PrintNumber(c.num2); break;
-        case 3: PrintNumber(c.num3); break;
-        case 4: PrintNumber(c.num4); break;
-        case 5: PrintNumber(c.num5); break;
-        case 6: PrintNumber(c.num6); break;
-        case 7: PrintNumber(c.num7); break;
-        case 8: PrintNumber(c.num8); break;
-        case 9: PrintNumber(c.num9); break;
+        case 0: PrintNumber(num0); break;
+        case 1: PrintNumber(num1); break;
+        case 2: PrintNumber(num2); break;
+        case 3: PrintNumber(num3); break;
+        case 4: PrintNumber(num4); break;
+        case 5: PrintNumber(num5); break;
+        case 6: PrintNumber(num6); break;
+        case 7: PrintNumber(num7); break;
+        case 8: PrintNumber(num8); break;
+        case 9: PrintNumber(num9); break;
     }
 }
 
 int main() { 
     while(running)
         Run();
+
     return 0;
 }

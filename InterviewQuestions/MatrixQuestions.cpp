@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <thread>
 #include <map>
 
 std::vector<std::vector<int>> GetUnvisitedNeighbours(int i, int j, std::vector<std::vector<int>> &visited, std::vector<std::vector<int>> &river) {
@@ -103,27 +104,107 @@ std::vector<int> SpiralTraversalSimple(std::vector<std::vector<int>> &mat) { // 
     return traversal;
 }
 
+
+// Matrix Blip
+void Blip(std::vector<std::vector<int>> &arr, const int n) {
+    for(unsigned int i = 0; i < arr.size(); i++) {
+        for(unsigned int j = 0; j < arr[0].size(); j++) {
+            if(arr[i][j] == n) {
+                arr[i-1][j]++;
+                arr[i+1][j]++;
+                arr[i][j-1]++;
+                arr[i][j+1]++;
+            }
+        }
+    }
+}
+
+// Fix and Optimise!
+void BlipOther(std::vector<std::vector<int>> &arr, const int n, const char direction) {
+    for(unsigned int i = 0; i < arr.size(); i++) {
+        for(unsigned int j = 0; j < arr[0].size(); j++) {
+            if(arr[i][j] == n) {
+                switch(direction) {
+                    case 'l':  {
+                        for(int left = j; left > 0; left--)
+                            arr[i][left]++;
+                        break;
+                    }
+                    case 'r':  {
+                        for(int right = j; right < arr.size(); right++)
+                            arr[i][right]++;
+                        break;
+                    }
+                    case 'u':  {
+                        for(int up = i; up > 0; up--)
+                            arr[up][j]++;
+                        break;
+                    }
+                    case 'd':  {
+                        for(int down = i; down < arr.size(); down++)
+                            arr[down][j]++;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Cross rotate
+void CrossRotate(std::vector<std::vector<int>> &arr, const int n) {
+    for(unsigned int i = 0; i < arr.size(); i++) {
+        for(unsigned int j = 0; j < arr[0].size(); j++) {
+            if(arr[i][j] == n) {
+                int right = arr[i][j+1]; // Store right
+                int left = arr[i][j-1]; // Store left
+                arr[i][j+1] = arr[i-1][j]; // Right = up
+                arr[i][j-1] = arr[i+1][j]; // Left = down
+                arr[i+1][j] = right; // Down = right
+                arr[i-1][j] = left; // Up = left
+            }
+        }
+    }
+}
+
+void SquareRotate(std::vector<std::vector<int>> &arr, const int n) { // Add corner rotation!
+    for(unsigned int i = 0; i < arr.size(); i++) {
+        for(unsigned int j = 0; j < arr[0].size(); j++) {
+            if(arr[i][j] == n) {
+                while(1) {
+                    int right = arr[i][j+1]; // Store right
+                    int left = arr[i][j-1]; // Store left
+                    arr[i][j+1] = arr[i-1][j]; // Right = up
+                    arr[i][j-1] = arr[i+1][j]; // Left = down
+                    arr[i+1][j] = right; // Down = right
+                    arr[i-1][j] = left; // Up = left
+                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                }
+            }
+        }
+    }
+}
+
 int main() {
     std::vector<std::vector<int>> matrix2{{1, 2, 3, 4, 5},
-                                          {6, 7, 8, 9, 10},
-                                          {11,12,13,14,15},
-                                          {16,17,18,19,20},
-                                          {21,22,23,24,25}};
+                                        {6, 7, 8, 9, 10},
+                                        {11,12,13,14,15},
+                                        {16,17,18,19,20},
+                                        {21,22,23,24,25}};
     /*
     std::tuple<int,int> result = SearchSortedMatrix(matrix2, 19);
 
     std::vector<std::vector<int>> matrix{{1,0,0,1,0},
-                                         {1,0,1,0,0},
-                                         {0,0,1,0,1},
-                                         {1,0,1,0,1},
-                                         {1,0,1,1,0}};
+                                        {1,0,1,0,0},
+                                        {0,0,1,0,1},
+                                        {1,0,1,0,1},
+                                        {1,0,1,1,0}};
     std::vector<int> sizes{}; // Check!
     sizes = RiverSizes(matrix); // Not assigning
     for(auto i : sizes)
         std::cout << i;
     */
-
-   SpiralTraversalSimple(matrix2);
+    SpiralTraversalSimple(matrix2);
 
     return 0;
 }

@@ -9,6 +9,7 @@
 
 #include "CraftingItem.h"
 
+// VALUE | MOD | TIER
 typedef std::vector<std::tuple<int, std::string, int>> itemMods;
 typedef std::array<std::string, 3> itemName;
 
@@ -22,7 +23,7 @@ struct Item {
     int iLevel = 1;
     int type = 1;
     int rarity = 1;
-    enum TYPE{SWORD = 1, AXE, SHIELD};
+    enum TYPE{SWORD = 0, AXE, SHIELD}; // Make external, not every item needs this!
     enum RARITY{COMMON = 1, MAGIC, RARE, UNIQUE}; // Add more legendaries?
     bool isCorrupted = false;
     int maxMods = 5; // Opens up some interesting crafting | Pointless?
@@ -33,8 +34,8 @@ struct Item {
         : m_ItemName(name)
     {
     }
-    Item(const int rar, const int iL, const itemName &name, itemMods &mods) 
-        : rarity(rar), iLevel(iL), m_ItemName(name), m_Mods(mods)
+    Item(const int base, const int rar, const int iL, const itemName &name, itemMods &mods) 
+        : type(base), rarity(rar), iLevel(iL), m_ItemName(name), m_Mods(mods)
     {
         RarityChecker();
     }

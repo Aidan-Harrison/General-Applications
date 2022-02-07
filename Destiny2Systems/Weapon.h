@@ -3,19 +3,24 @@
 
 #include <array>
 #include <cassert>
+#include <tuple>
 
 #include "WeaponPerk.h"
 
 class Weapon {
 private:
     int choice = 0;
+    enum AMMOTYPE{COMMON = 1, SPECIAL, HEAVY};
 public:
     enum TYPE{HAND_CANNON = 1, SIDEARM, SHOTGUN, SNIPER_RIFLE, AUTO_RIFLE, SMG, SCOUT_RIFLE, FUSION_RIFLE, ROCKET_LAUNCHER, GRENADE_LAUNCHER, SWORD};
     int type = 1;
+    int ammoType = 1;
+    int slot = 1; // In most cases the ammo type refers to what slot the weapon is associated with, however there are several exceptions
     int rarity = 0;
+    int perkCount;
     std::string weaponName = "";
     std::string weaponType = "";
-    std::string itemDescription = "";
+    std::string weaponDescription = "";
 
     int lightLevel = 100;
     // Stats | Convert to array? Might be cumbersome in the long run
@@ -25,27 +30,52 @@ public:
     int handling = 1;
     int impact = 1;
 
-    std::array<int, 5> weaponStats{damage, range, stability, handling, impact};
-    std::array<std::string, 5> statNames{"Damage", "Range", "Stability", "Handling", "Impact"};
+    std::vector<std::tuple<std::string, int>> weaponStats{{"Damage", 1},
+                                                        {"Range", 1},
+                                                        {"Stability", 1},
+                                                        {"Handling", 1},
+                                                        {"Impact", 1},
+    };
     // Add perks
     std::vector<WeaponPerk*> perks{}; // Different rarities have different amount of perks
 
     Weapon() {}   
-    Weapon(const std::string &name, const int rar) 
-        :weaponName(name), rarity(rar) 
+    Weapon(const std::string &name, const int rar, const int perks) 
+        :weaponName(name), rarity(rar), perkCount(perks) 
     {
         assert(name != "");
         // Ensure perks are set at generation!
         ApplyPerks();
     }
+    Weapon(Weapon &other) 
+        :weaponName(other.weaponName), rarity(other.rarity)
+    {
+        type = other.type;
+        ammoType = other.type;
+        slot = other.slot;
+        weaponType = other.weaponType;
+        weaponDescription = other.weaponDescription;
+    }
+
     void Modify(); // Try to convert to a single global function?
     void ApplyPerks();
     ~Weapon() 
     {
         perks.clear();
     }
+
+    Weapon& operator=(Weapon&other) {
+        weaponName = other.weaponName;
+        rarity = other.rarity;
+        type = other.type;
+        ammoType = other.type;
+        slot = other.slot;
+        weaponType = other.weaponType;
+        weaponDescription = other.weaponDescription; 
+    }
 };
 
+// Remove? Could be integrated into new method of generation
 // Exotics | Should be the correct method, generating and pulling stats is more cumbersome and hard to read, although still functional
 class Hawkmoon : public Weapon {
 private:
@@ -53,7 +83,7 @@ public:
     Hawkmoon() 
     {
         weaponName = "Hawkmoon";
-        itemDescription = "Hawkmoon description";
+        weaponDescription = "Hawkmoon description";
     }
     ~Hawkmoon() {}
 };

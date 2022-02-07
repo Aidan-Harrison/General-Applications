@@ -4,30 +4,30 @@ struct node {
     int data;
     node *lChild;
     node *rChild;
-    node(int d) :data(d), lChild(nullptr), rChild(nullptr) {}
-    node(int d, node *left) :data(d), lChild(left), rChild(nullptr) {}
-    node(int d, node *left, node *right) :data(d), lChild(left), rChild(right) {}
+    node(const int d) :data(d), lChild(nullptr), rChild(nullptr) {}
+    node(const int d, node *left) :data(d), lChild(left), rChild(nullptr) {}
+    node(const int d, node *left, node *right) :data(d), lChild(left), rChild(right) {}
 };
 
 class bTree {
 private:
-    void Insert(int data, node *n);
+    void Insert(const int data, node *n);
     node* Search(int data, node *n);
 public:
     node *root;
 
     bTree() {};
 
-    void Insert(int data);    
+    void Insert(const int data);    
     node* Search(int data);
     void DeleteTree(node *n);
 
-    void Print(node *n, node *other) const;
+    void Print(node *n) const;
 
     ~bTree() {};
 };
 
-void bTree::Insert(int data, node *n) {
+void bTree::Insert(const int data, node *n) {
     if(data < n->data) {
         if(n->lChild == nullptr)
             n->lChild = new node(data);
@@ -54,18 +54,21 @@ node* bTree::Search(int data, node *n) {
     return NULL;
 }
 
-void bTree::Insert(int data) {
+void bTree::Insert(const int data) {
     if(root != nullptr)
         Insert(data, root);
-    else
-        node *root = new node(data);
+    else {
+        node *r = new node(data);
+        root = r;
+    }
 }
 
 node* bTree::Search(int data) { // nullptr check?
-    return Search(data, root);
+    if(root != nullptr)
+        return Search(data, root);
 }
- 
-void bTree::DeleteTree(node *n) {
+
+void bTree::DeleteTree(node *n) { // Check!
     if(n != nullptr) {
         n->lChild = nullptr;
         n->rChild = nullptr;
@@ -73,16 +76,12 @@ void bTree::DeleteTree(node *n) {
     }
 }
 
-void bTree::Print(node *n, node *other) const { // Handle both children!!!!!
-    while(n != nullptr) {
-        std::cout << n->data;
-        if(n->lChild != nullptr)
-            std::cout << n->lChild->data;
-        if(n->rChild != nullptr)
-            std::cout << n->rChild->data;
-        n = n->lChild; 
-        other = n->rChild;
-    }
+void bTree::Print(node *n) const { // Handle both children!!!!! | Fix
+    std::cout << n->data;
+    if(n->lChild != nullptr)
+        std::cout << n->lChild->data;
+    if(n->rChild != nullptr)
+        std::cout << n->rChild->data;
 }
 
 // Another implementation | Purely node based ==============================================
@@ -90,18 +89,18 @@ struct bstNode {
     int data;
     bstNode *left;
     bstNode *right;
-    bstNode(int d) :data(d), left(nullptr), right(nullptr) {}
+    bstNode(const int d) :data(d), left(nullptr), right(nullptr) {}
 
-    bool Search(int value);
+    bool const Search(int value); // Check const return!
     void Insert(int value);
     void Print() const;
 
-    void InOrder();
-    void PreOrder();
-    void PostOrder();
+    void InOrder() const;
+    void PreOrder() const;
+    void PostOrder() const;
 };
 
-void bstNode::Insert(int value) {
+void bstNode::Insert(const int value) {
     if(value <= data) {
         if(left == nullptr) {
             bstNode *newNode = new bstNode(value);
@@ -120,7 +119,7 @@ void bstNode::Insert(int value) {
     }
 }
 
-bool bstNode::Search(int value) {
+bool const bstNode::Search(int value) { // Do return search
     if(value == data)
         return true;
     else if(value < data) {
@@ -146,11 +145,15 @@ void bstNode::Print() const { // In-Order printing/traversal
         right->Print();
 }
 
-void bstNode::InOrder() {
-
+void bstNode::InOrder() const {
+    if(left != nullptr)
+        left->InOrder();
+    if(right != nullptr)
+        right->InOrder();
+    std::cout << data << ", ";
 }
 
-void bstNode::PreOrder() { 
+void bstNode::PreOrder() const { 
 
     /*  // DFS?
     std::cout << data << ", ";
@@ -161,10 +164,30 @@ void bstNode::PreOrder() {
     */
 }
 
-void bstNode::PostOrder() {
+void bstNode::PostOrder() const {
+
 }
 
 int main() {    
+    // Regular:
+    /*
+    std::cout << "===Regular Binary Tree===\n";
+    bTree tree;
+    tree.Insert(5);
+    tree.Insert(14);
+    tree.Insert(16);
+    tree.Insert(8);
+    tree.Insert(12);
+    tree.Insert(2);
+    tree.Insert(3);
+
+    tree.Print(tree.root);
+    */
+
+    std::cout << "====================\n";
+
+    // Purely Node based:
+    std::cout << "===Node Based===\n";
     bstNode *root = new bstNode(10);
     bstNode *n2 = new bstNode(9);
     bstNode *n3 = new bstNode(12);

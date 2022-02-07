@@ -11,7 +11,6 @@ private:
         arrayNode* children[26];
         bool isWord;
         arrayNode(const char ch) :c(ch), isWord(false) {}
-
         ~arrayNode() {}
     };
 public:

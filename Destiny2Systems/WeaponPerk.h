@@ -6,6 +6,7 @@
 
 struct WeaponPerk {
     std::string perkname = "";
+    std::string perkDescription = "";
     bool isActive = false; // If true, apply functionallity
     WeaponPerk(const std::string &name) :perkname(name) {}
 

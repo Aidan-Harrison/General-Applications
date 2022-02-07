@@ -1,4 +1,5 @@
 #include <iostream>
+
 struct stack {
     int items[10]; // Can also use vectors
     int top = -1; // Dictates the size of the stack
@@ -22,7 +23,7 @@ bool stack::IsEmpty() {
 void stack::Push(int item) {
     if(IsFull()) {
         std::cerr << "Stack is full, cannot push!" << std::endl;
-        exit(1);
+        return;
     }
     else {
         top++;
@@ -33,7 +34,7 @@ void stack::Push(int item) {
 int stack::Pop() {
     if(IsEmpty()) {
         std::cerr << "Their is nothing to pop!" << std::endl;
-        exit(1);
+        return;
     }
     else {
         int item = items[top];

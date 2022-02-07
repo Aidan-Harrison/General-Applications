@@ -66,6 +66,7 @@ int CalculateBranch(bNode *n, int runningSum, std::vector<int> sums) { // Wrong!
             CalculateBranch(n->rChild, newRunningSum, sums);
         }
     }
+    return -1;
 }
 
 std::vector<int> BranchSums(bNode *root) {
@@ -119,12 +120,18 @@ void BinaryBreadthFirstRecursive(bNode *n) {
 struct gNode {
     int data = 0;
     bool isVisited = false;
-    std::vector<gNode> children{};
+    std::vector<gNode*> children{};
 
     gNode() {}
-    gNode(int d) 
+    gNode(const int d = 1) 
+        :data(d)
     {
-        children.resize(d);
+    }
+
+    // Copy Constructor
+    gNode(gNode &other)
+    {
+        children = other.children;
     }
 
     ~gNode() {}
@@ -138,7 +145,7 @@ void DFSRecursive(gNode *n, int vertex) {
     markedVertices[vertex] = true;
     for(unsigned int i = 0; i < n->children.size(); i++) {
         if(!markedVertices[i])
-            DFSRecursive(&n->children[i], i);
+            DFSRecursive(n->children[i], i);
     }
 }
 
@@ -153,7 +160,7 @@ void DFSIterative(gNode *n, int vertex) { // Fix!
             markedVerticesIter[vertex] = true;
             for(unsigned int i = 0; i < n->children.size(); i++) {
                 if(!markedVerticesIter[i])
-                    s.Push(&n->children[i]);
+                    s.Push(n->children[i]);
             }
         }
         s.Pop();
@@ -199,22 +206,83 @@ int TreeDiameter(bNode *n, int sum) { // ?
         TreeDiameter(n, sum);
     else if(n->rChild != nullptr && !n->rChild->isVisited)
         TreeDiameter(n, sum); 
+    return -1;
 }
 
 int TreeDiameterNew(bNode *n, int sum) {
     int distance = 0;
+    return distance;
+}
+
+// Graph blip
+    // Almost done, just get values of children from return!
+gNode* FindVertex(gNode *n, const int value) {
+    if(n->data == value)
+        return n;
+    n->isVisited = true;
+    for(unsigned int i = 0; i < n->children.size(); i++) {
+        if(!n->children[i]->isVisited) 
+            FindVertex(n->children[i], value);
+    }
+    return n;
+}
+
+void Blip(gNode *root, const int value) {
+    // Find any connected vertices
+        // Blip any connected verties
+    gNode *blipVert = FindVertex(root, value); // Move semantics instead of copy!!
+    if(blipVert == nullptr) {
+        std::cout << "No suitable vertex found!\n";
+        return;
+    }
+    for(unsigned int i = 0; i < blipVert->children.size(); i++) {
+        // blipVert->children[i]->data++;
+        std::cout << "\nB: " << blipVert->children[i]->data++<< ',';
+    }
+}
+
+void UnvisitGraph(gNode *n) {
+    n->isVisited = false;
+    for(unsigned int i = 0; i < n->children.size(); i++) {
+        if(n->children[i]->isVisited)
+            UnvisitGraph(n->children[i]);
+    }
+}
+
+void PrintGraph(gNode *n) {
+    std::cout << n->data << ", ";
+    n->isVisited = true;
+    for(unsigned int i = 0; i < n->children.size(); i++) {
+        if(!n->children[i]->isVisited)
+            PrintGraph(n->children[i]);
+    }
+}
+
+// Swap Vertices
+void Swap(gNode *n1, gNode *n2) {
+    int temp = n1->data;
+    n1->data = n2->data;
+    n2->data = temp;
 }
 
 int main() {
-    gNode *a;
-    gNode *b;
-    gNode *c;
-    gNode *d;
-    gNode *e;
-    gNode *f;
+    gNode a(4);
+    gNode b(6);
+    gNode c(4);
+    gNode d(14);
+    gNode e(24);
+    gNode f(5);
+
+    a.children.push_back(&b);
+    a.children.push_back(&c);
+    a.children.push_back(&d);
+
+    b.children.push_back(&e);
+    e.children.push_back(&f);
 
     // DFSRecursive(a, 0);
 
+    /*
     bNode root(15);
     bNode n1(12);
     bNode n2(14);
@@ -237,6 +305,17 @@ int main() {
        // std::cout << i << ',';
 
     TreeDiameter(&root, 0);
+
+    */
+
+    // Matrix Blip
+
+    PrintGraph(&a);
+    UnvisitGraph(&a);
+    Blip(&a, 14);
+    UnvisitGraph(&a);
+    putchar('\n');
+    PrintGraph(&a);
 
     return 0;
 }

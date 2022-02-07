@@ -13,8 +13,9 @@ struct Wand {
     int damage = 1;
     int range = 10;
     int reloadSpeed = 1;
-    int ammo = 0; // 0 = infinite
-    int ID = 1; // Global ID board
+    int ammo = -1; // -1 = infinite
+    int ID = 1; // Global ID board // ? Map solves this
+    int curSpell = 0;
 
     // SpellQueue sQ;
     std::vector<Spell*> spellLoadout{};
@@ -40,6 +41,9 @@ void Wand::Fire() {
         std::this_thread::sleep_for(std::chrono::milliseconds(500));        
         spellLoadout[i]->Use();
     }
+    curSpell++;
+    if(curSpell == spellLoadout.size())
+        curSpell = 0;
     std::this_thread::sleep_for(std::chrono::milliseconds(500));        
 }
 

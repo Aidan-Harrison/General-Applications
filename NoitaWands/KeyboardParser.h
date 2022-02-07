@@ -1,5 +1,5 @@
 #ifndef KeyboardParser_h
-#define KeyboardParder_h
+#define KeyboardParser_h
 
 // Convert to ring buffer?
 #include <iostream>
@@ -7,6 +7,7 @@
 
 #include "Player.h"
 
+// Stack is pointless here
 struct Keyboard {
     int top = -1;
     std::array<int, 10> buffer{};
@@ -23,6 +24,10 @@ struct Keyboard {
     Keyboard() {}
     ~Keyboard() {}
 };
+
+void Interface(Keyboard &key, Player &p);
+void PurchaseSpells(Player &p);
+void RecycleWand(Player &p);
 
 bool Keyboard::IsFull() {
     if(top == buffer.size())
@@ -61,9 +66,13 @@ void Keyboard::Parse(Player &p) {
         case 49: p.curWand = 1; break; // 1
         case 50: p.curWand = 2; break; // 2
         case 51: p.curWand = 3; break; // 3
-        case 52: p.curWand = 4; break; // 4
+        case 52: p.curWand = 4; break; // 4 | Fix!
         case 101: p.wands[p.curWand-1]->Fire(); break; // FIRE
-        // case 114: break; // RESTART | Need linker to function correctly
+        case 105: p.expandInterface = 1; break; // Inventory
+        case 112: PurchaseSpells(p); // Spell Shop
+        case 114: Interface(*this, p); break; // Interface | ????
+        case 120: RecycleWand(p);
+        case 108: exit(0);
     }
 }
 
