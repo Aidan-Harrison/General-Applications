@@ -4,18 +4,6 @@
 #include <utility>
 
 // Heroes of Might and Magic III
-// ==== TILE TEST ==== | REMOVE EVENTUALLY
-struct Grid {
-    std::vector<std::vector<Creature*>> grid{};
-    inline void Add(const int src, const int des, Creature &c) {
-        grid[src][des] = creature;
-    }
-    inline void Remove(const int src, const int des) {
-        grid[src][des] = nullptr;
-    }
-}
-// =============================
-
 struct Creature {
     char id = 'c';
     std::string name = "";
@@ -33,7 +21,7 @@ struct Building {
         // GOLD | GEMS | STONE
     bool canBuild = false;
     Building(const std::string &_name, const std::array<int, 3> &_cost, bool _canBuild = false)
-        :name(_name), cost(_cost), canBuild(_canBuild);
+        :name(_name), cost(_cost), canBuild(_canBuild)
     {
     }
     virtual ~Building() {}
@@ -54,7 +42,7 @@ struct CreatureBuilding : public Building {
         curTurn++;
         if(curTurn >= turnCount) {
             curTurn = 0;
-            available_Creatures.push_back();
+            // available_Creatures.push_back();
         }
     }
 };
@@ -69,14 +57,14 @@ namespace CreatureBuildings {
     std::vector<Creature*> elvenCampCreatures{Creatures::elf};
     CreatureBuilding * elf_Camp = new CreatureBuilding("Elven Camp", std::array<int, 3>{1000, 500, 250}, elvenCampCreatures);
 
-    std::vector<CreatureBuildings*> c_Buildings{elf_Camp};
+    std::vector<CreatureBuilding*> c_Buildings{elf_Camp};
 }
 
 struct Base {
     std::string baseName;
-    std::array<Creature, 8> creatures{};
-    std::array<std::pair<Building, bool>, 8> buildings{};
-    std::array<std::pair<CreatureBuilding*, bool>, 4> creature_buildings{};
+    std::array<Creature, 8> creatures;
+    std::array<std::pair<Building, bool>, 8> buildings;
+    std::array<std::pair<CreatureBuilding*, bool>, 4> creature_buildings;
     Base(const std::string &&_name)
         :baseName(_name)
     {
@@ -89,16 +77,20 @@ namespace Bases {
     std::vector<Base*> bases{testBase}; 
 }
 
-struct Player {
+struct Hero {
     Base *pBase;
     int turn = 0, movesRemaining = 10;
-    std::array<std::pair<Creature, int>, 6> units{};
-    std::array<std::pair<std::string, int>, 3> resources{};
+    std::array<std::pair<Creature*, int>, 6> units;
+    std::array<std::pair<std::string, int>, 3> resources;
     // GOLD | GEMS | STONE
-    Player(const Base * _base = nullptr)
+    Hero(const Base * _base = nullptr)
         :pBase(_base)
     {
     }
+};
+
+struct Player {
+    std::array<Hero*, 8> heroes;
 };
 
 template<typename T>
@@ -111,8 +103,8 @@ T Tick(Base &b) { // Causes bases to generate what they need | CONTINUE!
     return false;
 }
 
-void PrintPlayer(Player &p) {
-    std::cout << "=PLAYER=\n";
+void PrintHero(Hero &p) {
+    std::cout << "=Hero=\n";
     std::cout << "Moves remaining: " << p.movesRemaining << '\n';
     std::cout << "Resources: ";
     for(unsigned int i = 0; i < p.resources.size(); i++)
@@ -120,7 +112,7 @@ void PrintPlayer(Player &p) {
 }
 
 template<typename T>
-bool CheckResources(Player &p, T _entity) { // Checks player resources against cost
+bool CheckResources(Hero &p, T _entity) { // Checks Hero resources against cost
     if(_entity.id == 'c')
         if(p.resources[0] < _entity.cost)
             return false;
@@ -133,7 +125,7 @@ bool CheckResources(Player &p, T _entity) { // Checks player resources against c
     return true;
 }
 
-void PurchaseUnits(Player &p, CreatureBuilding &cB) {
+void PurchaseUnits(Hero &p, CreatureBuilding &cB) {
     int unit = 0, amount = 0;
     for(unsigned int i = 0; i < cB.creatures.size(); i++)
         std::cout << cB.creatures[i]->name << '\n';
@@ -145,12 +137,12 @@ void PurchaseUnits(Player &p, CreatureBuilding &cB) {
     }
     std::cout << "Define amount: ";
     std::cin >> amount;
-    while(p.resources[0] < cB.creatures[unit-1]->cost * amount) {
+    while(std::get<1>(p.resources[0]) < cB.creatures[unit-1]->cost * amount) {
         std::cout << "You cannot afford that many " << cB.creatures[unit-1]->name << "!\n" << "Enter new amount: ";
         std::cin >> amount;
     }
     // Add confirmation
-    p.resources[0] -= cB.creatures[unit-1]->cost * amount;
+    std::get<1>(p.resources[0]) -= cB.creatures[unit-1]->cost * amount;
 }
 
 void Swap(Creature * c1, Creature * c2) { // Check!
@@ -159,8 +151,8 @@ void Swap(Creature * c1, Creature * c2) { // Check!
     c1 = temp;
 }
 
-void SortUnits(Player &p) {
-    if(p.units[0] == nullptr) {
+void SortUnits(Hero &p) {
+    if(std::get<0>(p.units[0]) == nullptr) {
         std::cout << "You have no units to sort!";
         return;
     }
@@ -174,11 +166,11 @@ void SortUnits(Player &p) {
     }
 }
 
-void BuildPlanner(Player &p, Base &b) {
+void BuildPlanner(Hero &p, Base &b) {
     bool building = true;
     int choice = 0;
     while(building) {
-        PrintPlayer(p);
+        PrintHero(p);
         for(unsigned int i = 0; i < b.buildings.size(); i++) {
             if(i % 3 == 0 && i != 0)
                 putchar('\n');
@@ -194,7 +186,7 @@ void BuildPlanner(Player &p, Base &b) {
         }
         else {
             if(!std::get<0>(b.creature_buildings[choice-1])->canBuild)
-                PurchaseUnits(p, std::get<0>(b.creature_buildings[choice-1]));
+                PurchaseUnits(p, *std::get<0>(b.creature_buildings[choice-1]));
         }
         std::cout << "=BUILDING=\n";
         std::cout << std::get<0>(b.buildings[choice-1]).name << '\n';
@@ -212,7 +204,7 @@ void BuildPlanner(Player &p, Base &b) {
     }
 }
 
-void Game(Player &p) {
+void Game(Hero &p) {
     int choice = 0;
     while(1) {
         if(p.movesRemaining <= 0) {
@@ -232,7 +224,7 @@ void Game(Player &p) {
             std::cout << "1) Base Menu\n";
             std::cin >> choice;
             switch(choice) {
-                case 1: BuildPlanner(p, p.pBase); break;
+                case 1: BuildPlanner(p, *p.pBase); break;
                 case 2: SortUnits(p); break;
             }
             p.movesRemaining--;
@@ -241,8 +233,8 @@ void Game(Player &p) {
 }
 
 int main() {
-    Player newPlayer(Bases::bases[0]);
-    Game(newPlayer)
+    Hero newHero(Bases::bases[0]);
+    Game(newHero);
 
     return 0;
 }

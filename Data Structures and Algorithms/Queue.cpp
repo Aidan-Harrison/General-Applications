@@ -1,10 +1,11 @@
 #include <iostream>
 
-struct Queue {
+class Queue {
+private:
     int front = -1;
     int rear = -1;
     int queue[10];
-
+public:
     Queue() {}
 
     bool IsFull() {

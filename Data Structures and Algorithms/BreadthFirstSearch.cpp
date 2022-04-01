@@ -15,8 +15,29 @@ struct Node {
 
 std::queue<Node*> Q;
 
+inline void Add(Node * base, Node * _new) {
+    base->children.push_back(_new);
+}
+
+void BFS(Node * root) {
+    std::queue<Node*> q;
+    q.push(root);
+    root->isVisited = true;
+    while(!q.empty()) {
+        Node * vertex = q.front();
+        q.pop();
+        std::cout << vertex->data << '-';
+        for(auto i : vertex->children) {
+            if(!i->isVisited) {
+                q.push(i);
+                i->isVisited = true;
+            }
+        }
+    }
+}
+
 // Iterative
-Node* BreadthFirstSearchIterative(Node *root, int target) {
+Node* BreadthFirstSearchIterative(Node * root, int target) {
     Node *nullNode = new Node(0);
     root->isVisited = true;
     Q.push(root);
@@ -36,11 +57,6 @@ Node* BreadthFirstSearchIterative(Node *root, int target) {
     return nullptr;
 }
 
-// Recursive
-Node* BreadthFirstSearchRecursive(Node *curNode, int target) {
-
-}
-
 int main() {
     Node *root = new Node(5);
     Node *n1 = new Node(2);
@@ -48,8 +64,15 @@ int main() {
     Node *n3 = new Node(4);
     Node *n4 = new Node(9);
 
-    Node *resultNode = BreadthFirstSearchIterative(root, 4);
-    std::cout << resultNode->data;
+    Add(root,n1);
+    Add(root,n2);
+    Add(root,n3);
+
+    Add(n3,n4);
+
+    //Node *resultNode = BreadthFirstSearchIterative(root, 4);
+    //std::cout << resultNode->data;
+    BFS(root);
 
     return 0;
 }

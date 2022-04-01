@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <ncurses.h>
 #include <thread>
 
@@ -51,7 +52,7 @@ struct Log {
 
 namespace GameManager {
     int score = 0;
-    std::vector<std::tuple<bool,int>> holePositions{{false, screenWidth*0.20},{false, screenWidth*0.40},{false, screenWidth*0.60},{false, screenWidth*0.80},{false, screenWidth-1}}; // Y is always 1
+    std::vector<std::pair<bool,int>> holePositions{{false, screenWidth*0.20},{false, screenWidth*0.40},{false, screenWidth*0.60},{false, screenWidth*0.80},{false, screenWidth-1}}; // Y is always 1
     int carMaxY = 25;
     int carMinY = 33;
     std::vector<Car> cars{};

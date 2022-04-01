@@ -19,6 +19,19 @@ void Delete(node *n) { // Deletes next node
     // Possibly add 'delete'
 }
 
+void Delete(node * head, const int val) {
+    // Search for node with value
+    // Delete
+    node * searchNode = head;
+    while(searchNode != nullptr) {
+        if(searchNode->data == val)
+            searchNode->next = searchNode->next->next;
+        else
+            searchNode = searchNode->next;
+    }
+    delete searchNode;
+}
+
 void DeleteOther(node * head, const int n) { // Deletes nth node from start
     node *tempNode = head;
     int counter = 0;
@@ -28,11 +41,15 @@ void DeleteOther(node * head, const int n) { // Deletes nth node from start
         tempNode = tempNode->next;
         counter++;
     }
+    delete tempNode;
 }
 
-void PrintList(node *n) {
+void PrintList(node * n) {
     while(n != nullptr) {
-        std::cout << n->data << " -> ";
+        if(n->next != nullptr)
+            std::cout << n->data << " -> ";
+        else
+            std::cout << n->data;
         n = n->next;
     }
 }
@@ -54,7 +71,7 @@ dNode* Add(dNode *curNode, int val) {
     return newNode;
 }
 
-void Delete(dNode *n) {
+void Delete(dNode * n) {
     n->prev->next = n->next;
     n->next->prev = n->prev;    
 }

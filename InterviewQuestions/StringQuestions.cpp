@@ -633,7 +633,7 @@ void Capitalise(std::string &&sentence) {
         if(sentence[i] == '.' || sentence[i] == '!' || sentence[i] == '?' && i != sentence.length()) {
             if(isalnum(sentence[i+1])) {
                 sentence.insert(i+1, " ");
-                sentence[i+1] = std::toupper(sentence[i+1]);
+                sentence[i+2] = std::toupper(sentence[i+2]); // Check! | originally 1
             }
             else
                 sentence[i+2] = std::toupper(sentence[i+2]);
@@ -706,7 +706,28 @@ std::vector<std::pair<char,char>> FindPairs(const std::string &&str) {
     return pairs;
 }
 
-// 
+// Ceaser Cipher
+void Ceaser(std::string s) {
+    for(char& c : s) {
+        if(c == 'z')
+            c = 'a';
+        else
+            c++;
+    }
+}
+
+void CeaserBetter(std::string s, int k = 13) {
+    for(char& c : s) {
+        for(int i = 0; i < k; i++) {
+            if(c == 'z')
+                c = 'a';
+            else
+                c++;
+        }
+    }
+}
+
+// Do best version of Ceaser
 
 int main() {
     std::cout << "Get Duplicates:\n";

@@ -1,8 +1,8 @@
 // ASCII Sorting visualiser
-
 #include <iostream>
 #include <vector>
 #include <thread>
+#include <unordered_map>
 
 // Add NCurses!
 namespace Global {
@@ -20,7 +20,7 @@ void Swap(int * a, int * b) {
 }
 
 bool Check(std::vector<int> &arr) {
-    if(arr.size() == 0) {
+    if(arr.size() <= 1) {
         std::cout << "Array is empty!\nReturning.....";
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         return 1;
@@ -39,7 +39,7 @@ void Visualiser(std::vector<int> &arr, const int first, const int second) { // E
             std::cout << "\t<--F--\n";
             continue;
         }
-        if(i == second)
+        if(i == second) 
             std::cout << "\t<--S--\n";
         else
             putchar('\n');
@@ -47,9 +47,19 @@ void Visualiser(std::vector<int> &arr, const int first, const int second) { // E
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
 }
 
+void Finish() {
+    std::cout << "DONE!\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    Interface(); 
+}
+
 // ================ BUBBLE SORT ================
 void BubbleSort(std::vector<int> &arr) {
-
+    for(unsigned int i = 0; i < arr.size(); i++)
+        for(unsigned int j = 0; j < arr.size()-1; j++)
+            if(arr[j] > arr[j+1])
+                Swap(&arr[j], &arr[j+1]);
+    Finish();
 }
 
 void FastBubbleSort(std::vector<int> &arr) { // Implement n iterations!
@@ -66,8 +76,7 @@ void FastBubbleSort(std::vector<int> &arr) { // Implement n iterations!
             }
         }
     }
-    std::cout << "DONE!\n";
-    Interface();
+    Finish();
 }
 
 // ================ SELECTION SORT ================
@@ -85,8 +94,7 @@ void SelectionSort(std::vector<int> &arr) {
             Visualiser(arr, i, min);
         }
     }
-    std::cout << "DONE!\n";
-    Interface();
+    Finish();
 }
 
 // ================ INSERTION SORT ================
@@ -103,8 +111,7 @@ void InsertionSort(std::vector<int> &arr) {
             // Add
         }
     }
-    std::cout << "DONE!\n";
-    Interface();
+    Finish();
 }
 
 void FastInsertionSort(std::vector<int> &arr) {
@@ -135,8 +142,7 @@ void QuickSort(std::vector<int> &arr, int left, int right) {
         QuickSort(arr, left, pivot-1);
         QuickSort(arr, pivot+1, right);
     }
-    std::cout << "DONE!\n";
-    Interface();
+    Finish();
 }
 
 // ================ MERGE SORT ================
@@ -150,6 +156,26 @@ void MergeSort(std::vector<int> &arr) {
     
 }
 
+// HEAP SORT
+
+// RADIX SORT
+
+// COUNTING SORT | Continue!
+void CountingSort(std::vector<int> &arr) {
+    // Find largest element
+    int max = INT_MIN;
+    for(auto i : arr)
+        if(i > max)
+            max = i;
+    std::vector<int> count(max+1,0);
+    std::unordered_map<int,int> occurences{};
+    for(auto i : arr)
+        occurences[i]++;
+
+}
+
+// BUCKET SORT
+
 void Interface() {
     system("clear");
     std::vector<int> test{5,4,8,2,3,6,9,7,1,2,10,11,13,14,12,15};
@@ -157,7 +183,7 @@ void Interface() {
     std::cout << "Choose an algorithm: " <<
                 "1) Bubble Sort\t 2) Bubble Sort (Fast)\t 3) Selection Sort\t 4) Insertion Sort\t 5) Insertion Sort (Fast)\t 6) Quick Sort\n";
     std::cin >> input;
-    Visualiser(test, 0, 0);
+    // Visualiser(test, 0, 0);
     switch(input) {
         case 1: BubbleSort(test); break;
         case 2: FastBubbleSort(test); break;

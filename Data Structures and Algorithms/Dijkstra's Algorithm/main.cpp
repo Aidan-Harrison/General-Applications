@@ -1,120 +1,63 @@
-// Custom graph implementation / Dijkstra's Algorithm
+// Custom graph implementation > Dijkstra's Algorithm
 #include <iostream>
 #include <vector>
-#include <cassert>
+#include <queue>
+#include <set>
 
-template<typename T>
-class graph {
-private:
-    void SysCreateGraph(int amountOfVerts) {
-        return;
-    }
-    void UserCreateGraph(std::vector<T> &data) { // Review
-        if(data.size() != totalVertices.size()) {
-            std::cerr << "Inputted data does not match size of total amount of vertices\n";
-            exit(1);
-        }
-        else {
-            vertex newVert;
-            edge newEdge;
-            for(unsigned int i = 0; i < totalVertices.size(); i++) {
-                newVert.data = data[i]; // Change
-            }
-            while(counter != m_amountOfVerts) {
-                totalVertices.push_back(newVert);
-                counter++;
-                if(counter % totalVertices.size() == 2) { // Support odd as well
-                    newEdge->vert1 = newVert;
-                    newEdge->vert2 = newVert; // Fix
-                    totalEdges.push_back(newEdge);
-                }
-                UserCreateGraph(); // Do better recursion
-            }
-        }
-    }
-    void AddVert(short data, short location) { // Do defaults?
-        vertex newVert;
-        newVert.data = data;
-        for(int i = 0; i < totalVertices.size(); i++) {
-            if(i == location)
-                totalVertices[i].insert(newVert);
-        }
-    } 
-    void PrintGraph() {  // Prints edges along with all their connected vertices
-        std::cout << "Vertices:\n";
-        for(unsigned int i = 0; i < totalVertices.size(); i++) {
-            std::cout << i << " : " << totalVertices[i].data << '\n';
-        }
-        std::cout << "Edges:\n"; // Do
-        for(unsigned int i = 0; i < totalEdges.size(); i++) {
-            std::cout << "Edge: " << "{ " << totalEdges[i]->vert1 << " , " << totalEdges[i]->vert2 << " }\n";
-        }
-    }
-    void DestroyGraph() {
-        for(unsigned int j = totalEdges.size(); j >= 0; j--) { // Check which method to use!
-            delete totalEdges[i]->vert1;
-            delete totalEdges[i]->vert2;
-            delete totalEdges[i];
-        }
-        delete this;
-    }
-public:
-    struct vertex {
-        T data{0};
-    };
-    struct edge {
-        vertex* vert1, vert2;
-    };
-    short counter = 0;
-    int m_amountOfVerts = 2;
-    bool loops = false, single = false; // Has all vertices connected to one another | Vertices only have 1-2 connections
-    std::vector<vertex> totalVertices = {};
-    std::vector<edge> totalEdges = {};
-    // System Functions:  =================================================================================
-
-    // User Functions: ==============================================================================
-    vertex SearchVert(const short data) const {
-        for(unsigned int i = 0; i < totalVertices.size(); i++) {
-            if(data == totalVertices[i].data)
-                return totalVertices[i];
-        }
-        std::cout << "Could not find specified vertex\n";
-        return nullptr;
-    }
-    graph ReplaceVert(graph &g, vertex &v, T data) {
-        for(unsigned int i = 0; i < totalVertices.size(); i++) { // Get working with edges
-            if(v.data == totalVertices[i].data)
-                totalVertices[i].data = data;
-        }
-        return g; // Check!
-    }
-    graph ReplaceEdge(int edgeToReplace, vertex &newVert1, vertex &newVert2) { // Check!
-        for(unsigned int i = 0; i <= totalEdges.size(); i++) {
-            if(edgeToReplace == i) {
-                totalEdges[i]->vert1 = newVert1;
-                totalEdges[i]->vert2 = newVert2;
-            }
-        }
-    } // Reorder edges without altering vertices
-    graph ReplaceVert(int vertToReplace) {
-        return;
-    }
-    graph(int vertCount = 2, bool isLooped = false, bool isSingle = false)
-        :m_amountOfVerts(vertCount), loops(isLooped), single(isSingle)
-    {
-        assert(m_amountOfVerts != 0);
-        SysCreateGraph(m_amountOfVerts);
-    }
-    ~graph() { // Improve?
-        DestroyGraph();
-    }
+struct Vertex {
+    bool visited = false;
+    int data = 0;
+    int dist = INT_MAX;
+    std::vector<Vertex*> neighbours{};
+    std::vector<const int> weights{};
+    Vertex * prev = nullptr;
 };
 
-int main() {
-    return 0;
-}
+struct Graph {
+    std::vector<Vertex*> graph;
+};
 
 // Dijstrka's Algorithm:
-void DijstrkaAlgorithm() {
-    return;
+void DijstrkaAlgorithm(Graph * g, Vertex * n) {
+    std::set<Vertex*> visited;
+    std::queue<Vertex*> q;
+    for(Vertex* i : g->graph) {
+        if(i != n)
+            i->dist = INT_MAX;
+        q.push(i);
+    }
+    while(!q.empty()) {
+        int cur = INT_MAX;
+        Vertex * vert = q.front(); // Get minimum distance from Q, initally ALWAYS source
+        q.pop();
+        for(int i = 0; i < vert->neighbours.size(); i++) {
+            int val = vert->dist + vert->weights[i]; // For now weight = neighbours, probably better to combine weights and neighbours into single vector
+            if(val < vert->neighbours[i]->dist && !visited.contains(vert->neighbours[i])) { // Valid path
+                q.push(vert->neighbours[i]);
+                vert->neighbours[i]->dist = val; // Update distance
+                visited.insert(vert->neighbours[i]);
+            }
+        }
+    }
+}
+
+int main() {
+    Vertex a;
+    a.dist = 6;
+    Vertex b;
+    Vertex c;
+    Vertex d;
+    Vertex e;
+    Vertex f;
+    Graph g;
+    g.graph.push_back(&a);
+    g.graph.push_back(&b);
+    g.graph.push_back(&c);
+    g.graph.push_back(&d);
+    g.graph.push_back(&e);
+    g.graph.push_back(&f);
+
+    DijstrkaAlgorithm(&g, &a);
+
+    return 0;
 }

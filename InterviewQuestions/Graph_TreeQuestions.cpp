@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 #include <vector>
 #include <tuple>
 
@@ -265,7 +266,94 @@ void Swap(gNode *n1, gNode *n2) {
     n2->data = temp;
 }
 
+int Islands(std::vector<std::vector<int>> &islands) {
+    int w = islands[0].size();
+    int h = islands.size();
+    int answer = 0;
+    std::vector<std::pair<int,int>> directions{{0,1},{1,0},{0,-1},{-1,0}};
+    std::vector<std::vector<bool>> visited{}; // Define size!
+    visited.resize(islands.size());
+    for(int i = 0; i < islands.size(); i++)
+        visited[i].resize(islands[0].size());
+    auto inside = [&](int x, int y) {
+        return 0 <= x && x <= w && 0 <= y && y <= h;
+    };
+    for(int row = 0; row < islands.size(); row++) {
+        for(int col = 0; col < islands[0].size(); col++) {
+            if(!visited[row][col] && islands[row][col] == 1) {
+                answer++;
+                std::queue<std::pair<int,int>> q;
+                q.push(std::pair<int,int>{row,col}); // Check if std::pair is needed!
+                visited[row][col] = true;
+                while(!q.empty()) {
+                    std::pair<int,int> pos = q.front();
+                    q.pop();
+                    for(std::pair<int,int> dir : directions) {
+                        int new_row = pos.first + dir.first;
+                        int new_col = pos.second + dir.second;
+                        if(inside(new_row, new_col) && !visited[new_row][new_col] && islands[new_row][new_col] == 1) {
+                            q.push({new_row,new_col});
+                            visited[new_row][new_col] = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return answer;
+}
+
+// Paint bucket tool
+void FloodFill(std::vector<std::vector<char>> &canvas, const int x, const int y, const char colour) {
+    int w = canvas[0].size();
+    int h = canvas.size();
+    std::vector<std::pair<int,int>> directions{{0,1},{1,0},{0,-1},{-1,0}};
+    std::vector<std::vector<bool>> visited{};
+    visited.resize(canvas.size());
+    for(int i = 0; i < canvas.size(); i++)
+        visited[i].resize(canvas[0].size());
+    auto inside =[&](int x, int y) {
+        return 0 <= x && x <= w && 0 <= y && y <= h;
+    };
+    for(int row = 0; row < canvas.size(); row++) {
+        for(int col = 0; col < canvas[0].size(); col++) {
+            if(row == x && col == y && !visited[row][col]) {
+                char selectedCol = canvas[row][col];
+                std::queue<std::pair<int,int>> q;
+                q.push({row,col});
+                visited[row][col] = true;
+                canvas[row][col] = colour;
+                while(!q.empty()) {
+                    std::pair<int,int> pos = q.front();
+                    q.pop();
+                    for(std::pair<int,int> dir : directions) {
+                        int new_row = pos.first + dir.first;
+                        int new_col = pos.second + dir.second;
+                        if(inside(new_row,new_col) && !visited[new_row][new_col] && canvas[new_row][new_col] == selectedCol) {
+                            q.push({new_row, new_col});
+                            visited[new_row][new_col] = true;
+                            canvas[new_row][new_col] = colour;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+void PrintMatrix(std::vector<std::vector<char>> &matrix) {
+    for(int i = 0; i < matrix.size(); i++) {
+        for(int j = 0; j < matrix[0].size(); j++)
+            std::cout << matrix[i][j] << ' ';
+        putchar('\n');
+    }
+}
+
 int main() {
+    /*
     gNode a(4);
     gNode b(6);
     gNode c(4);
@@ -282,7 +370,6 @@ int main() {
 
     // DFSRecursive(a, 0);
 
-    /*
     bNode root(15);
     bNode n1(12);
     bNode n2(14);
@@ -306,7 +393,6 @@ int main() {
 
     TreeDiameter(&root, 0);
 
-    */
 
     // Matrix Blip
 
@@ -316,6 +402,24 @@ int main() {
     UnvisitGraph(&a);
     putchar('\n');
     PrintGraph(&a);
+    */
+
+    // Flood Fill
+    std::vector<std::vector<char>> canvas { 
+        {'G','G','G','G','G','G','G','G','B'},
+        {'G','Y','Y','Y','Y','Y','Y','Y','B'},
+        {'G','G','G','G','G','G','Y','Y','B'},
+        {'G','G','G','G','Y','Y','Y','Y','B'},
+        {'G','G','G','G','Y','Y','Y','Y','B'},
+        {'G','G','G','G','Y','Y','Y','Y','B'},
+        {'G','G','G','G','Y','Y','Y','Y','B'},
+        {'G','G','G','G','G','G','B','B','B'},
+        {'O','O','G','G','G','G','B','B','B'},
+        {'O','O','O','O','O','O','B','B','B'}
+    };
+    PrintMatrix(canvas);
+    FloodFill(canvas,1,1,'L');
+    PrintMatrix(canvas);
 
     return 0;
 }

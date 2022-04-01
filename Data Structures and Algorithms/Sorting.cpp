@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <map>
 
 void Swap(int *a, int *b) {
     int temp = *a;
@@ -49,7 +50,7 @@ void BubbleSortBest(std::vector<int> &arr) { // nIterations isn't changing, upda
 
 // ======================= Selection Sort ========================
 std::vector<int> SelectionSort(std::vector<int> &arr) {
-    if(arr.size() == 0)
+    if(arr.size() <= 1)
         return arr;
     for(unsigned int i = 0; i < arr.size(); i++) {
         int min = i;
@@ -80,7 +81,7 @@ std::vector<int> InsertionSortSwap(std::vector<int> &arr) {
 }
 
 std::vector<int> InsertionSortFast(std::vector<int> &arr) { // Not using 'Swap'
-    if(arr.size() == 0)
+    if(arr.size() <= 1)
         return arr;
     else {
         int j;
@@ -212,6 +213,26 @@ void HeapSort(std::vector<int> &arr) {
     Heapify(arr);
 }
 
+// COUNTING SORT
+void CountingSort(std::vector<int> &arr) {
+    std::vector<int> sorted(arr.size());
+    int max = arr[0];
+    for(int item : arr) // Get max
+        if(item > max)
+            max = item;
+    std::vector<int> counts(max);
+    for(int item : arr) // Store occurence of each element
+        counts[item]++;
+    for(int i = 1; i <= max; i++)  // Shift into position
+        counts[i] += counts[i-1];
+    for(int i = arr.size(); i >= 0; i--) { // Place elements into correct position
+        sorted[counts[arr[i]]-1] = arr[i];
+        counts[arr[i]]--;
+    }
+    for(int i = 0; i < arr.size(); i++) // Copy
+        arr[i] = sorted[i];
+}
+
 // PRINT FUNCTION
 void PrintArray(std::vector<int> &arr) {
     for(int i : arr)
@@ -228,8 +249,9 @@ int main() {
     // SelectionSort(array);
     // InsertionSortSwap(array);
     // QuickSort(array, 0, array.size());
-    MergeSort(array, 0, array.size()-1); // Fix! Minor issue
+    // MergeSort(array, 0, array.size()-1); // Fix! Minor issue
     // HeapSort(array);
+    CountingSort(array);
     PrintArray(array);
 
 

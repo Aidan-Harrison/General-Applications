@@ -2,6 +2,8 @@
 #include "Keyboard.h"
 
 #include <thread>
+#include <utility>
+#include <set>
 
 // Phase 1: Declare
 // Phase 2: Ban
@@ -11,6 +13,10 @@
 // Phase 3: Pick 4
 
 // Have it so when all players are done, skips timer and moves to next phase
+// Remove name from player!
+
+#define getName std::get<0>
+#define getChamp std::get<1>
 
 using namespace Champions;
 
@@ -34,10 +40,13 @@ struct Player {
 };
 
 namespace Players {
-    std::vector<std::string> names {"AatroxPlayer", "COVVA", "Peachsora", "AndroidTwenny", "TestName", "GorgC", "NoTail"
+    std::vector<std::string> names {
+        "AatroxPlayer", "COVVA", "Peachsora", "AndroidTwenny", "TestName", "GorgC", "NoTail", "Topson", "Tyler1", "Phreak"
     };
-    std::vector<Player> players{}; 
+    std::vector<std::pair<std::string, Player>> players{}; 
 }
+
+using namespace Players;
 
 void DisplayChampions(bool _isExpanded = false) {
     for(unsigned int i = 1; i < champions.size()+1; i++) {
@@ -55,16 +64,16 @@ void DisplayChampions(bool _isExpanded = false) {
 }
 
 void DisplayPlayers() {
-    for(unsigned int i = 0; i < Players::players.size(); i++) {
-        // std::cout << i << ") " << Players::players[i].name << '\n';
-        print(") " + Players::players[i].name + "| ");
+    for(unsigned int i = 0; i < players.size(); i++) {
+        // std::cout << i << ") " << players[i].name << '\n';
+        print(") " + players[i].second.name + "| ");
     }
     putchar('\n');
 }
 
 bool SafetyCheck(const int _choice) { // Ensures a selection of a champion hasn't already been made
-    for(unsigned int i = 0; i < Players::players.size(); i++)
-        if(_choice == Players::players[i].choice)
+    for(unsigned int i = 0; i < players.size(); i++)
+        if(_choice == players[i].second.choice)
             return true;
     return false;
 }
@@ -72,30 +81,30 @@ bool SafetyCheck(const int _choice) { // Ensures a selection of a champion hasn'
 void PlayerChoices(const int _type) {
     int value = 0;
     if(_type == 1) { // Declare
-        for(unsigned int i = 0; i < Players::players.size(); i++) {
+        for(unsigned int i = 0; i < players.size(); i++) {
             value = rand() % champions.size();
             while(SafetyCheck(value)) 
                 value = rand() % champions.size();
-            Players::players[i].declaredChamp = value;
-            std::cout << Players::players[i].name << " declared: " << champions[value]->GetName() << '\n';
+            players[i].second.declaredChamp = value;
+            std::cout << players[i].second.name << " declared: " << champions[value]->GetName() << '\n';
         }
     }
     else if(_type == 2) { // Ban
-        for(unsigned int i = 0; i < Players::players.size(); i++) {
+        for(unsigned int i = 0; i < players.size(); i++) {
             value = rand() % champions.size();
             while(SafetyCheck(value))
                 value = rand() % champions.size();
-            Players::players[i].choice = value;
-            std::cout << Players::players[i].name << " banned: " << champions[value]->GetName() << '\n';
+            players[i].second.choice = value;
+            std::cout << players[i].second.name << " banned: " << champions[value]->GetName() << '\n';
         } 
     }
     else if(_type == 3) { // Pick | Add phases
-        for(unsigned int i = 0; i < Players::players.size(); i++) {
+        for(unsigned int i = 0; i < players.size(); i++) {
             value = rand() % champions.size();
             while(SafetyCheck(value))
                 value = rand() % champions.size();
-            Players::players[i].choice = value;
-            std::cout << Players::players[i].name << " picked: " << champions[value]->GetName() << '\n';
+            players[i].second.choice = value;
+            std::cout << players[i].second.name << " picked: " << champions[value]->GetName() << '\n';
         } 
     }
     std::cout << "Press ENTER to continue: ";
@@ -131,19 +140,19 @@ void Interface() {
         DisplayChampions(altDisplay);
         // Declare
         std::cout << "\nDeclare a champion: ";
-        std::cin >> Players::players[0].declaredChamp;
+        std::cin >> players[0].second.declaredChamp;
         // keyboard.Input();
-        std::cout << "\nPlayer declared: " << champions[Players::players[0].declaredChamp]->GetName() << '\n';
+        std::cout << "\nPlayer declared: " << champions[players[0].second.declaredChamp]->GetName() << '\n';
         PlayerChoices(1);
         // Ban
         std::cout << "\nBan a champion: ";
-        std::cin >> Players::players[0].choice;
-        while(champions[Players::players[0].declaredChamp]->isBanned) {
+        std::cin >> players[0].second.choice;
+        while(champions[players[0].second.declaredChamp]->isBanned) {
             std::cout << "This champion has been banned, choose another: ";
-            std::cin >> Players::players[0].declaredChamp;
+            std::cin >> players[0].second.declaredChamp;
         }
         PlayerChoices(2);
-        std::cout << "\nPlayer banned: " << champions[Players::players[0].declaredChamp]->GetName() << '\n';
+        std::cout << "\nPlayer banned: " << champions[players[0].second.declaredChamp]->GetName() << '\n';
         // Pick
         std::cout << "\nPick a champion: ";
         if(Global::phase == 3) { // Can probably convert to Switch
@@ -151,12 +160,12 @@ void Interface() {
             }
         }
         else if(Global::phase == 4) { // Player pick
-            std::cin >> Players::players[0].declaredChamp;
-            while(champions[Players::players[0].declaredChamp]->isPicked) {
+            std::cin >> players[0].second.declaredChamp;
+            while(champions[players[0].second.declaredChamp]->isPicked) {
                 std::cout << "This champion has been picked, choose another: ";
-                std::cin >> Players::players[0].declaredChamp;
+                std::cin >> players[0].second.declaredChamp;
             }
-            std::cout << "\nPlayer locked in: " << champions[Players::players[0].declaredChamp]->GetName() << '\n';
+            std::cout << "\nPlayer locked in: " << champions[players[0].second.declaredChamp]->GetName() << '\n';
         }
         else if(Global::phase == 5) {
 
@@ -167,18 +176,27 @@ void Interface() {
 
 void CreatePlayers() {
     int choice = 0;
+    std::set<std::string> storedNames{};
     // User
     Player user("User");
-    Players::players.push_back(user);
-    // Teams
-    for(unsigned int i = 0; i < 9; i++) {
-        choice = rand() % Players::names.size();
-        for(unsigned int j = 0; j < Players::players.size(); j++) // Optimise?
-            while(Players::names[choice] == Players::players[j].name)
-                choice = rand() % Players::names.size();
-        Player newPlayer(Players::names[choice]);
-        Players::players.push_back(newPlayer);
+    players.push_back({"User", user});
+    // Teams | Do!
+    for(int i = 0; i < 9; i++) {
+        choice = rand() % names.size();
+        storedNames.insert(names[choice]);
+        while(const bool in = storedNames.find(names[choice]) != storedNames.end())
+            choice = rand() % names.size();
+        Player newPlayer(names[choice]);
+        players.push_back({names[choice],newPlayer});
     }
+}
+
+// After locking in a hero
+void LockScreen(Player &player) {
+    // Hero overview
+    
+    // Pre-game/Shop
+
 }
 
 int main() {

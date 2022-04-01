@@ -12,18 +12,17 @@ struct node {
 class bTree {
 private:
     void Insert(const int data, node *n);
-    node* Search(int data, node *n);
+    node * Search(int data, node *n);
 public:
     node *root;
 
-    bTree() {};
-
     void Insert(const int data);    
-    node* Search(int data);
+    node * Search(int data);
     void DeleteTree(node *n);
 
     void Print(node *n) const;
 
+    bTree() {};
     ~bTree() {};
 };
 
@@ -42,7 +41,7 @@ void bTree::Insert(const int data, node *n) {
     }
 }
 
-node* bTree::Search(int data, node *n) {
+node * bTree::Search(int data, node *n) {
     if(n != nullptr) {
         if(data == n->data)
             return n;
@@ -51,7 +50,7 @@ node* bTree::Search(int data, node *n) {
         else
             return Search(data, n->rChild);
     }
-    return NULL;
+    return nullptr;
 }
 
 void bTree::Insert(const int data) {
@@ -154,7 +153,6 @@ void bstNode::InOrder() const {
 }
 
 void bstNode::PreOrder() const { 
-
     /*  // DFS?
     std::cout << data << ", ";
     if(left != nullptr)

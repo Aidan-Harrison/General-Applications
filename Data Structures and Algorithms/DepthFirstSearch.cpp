@@ -16,14 +16,13 @@ struct gNode {
     ~gNode() {}
 };
 
-void DepthFirstSearchIterative(gNode *n) { // CHANGE!
+void DepthFirstSearchIterative(gNode *n) { 
     std::stack<gNode*> stack;
     stack.push(n);
-
     while(!stack.empty()) {
         gNode* vertex = stack.top();
         vertex->isVisited = true;
-        std::cout << vertex->key << " ";
+        std::cout << vertex->key << '-';
         stack.pop();
         for(unsigned int i = 0; i < vertex->connectedNodes.size(); i++)
             if(!vertex->connectedNodes[i]->isVisited)
@@ -31,9 +30,9 @@ void DepthFirstSearchIterative(gNode *n) { // CHANGE!
     }
 }
 
-void DepthFirstSearchRecursive(gNode *n) { // No base case, missing elements
+void DepthFirstSearchRecursive(gNode *n) {
     n->isVisited = true; 
-    std::cout << n->key << " ";
+    std::cout << n->key << '-';
     for(unsigned int i = 0; i < n->connectedNodes.size(); i++)
         if(!n->connectedNodes[i]->isVisited)
             DepthFirstSearchRecursive(n->connectedNodes[i]);

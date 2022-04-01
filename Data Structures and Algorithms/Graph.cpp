@@ -6,67 +6,6 @@
 #include <stack>
 #include <queue>
 
-// Main
-struct graph { // Questionable
-    struct node {
-        bool isVisited = false;
-        char alias = 'A';
-        int data = 0;
-        node(const char ali = 'A', const int d = 0) : alias(ali), data(d) {}
-        std::vector<node> connectedNodes{};
-
-        void PrintChildren() {
-            for(auto i : connectedNodes) {
-                std::cout << i.data << "-";
-            }
-        }
-    };
-
-    graph() {}
-
-    void AddVertex(node *n, char alias, int data);
-    void DelVertex(char alias);
-    void DisplayVertex(char alias);
-
-    void DepthFirstSearch();
-    void BreadthFirstSearch(node *root);
-
-    ~graph() {}
-};
-
-void graph::AddVertex(node *n, char alias, int data) {
-    node newNode(alias, data);
-    n->connectedNodes.push_back(newNode);
-}
-
-void graph::DelVertex(char alias) {
-    return;    
-}
-
-void graph::DisplayVertex(char alias) {
-    return;
-}
-
-void graph::DepthFirstSearch() {
-    std::stack<node*> stack;
-}
-
-void graph::BreadthFirstSearch(node *root) {
-    std::queue<node*> q;
-    q.push(root);
-    while(!q.empty()) {
-        node *vertex = q.back();
-        q.pop();
-        for(auto i : vertex->connectedNodes) {
-            std::cout << i.data << ',';
-            if(!i.isVisited) {
-                i.isVisited = true;
-                q.push(&i); // Check!
-            }      
-        }
-    }
-}
-
 // Adjacency Matrix:
 struct MatrixGraph {
     std::array<std::array<int, 5>, 5> adjMatrix{};
@@ -79,7 +18,7 @@ struct MatrixGraph {
             adjMatrix[y][x] = 1;
     }
 
-    void DeleteEdge(const int x, const int y) {
+    void DeleteEdge(const int x, const int y) { // Direct?
         if(adjMatrix[x][y] == 0)
             std::cerr << "No edge exists!\n";
         else {
@@ -89,49 +28,79 @@ struct MatrixGraph {
     }
 
     void DisplayGraph(const int v) const {
+        std::cout << "   ";
+        for(unsigned int i = 0; i < v; i++)
+            std::cout << i << " ";
+        putchar('\n');
+        putchar('\n');
         for(unsigned int i = 0; i < v; i++) {
+            std::cout << i << "  ";
             for(unsigned int j = 0; j < v; j++)
                 std::cout << adjMatrix[i][j] << " ";
             putchar('\n');
         }
+    }
+
+    void DFS(int start, std::vector<bool> visited) {
+        visited[start] = true;
+        std::cout << start << '-';
+        for(int i = 0; i < adjMatrix[start].size(); i++) {
+            if(adjMatrix[start][i] == 1 && !visited[i]) {
+                DFS(i, visited);
+            }
+        }
+    }
+
+    void BFS(int start) {
+
     }
 };
 
 // Adjacency List:
 struct listNode {
     int data;
-    listNode *next;
-    listNode() :next(nullptr) {}
-    listNode(int d) :data(d), next(nullptr) {}
-    ~listNode() {}
+    listNode * next;
+    listNode() :next(nullptr), data(0) {}
+    listNode(const int d) :data(d), next(nullptr) {}
 };
-struct listGraph { // Check!
+
+struct listGraph {
     std::vector<listNode*> lists{};
     listGraph(const int size) 
     {
         lists.resize(size);
     }
 
-    void AddVertex(const int data, int src, int dest) {        
-        listNode *newNode = new listNode(data);
+    void AddVertex(const int data, int src, int dest) { // ??  | Re-do
+        listNode * newNode = new listNode(data);
         newNode->next = lists[src];
         lists[src] = newNode;
 
-        listNode *otherNode = new listNode(data); // Check!
+        listNode *otherNode = new listNode(data);
         otherNode->next = lists[dest];
         lists[dest] = otherNode;
     }
 
+    void AddVert(const int data, int loc = 0, int dest = 0, bool isDirected = false) { // Re-write
+        listNode * newNode = new listNode(data);
+        lists[loc]->next = newNode;
+        if(!isDirected) {
+            lists[dest]->next = newNode;
+        }
+    }
+
     void PrintGraph() const {
         for(unsigned int i = 0; i < lists.size(); i++) {
-            listNode *newNode = lists[i];
+            listNode * newNode = lists[i];
             while(newNode != nullptr) {
                 std::cout << newNode->data << " -> ";
                 newNode = newNode->next;
             }
-            // delete newNode;
+            delete newNode;
         }
     }
+
+    virtual ~listGraph() {}
 };
 
 void PrintGraph(std::vector<int> graph[], int v) {
@@ -173,9 +142,11 @@ void Insert(gNode *n, int data) {
     n->children.push_back(newNode);
 }
 
+// Depth First Search
 void DFSIter(gNode *n) {
     std::stack<gNode*> s;
     s.push(n);
+    n->isVisited = true;
     std::cout << n->data << '-';
     while(!s.empty()) {
         gNode *cur = s.top();
@@ -198,6 +169,23 @@ void DFS(gNode *n) {
             DFS(i);
 }
 
+int pathLength = 0;
+std::vector<int> pathLengths{};
+
+void FindPathLengths(gNode *n) {
+    n->isVisited = true;
+    if(n->children.size() == 0) {
+        pathLengths.push_back(pathLength);
+        pathLength = 0;
+    }
+    for(auto i : n->children) {
+        if(!i->isVisited) {
+            FindPathLengths(i);
+            pathLength++;
+        }
+    }
+}
+
 void Unvisit(gNode *n) {
     n->isVisited = false;
     for(unsigned int i = 0; i < n->children.size(); i++) {
@@ -216,19 +204,137 @@ bool Search(gNode *n, const int data) {
     return false;
 }
 
+// Breadth First Search
+void BFS(gNode *n) {
+    std::queue<gNode*> q;
+    q.push(n);
+    std::cout << n->data << '-';
+    n->isVisited = true;
+    while(!q.empty()) {
+        gNode *vertex = q.front();
+        q.pop();
+        for(auto i : vertex->children) {
+            if(!i->isVisited) {
+                std::cout << i->data << '-';
+                i->isVisited = true;
+                q.push(i);
+            }
+        }
+    }
+}
+
+// Weighted Graph
+struct wgNode {
+    bool isVisited = false;
+    int data = 0;
+    std::vector<wgNode*> vertices{};
+    std::vector<int> weights{};
+    wgNode(const int d)
+        :data(d)
+    {
+    }
+};
+
+void AddEdgeWeighted(wgNode * a, wgNode * b, const int weight, bool directed = false) {
+    a->vertices.push_back(b);
+    a->weights.push_back(weight);
+    if(!directed) {
+        b->vertices.push_back(a);
+        b->weights.push_back(weight);
+    }
+}
+
+template<typename T>
+T Search(wgNode * cur, wgNode * target, char type = 'N') {
+    cur->isVisited = true;
+    for(int i = 0; i < cur->vertices.size(); i++) {
+        if(cur->vertices[i] == target) {
+            switch(type) {
+                case 'N': return target; break;
+                case 'P': return i; break;
+                case 'F': return true; break;
+            }
+            if(type == 'N')
+                return target;
+        }
+        else {
+            if(!cur->vertices[i]->isVisited) {
+                Search(cur->vertices[i], target, type);
+            }
+        }
+    }
+    return false; // Needed?
+}
+
+int Search(wgNode * cur, wgNode * target) {
+    cur->isVisited = true;
+    for(int i = 0; i < cur->vertices.size(); i++) {
+        if(cur->vertices[i] == target)
+            return i;
+        else
+            if(!cur->vertices[i]->isVisited)
+                Search(cur->vertices[i], target);
+    } 
+    return 0;
+}
+
+void RemoveEdge(wgNode * a, wgNode * b) {
+    // Find which vertex b is equal to
+    // > Run search for B
+    // Check if vertex is connected
+    bool found = false;
+    for(auto i : a->vertices)
+        if(i == b)
+            found = true;
+    if(found)
+        a->vertices.erase(a->vertices.begin() + Search(a, b));
+    else
+        std::cout << "Given nodes are invalid!\n";
+}
+
+void PrintGraph(wgNode * n) {
+    n->isVisited = true;
+    std::cout << n->data << '-';
+    for(int i = 0; i < n->vertices.size(); i++) {
+        if(!n->vertices[i]->isVisited) {
+            n->vertices[i]->isVisited = true;
+            PrintGraph(n->vertices[i]);
+        }
+    }
+}
+
+// Given a graph, find the vertex with the smallest value
+int Node_FindSmallest(gNode * n) {
+    int smallestVal = INT_MAX;
+    std::stack<gNode*> s;
+    s.push(n);
+    n->isVisited = true;
+    while(!s.empty()) {
+        gNode * vert = s.top();
+        s.pop();
+        for(gNode * v : vert->children) {
+            if(v->isVisited) {
+                s.push(v);
+                v->isVisited = true;
+                if(v->data < smallestVal)
+                    smallestVal = v->data;
+            }
+        }
+    }
+    return smallestVal;
+}
+
+void Matrix_FindSmallest(std::vector<std::vector<int>> &graph) {
+
+}
+
+void List_FindSmallest(listGraph &g) {
+    
+}
+
 int main() {
-    /*
-    // Main
-    graph newGraph;
-    graph::node newRoot;
-    newGraph.AddVertex(&newRoot, 'A', 14);
-    newGraph.AddVertex(&newRoot, 'B', 12);
-    newGraph.AddVertex(&newRoot, 'C', 10);
-    newGraph.AddVertex(&newRoot, 'D', 8);
-
-    newGraph.BreadthFirstSearch(&newRoot);
-
     // Adjacency Matrix-
+    /*ß
     std::cout << "\nAdjacency Matrix:\n";
     int vertexCount = 5; 
     MatrixGraph mGraph;
@@ -239,6 +345,8 @@ int main() {
     mGraph.AddEdge(2,4);
     mGraph.AddEdge(2,3);
     mGraph.DisplayGraph(vertexCount);
+    std::vector<bool> visited(5, false);
+    mGraph.DFS(0, visited);
 
     // Adj Matrix Other -
     int n = 5, u, v, m;
@@ -299,7 +407,6 @@ int main() {
             std::cout << jacenList[i][j] << " --->";
         putchar('\n');
     }
-    */
 
     // Node Based
     std::cout << "\nPurely Node Based:\n";
@@ -321,9 +428,31 @@ int main() {
 
     //std::cout << "\nDepth First Search (Recursive):\n"; // Comment out which one you don't want | Fix unvisit
     //DFS(&root);
-    std::cout << "\nDepth First Search (Iterative):\n";
-    DFSIter(&root);
-    std::cout << '\n' << Search(&root, 14);
+
+    //std::cout << "\nDepth First Search (Iterative):\n";
+    //DFSIter(&root);
+
+    std::cout << "Breadth First Search (Iterative):\n";
+    BFS(&root); 
+    */
+
+    // std::cout << '\n' << Search(&root, 14);
+
+    // Weighted Graph:
+    std::cout << "Weighted Graph:\n";
+    wgNode root(6);
+    wgNode w1(3);
+    wgNode w2(9);
+    wgNode w3(12);
+    wgNode w4(18);
+    wgNode w5(24);
+
+    AddEdgeWeighted(&root, &w1, 1, false);
+    AddEdgeWeighted(&w1, &w2, 2, true);
+    AddEdgeWeighted(&w2, &w3, 1, true);
+    AddEdgeWeighted(&w3, &w4, 4, false);
+
+    PrintGraph(&root);
 
     return 0;
 }
