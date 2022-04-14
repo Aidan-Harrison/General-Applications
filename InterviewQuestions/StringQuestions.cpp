@@ -695,12 +695,10 @@ std::vector<std::pair<char,char>> FindPairs(const std::string &&str) {
     std::unordered_map<char,int> map;
     for(auto i : str)
         map[i]++;
-    for(auto it = map.begin(); it != map.end(); it++) { // Avoid nested if possible! Else just run loop and check when even
-        for(unsigned int i = 0; i < it->second; i++) {
-            if(it->second % 2 == 0) {
-                std::pair<char,char> newPair{it->first, it->first};
-                pairs.push_back(newPair);
-            }
+    for(auto it = map.begin(); it != map.end(); it++) { 
+        if(it->second % 2 == 0) {
+            std::pair<char,char> newPair{it->first, it->first};
+            pairs.push_back(newPair);
         }
     }
     return pairs;

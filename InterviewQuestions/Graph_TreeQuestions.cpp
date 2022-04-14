@@ -2,6 +2,7 @@
 #include <queue>
 #include <vector>
 #include <tuple>
+#include <stack>
 
 template<typename T>
 struct stack {
@@ -271,11 +272,11 @@ int Islands(std::vector<std::vector<int>> &islands) {
     int h = islands.size();
     int answer = 0;
     std::vector<std::pair<int,int>> directions{{0,1},{1,0},{0,-1},{-1,0}};
-    std::vector<std::vector<bool>> visited{}; // Define size!
+    std::vector<std::vector<bool>> visited{};
     visited.resize(islands.size());
     for(int i = 0; i < islands.size(); i++)
         visited[i].resize(islands[0].size());
-    auto inside = [&](int x, int y) {
+    auto inside = [&](int x, int y) { // Bounds check
         return 0 <= x && x <= w && 0 <= y && y <= h;
     };
     for(int row = 0; row < islands.size(); row++) {
@@ -341,8 +342,52 @@ void FloodFill(std::vector<std::vector<char>> &canvas, const int x, const int y,
     }
 }
 
-
-
+// Standard flood fill, excepts fills then swaps colours with nearest other color from source
+void SwapNearest(std::vector<std::vector<char>> &canvas, char colToSwap, char col) {
+    int h = canvas.size();
+    int w = canvas[0].size();
+    char charToStore = 'a', storedCol = 'a'; // Used for swapping
+    std::pair<int,int> storedPos;
+    std::vector<std::vector<bool>> visited{};
+    visited.resize(canvas.size());
+    for(int i = 0; i < canvas.size(); i++)
+        visited[i].resize(canvas[0].size());
+    std::vector<std::pair<int,int>> directions{{0,1},{1,0},{0,-1},{-1,0}};
+    auto boundsCheck =[&](int x, int y) {
+        return 0 <= x && x <= w && 0 <= y && y <= h;
+    };
+    // DFS
+    for(int row = 0; row < canvas.size(); row++) {
+        for(int col = 0; col < canvas[0].size(); col++) {
+            std::stack<std::pair<int,int>> s;
+            s.push({row,col});
+            visited[row][col] = true;
+            while(!s.empty()) {
+                std::pair<int,int> pos = s.top();
+                s.pop();
+                for(std::pair<int,int> dir : directions) {
+                    int newRow = pos.first + dir.first;
+                    int newCol = pos.second + dir.second;
+                    if(boundsCheck(newRow, newCol) && !visited[newRow][newCol] && canvas[newRow][newCol] == colToSwap) {
+                        s.push({newRow,newCol});
+                        visited[newRow][newCol] = true;
+                        canvas[newRow][newCol] = col;
+                    }
+                    else if(boundsCheck(newRow, newCol) && !visited[newRow][newCol] && canvas[newRow][newCol] != colToSwap) {
+                        // Swap
+                        char temp = col;
+                        col = colToSwap;
+                        colToSwap = temp;
+                        storedPos = {newRow, newCol};
+                        s.push({newRow,newCol});
+                        visited[newRow][newCol] = true;
+                        canvas[newRow][newCol] = col;
+                    }
+                }
+            }
+        }
+    }
+}
 
 void PrintMatrix(std::vector<std::vector<char>> &matrix) {
     for(int i = 0; i < matrix.size(); i++) {

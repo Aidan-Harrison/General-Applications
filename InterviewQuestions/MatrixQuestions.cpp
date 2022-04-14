@@ -2,7 +2,9 @@
 #include <vector>
 #include <thread>
 #include <map>
+#include <utility>
 
+// Replace river sizes with new one, bloated solution
 std::vector<std::vector<int>> GetUnvisitedNeighbours(int i, int j, std::vector<std::vector<int>> &visited, std::vector<std::vector<int>> &river) {
     std::vector<std::vector<int>> neighbours{};
     // We want to avoid underflow and overflow
@@ -58,14 +60,14 @@ std::vector<int> RiverSizes(std::vector<std::vector<int>> &river) {
 }
 
 // Search Sorted Matrix
-std::tuple<int,int> SearchSortedMatrix(std::vector<std::vector<int>> &matrix, int target) {
+std::pair<int,int> SearchSortedMatrix(std::vector<std::vector<int>> &matrix, int target) {
     // Because we know how the array is sorted we can apply a two pointer technique to narrow down to the answer
-    std::tuple<int,int> coords{};
+    std::pair<int,int> coords{-1,-1};
     int i = 0, j = matrix.size();
     while(i < j) {
         if(matrix[i][j] == target) {
-            std::get<0>(coords) = i;
-            std::get<1>(coords) = j;
+            coords.first = i;
+            coords.second = j;
             std::cout << i << " " << j << "\n";
             return coords;
         }
@@ -74,8 +76,6 @@ std::tuple<int,int> SearchSortedMatrix(std::vector<std::vector<int>> &matrix, in
         else
             j--;
     }
-    std::get<0>(coords) = -1;
-    std::get<1>(coords) = -1;
     return coords;
 }
 
@@ -104,6 +104,26 @@ std::vector<int> SpiralTraversalSimple(std::vector<std::vector<int>> &mat) { // 
     return traversal;
 }
 
+void SpiralTraversalOther(std::vector<std::vector<int>> & arr) {
+    int totalAmountofElements = arr.size() * arr[0].size();
+    int numTraversed = 0;
+    std::pair<int,int> traverser{0,0};
+    while (numTraversed < totalAmountofElements){
+        traverser.first++;
+        if(traverser.first == arr[0].size())
+            traverser.second++;
+        if(traverser.second == arr.size())
+            traverser.first--;
+    }
+}
+
+void LineTraversal(std::vector<std::vector<int>> & arr) {
+    for(int i = 0; i < arr[0].size(); i++) {
+        for(int j = 0; j < arr.size(); j++) {
+            std::cout << arr[i][j];
+        }
+    }
+}
 
 // Matrix Blip
 void Blip(std::vector<std::vector<int>> &arr, const int n) {
@@ -185,12 +205,81 @@ void SquareRotate(std::vector<std::vector<int>> &arr, const int n) { // Add corn
     }
 }
 
+void Distribution(std::vector<std::vector<int>> & mat) {
+    // Given a matrix, distribute values with large chunks of the same and pockets of different
+    for(int i = 0; i < mat.size(); i++) {
+        for(int j = 0; j < mat[0].size(); j++) {
+            int value = rand() % 1;
+            if(value < 0.15)
+                mat[i][j] = -2;
+        }
+    }
+}
+
+void DiagonalBlip(std::vector<std::vector<int>> & arr, const int target) {
+    std::vector<std::pair<int,int>> directions{{1,1},{-1,-1},{1,-1},{-1,1}};
+    for(int i = 0; i < arr.size(); i++) {
+        for(int j = 0; j < arr.size(); j++) {
+            if(arr[i][j] == target) {
+                for(std::pair<int,int> dir : directions) {
+                    int newRow = i + dir.first;
+                    int newCol = j + dir.second;
+                    arr[newRow][newCol] += target;
+                }
+            }
+        }
+    }
+}
+
+void BridgeGenerator(std::vector<std::vector<char>> & arr, std::vector<std::vector<int>> & elevationMap) {
+    int h = arr.size();
+    int w = arr[0].size();
+    auto boundsCheck = [&](const int x, const int y) {
+        return 0 < x || x > w || 0 < y || y > h;
+    };
+    std::vector<std::pair<int,int>> directions{{0,1},{1,0},{-1,0},{0,-1}};
+    for(unsigned int row = 0; row < arr.size(); row++) {
+        for(unsigned int col = 0; col < arr[0].size(); col++) {
+            for(std::pair<int,int> dir : directions) {
+                int newRow = row + dir.first; 
+                int newCol = col + dir.second;
+                while(arr[newRow][newCol] != 'B') {
+                    if(boundsCheck(newRow,newCol) && arr[newRow][newCol] != 'B') {
+                    // Check until next available location, if any
+                        int choice = rand() % 1;
+                        if(choice > 0.75) {
+                            if(elevationMap[newRow][newCol] == elevationMap[row][col])
+                                arr[newRow][newCol] = '=';
+                            else if(elevationMap[newRow][newCol] > elevationMap[row][col])
+                                arr[newRow][newCol] = '^';
+                            else
+                                arr[newRow][newCol] = '-';
+                        }
+                        else {
+                            std::cout << "NO GEN!\n";
+                        }
+                    }
+                }
+            }
+        }
+    }    
+}
+
+void PrintMatrix(std::vector<std::vector<int>> & arr) {
+    for(int i = 0; i < arr.size(); i++) {
+        for(int j = 0; j < arr.size(); j++)
+            std::cout << arr[i][j] << ',';
+        putchar('\n');
+    }
+}
+
 int main() {
     std::vector<std::vector<int>> matrix2{{1, 2, 3, 4, 5},
                                         {6, 7, 8, 9, 10},
                                         {11,12,13,14,15},
                                         {16,17,18,19,20},
                                         {21,22,23,24,25}};
+    std::vector<std::vector<int>> 
     /*
     std::tuple<int,int> result = SearchSortedMatrix(matrix2, 19);
 
@@ -203,8 +292,14 @@ int main() {
     sizes = RiverSizes(matrix); // Not assigning
     for(auto i : sizes)
         std::cout << i;
-    */
     SpiralTraversalSimple(matrix2);
+    */
+
+    PrintMatrix(matrix2);
+    putchar('\n');
+    DiagonalBlip(matrix2, 18);
+    putchar('\n');
+    PrintMatrix(matrix2);
 
     return 0;
 }

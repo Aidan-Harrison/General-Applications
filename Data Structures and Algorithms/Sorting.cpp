@@ -40,7 +40,7 @@ void BubbleSortBest(std::vector<int> &arr) { // nIterations isn't changing, upda
         hasSwapped = false;
         for(unsigned int i = 0; i < arr.size() - nIterations - 1; i++) {
             if(arr[i] > arr[i+1]) {
-                nIterations++; // Check!
+                nIterations++;
                 Swap(&arr[i], &arr[i+1]);
                 hasSwapped = true;
             }

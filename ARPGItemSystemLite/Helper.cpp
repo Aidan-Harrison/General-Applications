@@ -7,21 +7,21 @@
 // Check everything!
 struct Random {
     int randi(const int value, bool zero = false); 
-    float randf(const int value);
+    float randf(const int value. bool zero = false);
     int randi_range(const int min, const int max);
     float randf_range(const float min, const float max);
 };
 
 int Random::randi(const int value, bool zero = false) {
-    switch(zero) {
-        case true: rand() % value; break;
-        case false: rand() % value + 1; break;
-    }
-    return -1;
+    if(zero)
+        return rand() % value;
+    return rand() % value + 1;
 }
 
-float Random::randf(const int value) {
-
+float Random::randf(const float value, bool zero = false){
+    if(zero)
+        return rand() % value;
+    return rand() % value + 0.1;
 }
 
 int Random::randi_range(const int min, const int max) {

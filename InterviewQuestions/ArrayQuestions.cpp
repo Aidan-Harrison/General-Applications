@@ -672,6 +672,37 @@ void BetterBlip(std::vector<std::vector<int>> &arr, const int n) {
     }
 }
 
+// Given an array, create multiple blip ranges
+    // Example:
+        /*
+            1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
+            n = 7
+            Create 7
+            !-1-! !-2-! !-3-! !---4--! !--5---! !--6--!  !-7-!
+            1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
+            Each blips gets increased by its appropiate number
+            Numbers in first blip increased by 1
+            Numbers in fourth blip increased by 4
+        */
+void SegmentedBlip(std::vector<int> & arr, const int n) {
+    if(n * 2 > arr.size()) // Minimum segment size of 2
+        return;
+    int counter = 0, curSegment = 0, segmentSize = 2, remainder = 0;
+    for(int i = 0; i < arr.size(); i++) {
+        remainder = segmentSize % n == 0;
+        if(i % segmentSize == 0)
+            if(i == 0)
+                curSegment = 1;
+            curSegment = i;
+        if(counter <= segmentSize) {
+            arr[i] += curSegment;
+            counter++;
+        }
+        else if(counter > segmentSize)
+            counter = 0;
+    }
+}
+
 int Kadanes(std::vector<int> &arr) {
     int ans = INT_MIN, a = 0;
     for(int x : arr) {
