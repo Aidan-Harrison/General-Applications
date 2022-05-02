@@ -11,20 +11,23 @@ struct MatrixGraph {
     std::array<std::array<int, 5>, 5> adjMatrix{};
 
     void AddEdge(const int x, const int y, bool isDirect = false) {
-        if(x == y)
+        if(x == y) {
             std::cerr << "Same vertex!\n";
+            return;
+        }
         adjMatrix[x][y] = 1;
         if(isDirect)
             adjMatrix[y][x] = 1;
     }
 
-    void DeleteEdge(const int x, const int y) { // Direct?
-        if(adjMatrix[x][y] == 0)
+    void DeleteEdge(const int x, const int y, bool isDirect = false) {
+        if(adjMatrix[x][y] == 0) {
             std::cerr << "No edge exists!\n";
-        else {
-            adjMatrix[x][y] = 0;
-            adjMatrix[y][x] = 0;
+            return;
         }
+        adjMatrix[x][y] = 0;
+        if(isDirect)
+            adjMatrix[y][x] = 0;
     }
 
     void DisplayGraph(const int v) const {
@@ -56,9 +59,32 @@ struct MatrixGraph {
     }
 };
 
+// Weighted Adjacency Matrix
+struct wMatrix {
+    std::vector<std::vector<int>> w_Mat{};
+    void Add(const int x, const int y, const int weight, bool isDirect = false) {
+        if(x == y)
+            return;
+        w_Mat[x][y] = weight;
+        if(isDirect)
+            w_Mat[y][x] = weight;
+    }
+    void Delete(const int x, const int y, bool isDirect = false) {
+        if(w_Mat[x][y] == 0) {
+            std::cout << "Invalid!";
+            return;
+        }
+        w_Mat[x][y] = 0;
+        if(isDirect) {
+            w_Mat[y][x] = 0;
+        }
+    }
+};
+
 // Adjacency List:
 struct listNode {
     int data;
+    bool visited = false;
     listNode * next;
     listNode() :next(nullptr), data(0) {}
     listNode(const int d) :data(d), next(nullptr) {}
@@ -66,9 +92,57 @@ struct listNode {
 
 struct listGraph {
     std::vector<listNode*> lists{};
+    listGraph() {}
     listGraph(const int size) 
     {
-        lists.resize(size);
+        lists.resize(size); // Should initialise as nullptr
+    }
+
+    void Add(listNode * vertex = nullptr) {
+        if(vertex != nullptr) {
+            listNode * newList = new listNode;
+            lists.push_back(newList);
+        }
+        else {
+            // Get vertex in list, add to linked list
+        }
+    }
+
+    void Print() const {
+        for(uint32_t i = 0; i < lists.size(); i++) {
+            listNode * traverseNode = lists[i];
+            while(traverseNode != nullptr) {
+                std::cout << traverseNode->data << "->";
+                traverseNode = traverseNode->next;
+            }
+            putchar('\n');
+        }
+    }
+
+    bool has(const int vertex, listNode & c_Vertex) const {
+        listNode * traverseNode = lists[vertex];
+        while(traverseNode != nullptr) {
+            if(traverseNode = &c_Vertex) // Check!
+                return true;
+            traverseNode = traverseNode->next;
+        }
+        delete traverseNode;
+        return false;
+    }
+
+    void DFS() { // Fix and improve!
+        std::stack<listNode*> s{};
+        s.push(lists[0]);
+        while(!s.empty()) {
+            listNode * curVertex = s.top();
+            s.pop();
+            listNode * traverseNode = curVertex;
+            while(traverseNode != nullptr) {
+                if(traverseNode->visited = false)
+                    traverseNode->visited = true;
+                traverseNode = traverseNode->next;
+            }
+        }
     }
 
     void AddVertex(const int data, int src, int dest) { // ??  | Re-do
@@ -142,7 +216,7 @@ void Insert(gNode *n, int data) {
     n->children.push_back(newNode);
 }
 
-// Depth First Search
+// Depth First Search Iterative
 void DFSIter(gNode *n) {
     std::stack<gNode*> s;
     s.push(n);
@@ -161,6 +235,7 @@ void DFSIter(gNode *n) {
     }
 }
 
+// Depth First Search Recursive
 void DFS(gNode *n) {
     n->isVisited = true;
     std::cout << n->data << " - ";
@@ -172,16 +247,18 @@ void DFS(gNode *n) {
 int pathLength = 0;
 std::vector<int> pathLengths{};
 
-void FindPathLengths(gNode *n) {
+void FindPathLengths(gNode *n) { // Continue?
     n->isVisited = true;
-    if(n->children.size() == 0) {
+    if(n->children.size() == 0) { // End of path
         pathLengths.push_back(pathLength);
         pathLength = 0;
     }
-    for(auto i : n->children) {
-        if(!i->isVisited) {
-            FindPathLengths(i);
-            pathLength++;
+    else {
+        for(auto i : n->children) {
+            if(!i->isVisited) {
+                pathLength++;
+                FindPathLengths(i);
+            }
         }
     }
 }
@@ -313,7 +390,7 @@ int Node_FindSmallest(gNode * n) {
         gNode * vert = s.top();
         s.pop();
         for(gNode * v : vert->children) {
-            if(v->isVisited) {
+            if(!v->isVisited) {
                 s.push(v);
                 v->isVisited = true;
                 if(v->data < smallestVal)

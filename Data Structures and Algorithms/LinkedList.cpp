@@ -89,6 +89,18 @@ void PrintDList(dNode *n) {
     delete tempNode;
 }
 
+void ReverseList(node * head) {
+    node * next = nullptr;
+    node * prev = nullptr;
+    while(head != nullptr) {
+        next = head->next;
+        head->next = prev;
+        prev = current;
+        current = next;
+    }
+    head = prev;
+}
+
 int main() {
     // Singly Linked-List: ================================================= 
     node *head = nullptr;
@@ -97,16 +109,15 @@ int main() {
     node *tail = nullptr;
 
     // Assign memory for pointers and set data using constructor
-    head = new node(1);
-    one = new node(2);
-    two = new node(3);
-    tail = new node(5);
+    head->data  = 7;
+    one->data   = 2;
+    two->data   = 3;
+    tail->data  = 5;
 
     // Set pointers locations
     head->next = one;
     one->next = two;
     two->next = tail;
-    tail->next = nullptr;
 
     PrintList(head);
     node *insertNode = Add(one, 7); // Adds a new node between one and two with the value 7
@@ -136,6 +147,6 @@ int main() {
     dTwo->next = dTail;
 
     PrintDList(dHead);
-   
+
     return 0;
 }

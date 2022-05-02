@@ -273,6 +273,41 @@ void PrintMatrix(std::vector<std::vector<int>> & arr) {
     }
 }
 
+std::vector<int> PresentDelivery(const std::string & directions, int sX, int sY, const std::vector<std::vector<int>> & grid) {
+    std::vector<std::vector<std::pair<bool,int>>> stateGrid;
+    std::vector<std::pair<int,int>> positions{};
+    std::vector<int> result{};
+    auto boundsCheck = [&](const int x, const int y) {
+        return x > 0 && x < grid[0].size() && y > 0 && y < grid.size();
+    };
+    stateGrid.resize(grid.size());
+    for(int i = 0; i < grid.size(); i++)
+        stateGrid[i].resize(grid[0].size());
+    for(int i = 0; i < directions.length(); i++) {
+        switch (directions[i]) {
+            case '^': sY--; break;
+            case '>': sX++; break;
+            case '<': sX--; break;
+            case '↓': sY++; break;
+        }
+        if(stateGrid[sX][sY].first)
+            stateGrid[sX][sY].second++;
+        else {
+            stateGrid[sX][sY].first = true;
+            stateGrid[sX][sY].second++;
+        }
+        bool hasFound = false;
+        for(std::pair<int,int> pos : positions)
+            if(pos.first == sX && pos.second == sY)
+                hasFound = true;
+        if(!hasFound)
+            positions.push_back({sX,sY});
+    }
+    for(int i = 0; i < positions.size(); i++)
+        result.push_back(stateGrid[positions[i].first][positions[i].second].second);
+    return result;
+}
+
 int main() {
     std::vector<std::vector<int>> matrix2{{1, 2, 3, 4, 5},
                                         {6, 7, 8, 9, 10},

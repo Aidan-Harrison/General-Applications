@@ -641,6 +641,18 @@ void Capitalise(std::string &&sentence) {
     }
 }
 
+std::vector<std::string> CapNames(std::vector<std::string> & names) {
+    for(int i = 0; i < names.size(); i++) {
+        for(int j = 0; j < names[i].length(); j++) {
+            if(std::islower(names[i].at(j)) && j == 0)
+                names[i].at(j) = std::toupper(names[i].at(j));
+            else if(std::isupper(names[i].at(j)) && j != 0)
+                names[i].at(j) = std::tolower(names[i].at(j));
+        }
+    }
+    return names;
+}
+
 // Given a sentence, rotate every word n amount | Works! But, look into improving performance
 std::vector<std::string> RotationWordFind(const std::string &&sentence) {
     bool hasStarted = true;
@@ -725,6 +737,63 @@ void CeaserBetter(std::string s, int k = 13) {
     }
 }
 
+// Letter Distance
+inline const int distance(const int x, const int y) { return x - y; }
+
+int letterDistance(const std::string && str1, const std::string && str2) {
+	std::vector<int> results{};
+	int result = 0;
+	int n = str1.length();
+	if(str2.length() < str1.length())
+		n = str2.length();
+	for(int i = 0; i < n; i++)
+		results.push_back(abs(distance(str1[i], str2[i])));
+	if(str1.length() != str2.length())
+		results.push_back(abs(distance(str1.length(), str2.length())));
+	for(int i : results)
+				result += i;
+	return result;
+}
+
+const std::string createPhoneNumber(const int arr [10]){
+    std::string phoneNum = "(";
+    for(int i = 0; i < 10; i++) {
+        if(i == 3)
+            phoneNum += ") ";
+        else if(i == 6)
+            phoneNum += '-';
+        phoneNum += std::to_string(arr[i]);
+    }
+    return phoneNum;
+}
+
+std::string bracketString(const std::string & str) {
+    std::string result = "";
+    std::unordered_map<char,int> m;
+    for(char i : str)
+        m[std::tolower(i)]++;
+    for(char i : str)
+        result += m[std::tolower(i)] == 1 ? '(':')';
+    return result;
+}
+
+std::string getMiddleChar(const std::string && str) {
+    std::string middle = "";
+    if(str.length() % 2 == 0) {
+        middle += str[str.length()/2-1];
+        middle += str[str.length()/2];
+    }
+    else 
+        middle += str[str.length()/2];
+    return middle;
+}
+
+std::string getMiddleCharComp(const std::string && str) {
+    if(str.length() % 2 == 0)
+        return str.substr(str.length()/2-1,2);
+    return str.substr(str.length()/2,1);
+}
+
 // Do best version of Ceaser
 
 int main() {
@@ -793,6 +862,9 @@ int main() {
 
     std::cout << "Anagram Map:\n";
     std::cout << AnagramMap("Ram", "maR") << '\n';
+
+    int num[10] = {1,2,3,4,5,6,7,8,9,0};
+    std::cout << createPhoneNumber(num);
 
     return 0;
 }

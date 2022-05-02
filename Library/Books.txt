@@ -1,0 +1,14 @@
+The_Lord_of_the_Rings:_The_Fellowship_of_the_Ring | 600 > 0
+The_Lord_of_the_Rings:_The_Two_Towers | 600 > 0
+The_Lord_of_the_Rings:_The_Return_of_the_King | 600 > 0
+Bram_Stoker's_Dracula | 470 > 2
+Animal_Farm | 200 > 5
+1984 | 300 > 5
+Fahrenheit_42 | 250 > 5
+American_Psycho | 250 > 2
+Dante's_Inferno | 120 > 5
+Berserk | 3000 > 0
+To_Catch_a_Mockingbird | 400 > 5
+Alice_in_Wonderland | 150 > 5
+Cat_in_the_Hat | 20 > 6
+Horton_Hears_a_Who | 20 > 6

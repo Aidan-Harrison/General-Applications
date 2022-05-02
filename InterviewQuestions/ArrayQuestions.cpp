@@ -317,7 +317,7 @@ bool ThreeNumberSumMap(std::vector<int> &arr, int sum) { // Change return!
 }
 
 // Does not take into account flat peaks
-int LongestPeakNonStrict(std::vector<int> &arr) { // Check, seems totally fine, can't figure out the issue
+int LongestPeakNonStrict(std::vector<int> & arr) { // Check, seems totally fine, can't figure out the issue
 	int longest = 0, curPeak = 1;
     for(unsigned int i = 0; i < arr.size()-1; i++) {
         if(arr[i+1] > arr[i]) {
@@ -713,6 +713,39 @@ int Kadanes(std::vector<int> &arr) {
     return ans;
 }
 
+bool isRepeatingCycle(std::vector<int> && arr, const int length) {
+	int counter = 0;
+	for(uint8_t i = length; i < arr.size(); i++) {
+		if(arr[i] != arr[counter]) {
+		    if(counter == length) 
+		        return true;
+			return false;
+		}
+		counter++;
+	}
+	return true;
+}
+
+std::string toSnakeCase(std::string str) {
+	for(uint8_t i = 0; i < str.length(); i++) {
+		if(isupper(str[i])) {
+			str.insert(i, "_");
+			str[i+1] = std::tolower(str[i+1]);
+		}
+	}
+	return str;
+}
+
+std::string toCamelCase(std::string str) {
+    for(uint8_t i = 0; i < str.length(); i++) {
+		if(str[i] == '_') {
+            str.erase(i,1);
+            str[i] = std::toupper(str[i]);
+		}
+	}
+    return str;
+}
+
 int main() {
     std::vector<int> testArray{1,2,3,4,5,6,7,8,9,10};
     std::cout << "Reverse Array:\n";
@@ -805,6 +838,13 @@ int main() {
 
     std::cout << "\nStaircase Traversal:\n";
     std::cout << StaircaseTraversal(4);
+
+    // Cycle count
+    std::cout << isRepeatingCycle({1, 2, 3, 1, 2, 3, 1},3);
+
+    // Snake and Camel
+    std::cout << toSnakeCase("helloWorldVariable");
+    std::cout << toCamelCase("hello_world_test_sentence");
 
 	return 0;
 }

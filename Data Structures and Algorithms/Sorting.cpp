@@ -64,12 +64,12 @@ std::vector<int> SelectionSort(std::vector<int> &arr) {
 }
 
 // ======================= Insertion Sort =====================
-std::vector<int> InsertionSortSwap(std::vector<int> &arr) {
+std::vector<int> InsertionSortSwap(std::vector<int> & arr) {
     if(arr.size() <= 1)
         return arr;
     else {
         int j;
-        for(unsigned int i = 1; i < arr.size(); i++) {
+        for(uint32_t i = 1; i < arr.size(); i++) {
             j = i;
             while (j > 0 && arr[j-1] > arr[j]) {
                 Swap(&arr[j], &arr[j-1]);
@@ -84,9 +84,8 @@ std::vector<int> InsertionSortFast(std::vector<int> &arr) { // Not using 'Swap'
     if(arr.size() <= 1)
         return arr;
     else {
-        int j;
-        int x;
-        for(unsigned int i = 1; i < arr.size(); i++) {
+        int j, x;
+        for(uint32_t i = 1; i < arr.size(); i++) {
             x = arr[i];
             j = i - 1;
             while(j > 0 && arr[j] > arr[j-1]) {
@@ -101,10 +100,10 @@ std::vector<int> InsertionSortFast(std::vector<int> &arr) { // Not using 'Swap'
 }
 
 // ======================= Quick Sort =======================
-int Partition(std::vector<int> &arr, int left, int right) {
+int Partition(std::vector<int> & arr, int left, int right) {
     int i = left - 1;
     for(unsigned int j = left; j < right; j++) {
-        if(arr[j] < arr[right]) {
+        if(arr[j] < arr[right]) { // If element at 'j' is less then pivot
             i++;
             Swap(&arr[i], &arr[j]); // Swap left to current
         }
@@ -113,8 +112,9 @@ int Partition(std::vector<int> &arr, int left, int right) {
     return i+1;
 }
 
-void QuickSort(std::vector<int> &arr, int left, int right) {
-    if(arr.size() <= 1) return;
+void QuickSort(std::vector<int> & arr, int left = 0, int right) {
+    if(arr.size() <= 1 || left < 0 || left >= right) 
+        return;
     if(left < right) {
         int pivot = Partition(arr,left,right);
 

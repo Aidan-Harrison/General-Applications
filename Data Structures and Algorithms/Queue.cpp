@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 class Queue {
 private:
@@ -8,12 +9,12 @@ private:
 public:
     Queue() {}
 
-    bool IsFull() {
+    bool IsFull() const {
         if(front == 0 && rear == 10)
             return true;
         return false;
     }
-    bool IsEmpty() {
+    bool IsEmpty() const {
         return(front == -1) ? true : false;
     }
     void Enqueue(int item) {
@@ -42,7 +43,7 @@ public:
         return -1;
     }
 
-    void Print() {
+    void Print() const {
         for(unsigned int i = front; i <= rear; i++)
             std::cout << queue[i] << ", ";
         putchar('\n');
@@ -53,33 +54,36 @@ public:
 
 // Circular Queue
 struct RingBuffer {
-    int reader = 0; // Increments by 1 when element is consumed
-    int writer = -1; // Increments by 1 when element is inserted
+    int front = 0;
+    int rear = 0;
+    int size = 5;
+    int array[5];
+    int elementCount = 0;
 
-    int buffer[10];
+    bool full() { return elementCount == size ? true : false; }
+    bool empty() { return elementCount == 0 ? true : false; }
 
-    RingBuffer() {}
-
-    bool IsFull() {
-        // Full if the write sequence is equal to the size of the buffer and the read is equal to zero
-        // In this case no elements have been read and thus there is N amount of elements to be read, with N being the capacity
-        // If the writers value = N, and readers = 0, then the following will produce a result
-        int size = (writer - reader) + 1; // If N - 0 + 1 (Array indexing)
-        return(size == 10) ? true : false;
+    void push(const int data) {
+        if(!full())
+            elementCount++;
+        array[rear] = data;
+        rear = (rear + 1) % size;
     }
-    bool IsEmpty();
-    void Insert(const int data) {
-        // Mod operation wraps sequence around at the boundaries to derive a slot in the buffer
-        buffer[++writer % 10] = data; // Note pre-increment
+    int pop() {
+        if(empty())
+            return INT_MIN;
+        int result = array[front];
+        front = (front + 1) % size;
+        elementCount--;
+        return result;
     }
-    int Consume() {
-        // Consuming an element does not remove it from the buffer, it stays until overwritten
-        int element = buffer[reader++ % 10]; // Note post-increment
-        return element;
-    }
-
-    ~RingBuffer() {}
 };
+
+void PrintBuffer(RingBuffer & b) {
+    for(int i = 0; i < 5; i++)
+        std::cout << b.array[i] << ',';
+    putchar('\n');
+}
 
 int main() {
     Queue q;
@@ -95,6 +99,18 @@ int main() {
     q.Dequeue();
 
     q.Print();
+
+    // Ring Buffer
+    putchar('\n');
+    RingBuffer rb;
+    int input;
+    while(1) {
+        std::cin >> input;
+        if(input == -1)
+            break;
+        rb.push(input);
+        PrintBuffer(rb);
+    }
 
     return 0;
 }

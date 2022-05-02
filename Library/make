@@ -1,0 +1,9 @@
+CC=clang
+
+make: library
+
+library: Library.c
+    $(CC) -o library Library.c   
+
+clean:
+    rm library

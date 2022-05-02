@@ -1,18 +1,34 @@
 #include <iostream>
 #include <tuple>
 #include <vector>
+#include <pair>
+
+const bool isPrime(const int a) { // speed up if possible
+    if(a <= 1)
+        return false;
+    for(uint32_t i = 2; i < a/2; i++)
+        if(a % i == 0)
+            return false;
+    return true;
+}
 
 // Check if a destination is reachable from source with only two movements allowed:
     // (x, x+y) then (x+y, y)
     // No negative values
-bool ReachableDestination(std::tuple<int,int> &source, std::tuple<int,int> &destination) {
-    std::tuple<int,int> movement;
-    int yValue = std::get<0>(source) + std::get<1>(source);
-    std::get<1>(movement) = yValue;
-    std::get<0>(movement) = std::get<0>(source) + yValue;
-    if(std::get<0>(movement) == std::get<0>(destination) || std::get<1>(movement) == std::get<1>(destination))
+bool ReachableDestinationOther(std::pair<int,int> & src, std::pair<int,int> &des) {
+    int yVal = src.first + src.second;
+    int xVal = yVal;
+    std::pair<int,int> newPair = {xVal,yVal};
+    if(newPair== des)
         return true;
     return false;
+}
+
+std::string splitString(std::string && str, std::vector<std::pair<int,char>> & slice) {
+    for(uint32_t i = 0; i < str.length(); i++)
+        if(i % slice[i].first == 0) {
+            str.insert(i,slice[i].second);
+    return str;
 }
 
 // Given an integer n, which refers to the amount of open and closing brackets their are, get all possible permutations of the brackets (Following 'Open-Close')
@@ -43,7 +59,14 @@ std::vector<std::string> MatchingParentheses(int n, std::string perm, int left, 
     // Push permutation to vector
 }
 
+
+
 int main() {
+    std::cout << isPrime(1);
+    std::cout << isPrime(2);
+    std::cout << isPrime(13);
+    std::cout << isPrime(5897);
+
     std::cout << "Reachable Destination:\n";
     std::tuple<int,int> source1(2,10);
     std::tuple<int,int> source2(26,12);
