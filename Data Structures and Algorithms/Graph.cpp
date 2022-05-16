@@ -91,26 +91,34 @@ struct listNode {
 };
 
 struct listGraph {
-    std::vector<listNode*> lists{};
+    std::vector<listNode*> graph{};
     listGraph() {}
     listGraph(const int size) 
     {
-        lists.resize(size); // Should initialise as nullptr
+        graph.resize(size); // Should initialise as nullptr
     }
 
-    void Add(listNode * vertex = nullptr) {
+    void Add(int index, listNode * vertex = nullptr) {
+        if(index > graph.size())
+            return;
+        /*
         if(vertex != nullptr) {
             listNode * newList = new listNode;
-            lists.push_back(newList);
+            graph.push_back(newList);
         }
+        */
         else {
             // Get vertex in list, add to linked list
+            if(graph[index] != nullptr)
+                graph[index]->next = vertex;
+            else
+                graph[index] = vertex;
         }
     }
 
     void Print() const {
-        for(uint32_t i = 0; i < lists.size(); i++) {
-            listNode * traverseNode = lists[i];
+        for(uint8_t i = 0; i < graph.size(); i++) {
+            listNode * traverseNode = graph[i];
             while(traverseNode != nullptr) {
                 std::cout << traverseNode->data << "->";
                 traverseNode = traverseNode->next;
@@ -120,7 +128,7 @@ struct listGraph {
     }
 
     bool has(const int vertex, listNode & c_Vertex) const {
-        listNode * traverseNode = lists[vertex];
+        listNode * traverseNode = graph[vertex];
         while(traverseNode != nullptr) {
             if(traverseNode = &c_Vertex) // Check!
                 return true;
@@ -132,7 +140,7 @@ struct listGraph {
 
     void DFS() { // Fix and improve!
         std::stack<listNode*> s{};
-        s.push(lists[0]);
+        s.push(graph[0]);
         while(!s.empty()) {
             listNode * curVertex = s.top();
             s.pop();
@@ -147,25 +155,25 @@ struct listGraph {
 
     void AddVertex(const int data, int src, int dest) { // ??  | Re-do
         listNode * newNode = new listNode(data);
-        newNode->next = lists[src];
-        lists[src] = newNode;
+        newNode->next = graph[src];
+        graph[src] = newNode;
 
         listNode *otherNode = new listNode(data);
-        otherNode->next = lists[dest];
-        lists[dest] = otherNode;
+        otherNode->next = graph[dest];
+        graph[dest] = otherNode;
     }
 
     void AddVert(const int data, int loc = 0, int dest = 0, bool isDirected = false) { // Re-write
         listNode * newNode = new listNode(data);
-        lists[loc]->next = newNode;
+        graph[loc]->next = newNode;
         if(!isDirected) {
-            lists[dest]->next = newNode;
+            graph[dest]->next = newNode;
         }
     }
 
     void PrintGraph() const {
-        for(unsigned int i = 0; i < lists.size(); i++) {
-            listNode * newNode = lists[i];
+        for(unsigned int i = 0; i < graph.size(); i++) {
+            listNode * newNode = graph[i];
             while(newNode != nullptr) {
                 std::cout << newNode->data << " -> ";
                 newNode = newNode->next;

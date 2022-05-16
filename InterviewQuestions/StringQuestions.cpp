@@ -794,6 +794,18 @@ std::string getMiddleCharComp(const std::string && str) {
     return str.substr(str.length()/2,1);
 }
 
+std::string WordsToSentence(std::vector<std::string> & words) {
+    std::string sentence = "";
+    for(int i = 0; i < words.size(); i++) {
+        if(i + 1 == words.size()-1) {
+            sentence.append("and ");
+            sentence.append(" " + words[i+1]);
+            break;
+        }
+        sentence.append(words[i] + ", ");
+    }
+    return sentence;
+}
 // Do best version of Ceaser
 
 int main() {

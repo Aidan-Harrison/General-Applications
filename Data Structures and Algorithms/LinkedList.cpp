@@ -1,28 +1,54 @@
 #include <iostream>
 // Singly Linked-List:
-struct node {
-    int data;
-    node *next;
-    node() :data(0), next(nullptr) {}
-    node(const int val) :data(val), next(nullptr) {}
+struct sLinkedList {
+    struct node {
+        int data;
+        node *next;
+        node() :data(0), next(nullptr) {}
+        node(const int val) :data(val), next(nullptr) {}
+    };
+    node * tail = nullptr;
+    node * head = nullptr;
 };
 
-node* Add(node *curNode, const int val) {
-    node *newNode = new node(val);
+void push_front(sLinkedList & l, sLinkedList::node * node) {
+    l.head->next = node;
+    l.head = nullptr;
+}
+
+void push_back(sLinkedList & l, sLinkedList::node * node) {
+    l.tail->next = node;
+    l.tail = node;
+}
+
+sLinkedList::node * pop_front(sLinkedList & l) {
+    sLinkedList::node * result = l.head;
+    l.tail = nullptr;
+    return result;
+}
+
+sLinkedList::node * pop_back(sLinkedList & l) {
+    sLinkedList::node * result = l.tail;
+    l.tail = nullptr;
+    return result;
+}
+
+sLinkedList::node * AddNode(sLinkedList::node * curNode, const int val) {
+    sLinkedList::node * newNode = new sLinkedList::node(val);
     newNode->next = curNode->next;
     curNode->next = newNode;
     return newNode;
 }
 
-void Delete(node *n) { // Deletes next node
+void Delete(sLinkedList::node * n) { // Deletes next node
     n->next = n->next->next;
     // Possibly add 'delete'
 }
 
-void Delete(node * head, const int val) {
+void Delete(sLinkedList::node * n, const int val) {
     // Search for node with value
     // Delete
-    node * searchNode = head;
+    sLinkedList::node * searchNode = n;
     while(searchNode != nullptr) {
         if(searchNode->data == val)
             searchNode->next = searchNode->next->next;

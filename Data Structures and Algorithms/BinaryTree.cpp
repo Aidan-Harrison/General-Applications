@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+#include <cmath>
 
 struct node {
     int data;
@@ -83,7 +85,7 @@ void bTree::Print(node *n) const { // Handle both children!!!!! | Fix
         std::cout << n->rChild->data;
 }
 
-// Another implementation | Purely node based ==============================================
+// Another implementation | Purely node based ============================================== || ???
 struct bstNode {
     int data;
     bstNode *left;
@@ -166,6 +168,30 @@ void bstNode::PostOrder() const {
 
 }
 
+// Array
+std::vector<int> binaryTree{11,12,-3,4,5,-11,7,8,2};
+
+inline int GetLeft(const int index) { return (2*index)+1; }
+inline int GetRight(const int index) { return (2*index)+2; }
+inline int GetParent(const int index) { return (index-1)/2; }
+
+void PrintArrayTree() {
+    std::cout << "Root\n" << binaryTree[0] << '\n';
+    auto check=[&](const int val) {
+        return val > binaryTree.size();
+    };
+    for(int i = 0; i < binaryTree.size(); i++) {
+        if(!check(GetLeft(i))) {
+            std::cout << "/\n";
+            std::cout << binaryTree[GetLeft(i)] << '\n';
+            putchar('\t');
+        }
+        if(!check(GetRight(i)))
+            std::cout << binaryTree[GetRight(i)] << '\n';
+    }
+}
+
+
 int main() {    
     // Regular:
     /*
@@ -217,6 +243,10 @@ int main() {
     putchar('\n');
     root->PostOrder();
     putchar('\n');
+
+    // Array
+    std::cout << "\n==Array based Binary Tree==\n";
+    PrintArrayTree();
 
     return 0;
 }
