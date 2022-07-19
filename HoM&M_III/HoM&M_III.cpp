@@ -1,52 +1,8 @@
-#include <iostream>
-#include <array>
-#include <vector>
 #include <utility>
 
+#include "Objects.h"
+
 // Heroes of Might and Magic III
-struct Creature {
-    char id = 'c';
-    std::string name = "";
-    int damage = 0, health = 0, cost = 0;
-    Creature(const std::string &_name) 
-        :name(_name)
-    {
-    }
-};
-
-struct Building {
-    char id = 'b';
-    std::string name = "";
-    std::array<int, 3> cost{};
-        // GOLD | GEMS | STONE
-    bool canBuild = false;
-    Building(const std::string &_name, const std::array<int, 3> &_cost, bool _canBuild = false)
-        :name(_name), cost(_cost), canBuild(_canBuild)
-    {
-    }
-    virtual ~Building() {}
-};
-
-struct CreatureBuilding : public Building {
-    std::vector<Creature*> creatures{};
-    std::vector<Creature*> available_Creatures{};
-    int curTurn = 0, turnCount = 0;
-
-    CreatureBuilding(const std::string &&_name, const std::array<int, 3> _cost, const std::vector<Creature*> _creatures)
-        :creatures(_creatures)
-    {
-        Building(_name, _cost);
-    }
-
-    void Create() {
-        curTurn++;
-        if(curTurn >= turnCount) {
-            curTurn = 0;
-            // available_Creatures.push_back();
-        }
-    }
-};
-
 namespace Creatures {
     Creature * elf = new Creature("Elf");
     std::vector<Creature*> creaturePool{elf};
@@ -60,41 +16,17 @@ namespace CreatureBuildings {
     std::vector<CreatureBuilding*> c_Buildings{elf_Camp};
 }
 
-struct Base {
-    std::string baseName;
-    std::array<Creature, 8> creatures;
-    std::array<std::pair<Building, bool>, 8> buildings;
-    std::array<std::pair<CreatureBuilding*, bool>, 4> creature_buildings;
-    Base(const std::string &&_name)
-        :baseName(_name)
-    {
-    }
-    virtual ~Base() {}
-};
-
 namespace Bases {
     Base * testBase = new Base("New Base");
     std::vector<Base*> bases{testBase}; 
 }
-
-struct Hero {
-    Base *pBase;
-    int turn = 0, movesRemaining = 10;
-    std::array<std::pair<Creature*, int>, 6> units;
-    std::array<std::pair<std::string, int>, 3> resources;
-    // GOLD | GEMS | STONE
-    Hero(const Base * _base = nullptr)
-        :pBase(_base)
-    {
-    }
-};
 
 struct Player {
     std::array<Hero*, 8> heroes;
 };
 
 template<typename T>
-T Tick(Base &b) { // Causes bases to generate what they need | CONTINUE!
+T Tick(Base * b) { // Causes bases to generate what they need | CONTINUE!
     for(unsigned int i = 0; i < b.creature_buildings.size(); i++) {
         if(std::get<0>(b.creature_buildings[i]) != nullptr) {
             b.creature_buildings[i]->Create();
@@ -174,14 +106,14 @@ void BuildPlanner(Hero &p, Base &b) {
         for(unsigned int i = 0; i < b.buildings.size(); i++) {
             if(i % 3 == 0 && i != 0)
                 putchar('\n');
-            std::cout << std::get<0>(b.buildings[i]).name << '/t';
+            std::cout << b.buildings[i].first.name << '/t';
         }
         std::cout << "Select a building: ";
         std::cin >> choice;
         if(choice == 100)
             building = false;
         if(choice <= 8) {
-            if(!std::get<0>(b.buildings[choice-1])->canBuild)
+            if(!b.buildings[choice-1].first.canBuild)
                 return;
         }
         else {
@@ -189,15 +121,14 @@ void BuildPlanner(Hero &p, Base &b) {
                 PurchaseUnits(p, *std::get<0>(b.creature_buildings[choice-1]));
         }
         std::cout << "=BUILDING=\n";
-        std::cout << std::get<0>(b.buildings[choice-1]).name << '\n';
-        for(unsigned int i = 0; i < std::get<0>(b.buildings[choice-1]).cost.size(); i++)
-            std::cout << std::get<0>(b.buildings[choice-1]).cost[i] << '\t';
+        std::cout << b.buildings[choice-1].first.name << '\n';
+        for(unsigned int i = 0; i < b.buildings[choice-1].first.cost.size(); i++)
+            std::cout << b.buildings[choice-1].first.cost[i] << '\t';
         if(CheckResources(p, b.buildings[choice-1])) {
             std::cout << "Would you like to purchase this building? ";
             std::cin >> choice;
             if(choice == 1) {
-                std::get<0>(b.buildings[choice-1]).canBuild = false;
-                
+                b.buildings[choice-1].first.canBuild = false;
                 // Do resources
             }
         }
@@ -212,8 +143,8 @@ void Game(Hero &p) {
             std::cin >> choice;
             if(choice == 1) {
                 p.turn++;
-                for(auto i : Bases::bases) {
-                    Tick(i);
+                for(Base * i : Bases::bases) {
+                    Tick<Base>(i);
                 }
                 p.movesRemaining = 10;
             }

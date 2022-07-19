@@ -87,6 +87,17 @@ namespace digits {
                         {' ',' ',' ','#'} };
 }
 
+std::string num0other = "####\n#  #\n#  #\n####\n   #\n   #\n   #\t";
+std::string num1other = "####\n#  #\n#  #\n####\n   #\n   #\n   #\t";
+std::string num2other = "####\n#  #\n#  #\n####\n   #\n   #\n   #\t";
+std::string num3other = "####\n#  #\n#  #\n####\n   #\n   #\n   #\t";
+std::string num4other = "####\n#  #\n#  #\n####\n   #\n   #\n   #\t";
+std::string num5other = "####\n#   \n#   \n####\n   #\n   #\n   #\t";
+std::string num6other = "####\n#   \n#   \n####\n   #\n   #\n####\t";
+std::string num7other = "####\n   #\n   #\n    #\n   #\n   #\n   #\t";
+std::string num8other = "####\n#  #\n#  #\n####\n   #\n   #\n####\t";
+std::string num9other = "####\n#  #\n#  #\n####\n   #\n   #\n   #\t";
+
 using namespace digits;
 
 void PrintNumber(char message[7][4]) {
@@ -108,8 +119,12 @@ void PrintNumber(char message[7][4]) {
 
 
 void Run() {
-    system("clear");
-    std::cout << "ASCII clock\n\n";
+    std::cout << num5other;
+    std::cout << num6other;
+    std::cout << num7other;
+    std::cout << num8other;
+    std::cout << num9other;
+    /*
     std::this_thread::sleep_for(std::chrono::seconds(1));
     second++;
     if(second == 60) {
@@ -128,11 +143,11 @@ void Run() {
         case 8: PrintNumber(num8); break;
         case 9: PrintNumber(num9); break;
     }
+    */
 }
 
 int main() { 
-    while(running)
-        Run();
+    Run();
 
     return 0;
 }

@@ -313,12 +313,12 @@ void FloodFill(std::vector<std::vector<char>> &canvas, const int x, const int y,
     visited.resize(canvas.size());
     for(int i = 0; i < canvas.size(); i++)
         visited[i].resize(canvas[0].size());
-    auto inside =[&](int x, int y) {
+    auto inside =[&](const int x, const int y) {
         return 0 <= x && x <= w && 0 <= y && y <= h;
     };
     for(int row = 0; row < canvas.size(); row++) {
         for(int col = 0; col < canvas[0].size(); col++) {
-            if(row == x && col == y && !visited[row][col]) {
+            if(row == x && col == y && !visited[row][col]) { // Remove visited and add clear function
                 char selectedCol = canvas[row][col];
                 std::queue<std::pair<int,int>> q;
                 q.push({row,col});

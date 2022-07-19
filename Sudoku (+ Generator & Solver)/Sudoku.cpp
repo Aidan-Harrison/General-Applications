@@ -1,5 +1,5 @@
 #include <iostream>
-#include <tuple>
+#include <utility>
 
 short grid[9][9] = {
     0,0,0, 0,7,0, 2,0,0,
@@ -15,13 +15,13 @@ short grid[9][9] = {
     0,0,8, 0,5,0, 0,0,0
 };
 
-std::tuple<int,int> pos(0,0);
+std::pair<int,int> pos(0,0);
 
 void PrintBoard() {
-    for(int i = 0; i < 9; i++) {
+    for(unsigned int i = 0; i < 9; i++) {
         if(i % 3 == 0)
             std::cout << "=======================\n";
-        for(int j = 0; j < 9; j++) {
+        for(unsigned int j = 0; j < 9; j++) {
             if(j % 3 == 0 && j != 0)
                 std::cout << " | ";
             if(j == 8)
@@ -33,23 +33,23 @@ void PrintBoard() {
     }
 }
 
-bool IsValid(short value, std::tuple<int,int> &pos) {
+bool IsValid(short value, std::pair<int,int> & pos) {
     // Row
     for(int i = 0; i < 9; i++)
-        if(grid[std::get<0>(pos)][i] == value && std::get<0>(pos) != i)
+        if(grid[pos.first][i] == value && pos.first != i)
             return false;
     // Column
     for(int i = 0; i < 9; i++)
-        if(grid[i][std::get<1>(pos)] == value && std::get<0>(pos) != i)
+        if(grid[i][pos.second] == value && pos.second != i)
             return false;
 
     // Region | Check floor division
-    short box_X = std::get<0>(pos) /= 3;
-    short box_Y = std::get<1>(pos) /= 3;
+    int box_X = pos.first /= 3;
+    int box_Y = pos.second /= 3;
 
-    for(int i = box_Y * 3; i < box_Y * 3 + 3; i++) { // Check order!
+    for(int i = box_Y * 3; i < (box_Y * 3) + 3; i++) { // Check order!
         for(int j = box_X * 3; j < box_X * 3 + 3; j++) {
-            if(grid[box_Y][box_X] == value && i != std::get<0>(pos) && j != std::get<1>(pos)) { // See if possible to shorten! | Check!
+            if(grid[box_Y][box_X] == value && i != pos.first && j != pos.second) { // See if possible to shorten! | Check!
                 return false;
             }
         }
@@ -61,8 +61,9 @@ bool IsEmpty() {
     for(int i = 0; i < 9; i++) {
         for(int j = 0; j < 9; j++) {
             if(grid[i][j] == 0) {
-                std::get<0>(pos) = i;
-                std::get<1>(pos) = j;
+                pos.first = i;
+                pos.second = j;
+                // pos = {i,j};
                 return true;
             }
         }
@@ -71,15 +72,15 @@ bool IsEmpty() {
 }
 
 bool Solve() {
-    bool found = IsEmpty();
-    if(!found)
+    if(!IsEmpty())
         return true;
+    std::cout << pos.first << '|' << pos.second << '\n';
     for(int i = 0; i < 9; i++) {
-        if(IsValid(i, pos)) {
-            grid[std::get<0>(pos)][std::get<1>(pos)] = i; // Check!
+        if(!IsValid(i, pos)) {
+            grid[pos.first][pos.second] = i; // Check!
             if(Solve())
                 return true;
-            grid[std::get<0>(pos)][std::get<1>(pos)] = 0;
+            grid[pos.first][pos.second] = 0;
         }
     }
     return false;
@@ -89,10 +90,6 @@ void PlayPuzzle() {
     int posX, posY, value;
     std::cout << "Pick a position and its value:\n";
     std::cin >> posX >> posY >> value;
-}
-
-void GeneratePuzzle() {
-
 }
 
 int main() {

@@ -137,10 +137,10 @@ void GrandExchange(Character &c) {
         }
         putchar('\n');
         std::cout << "Input: [BUY/SELL, SLOT]\n";
-        std::cin >> geSlotState; // Change, merge with below
+        std::cin >> geSlotState; // Slightly cheaper then calling std::get twice
         getF(Global::geInput) = std::tolower(geSlotState);
-        std::cin >> getS(Global::geInput);
-        getF(Global::geInput) = std::tolower(getF(Global::geInput));
+        std::cin >> geSlotState;
+        getF(Global::geInput) = std::tolower(geSlotState);
         switch (getF(Global::geInput)) {
             case 'b': getF(Global::slots[getS(Global::geInput)]) = 1; break; // Should only apply if confirmed
             case 's': getF(Global::slots[getS(Global::geInput)]) = 2; break;

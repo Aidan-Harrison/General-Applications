@@ -171,11 +171,13 @@ void RecycleWand(Player &p) {
         // Spell recycling is chosen at random
             // This refers to both amount of spells recycled and the spell itself
             // Takes into account the amount of spells missing and the amount of spells in the wand
+    if(p.storedSpells[p.storedSpells_r.size()-1] != nullptr)
+        return;
     for(int i = 0; i < p.storedSpells_r.size(); i++) {
         if(p.storedSpells_r[i] == nullptr) {
             int spellChoice = rand() % wandSpells.size();
             p.storedSpells_r[i] = wandSpells.at(spellChoice);
-            std::cout << "You recycled " << wandSpells.at(spellChoice)->spellName << " from ";
+            std::cout << "You recycled " << wandSpells.at(spellChoice)->spellName << " from " << p.wands[spellChoice]->wandName << '\n';
             wandSpells.erase(wandSpells.begin() + spellChoice); // Check!
         }
     }

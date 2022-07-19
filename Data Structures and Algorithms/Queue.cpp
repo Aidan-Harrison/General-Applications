@@ -18,29 +18,24 @@ public:
         return(front == -1) ? true : false;
     }
     void Enqueue(int item) {
-        if(IsFull())
-            std::cout << "Queue is full!\n";   
-        else {
-            if(front == -1)
-                front++;
-            rear++;
-            queue[rear] = item;
-        }
+        if(IsFull()) 
+            return;
+        if(front == -1)
+            front++;
+        rear++;
+        queue[rear] = item;
     }
     int Dequeue() {
         if(IsEmpty())
-            std::cout << "Queue is empty!\n";
-        else {
-            int element = queue[front];
-            if(front >= rear) {
-                front = -1;
-                rear = -1;
-            }
-            else
-                front++;
-            return element;
+            return;
+        int element = queue[front];
+        if(front >= rear) {
+            front = -1;
+            rear = -1;
         }
-        return -1;
+        else
+            front++;
+        return element;
     }
 
     void Print() const {

@@ -2,15 +2,10 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <utility>
+#include <array>
 
 // #include "ResourcePath.hpp"
-
-#define POINT_SIZE 10.0f
-#define STEP_SIZE 35.0f
-#define NODE_SIZE 100.0f
-
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1080
+#include "components.h"
 
 #define MOUSE_POS (float)sf::Mouse::getPosition(*win).x, (float)sf::Mouse::getPosition(*win).y
 
@@ -18,78 +13,32 @@ sf::Font font;
 
 // Do labels
 // Do matching colours
-
-enum flags{GENERIC, VECTOR, RETURN};
-
-struct node {
-    struct point {
-        std::string name = "Default point";
-        sf::CircleShape p;
-        uint8_t flag = GENERIC;
-        point() {}
-        point(const int _flag)
-            :flag(_flag)
-        {
-        }
-        virtual ~point() {}
-    };
-    bool selected = false;
-    sf::RectangleShape rect;
-    sf::RectangleShape originPoint;
-    std::vector<point> points{};
-    node() {}
-    node(const int numOfPoints, const int input, const int output)
-    {
-        originPoint.setSize(sf::Vector2f(15.0f,15.0f));
-        originPoint.setOrigin(originPoint.getSize().x/2, originPoint.getSize().y/2);
-        if(input + output > numOfPoints) {
-            std::cerr << "Created a node with invalid input/output values!\n";
-            return;
-        }
-        else if(input + output < numOfPoints) {
-            std::cerr << "Created a node with invalid input/output values!\n";
-        }
-        // Improve below
-        rect.setSize(sf::Vector2f(NODE_SIZE, (POINT_SIZE * std::max(input,output))*2.5)); //+ (STEP_SIZE * std::max(input,output))));
-        rect.setOrigin(rect.getPosition().x+(NODE_SIZE/2), rect.getPosition().y);
-        rect.setPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
-        originPoint.setPosition(rect.getOrigin().x, rect.getOrigin().y);
-        originPoint.setFillColor(sf::Color::Red);
-        float yOffset = POINT_SIZE + STEP_SIZE;
-        points.resize(numOfPoints);
-        for(uint8_t i = 0; i < input; i++) {
-            points[i].p.setRadius(POINT_SIZE);
-            points[i].p.setFillColor(sf::Color::Blue);
-            points[i].p.setOrigin(POINT_SIZE/2, POINT_SIZE/2);
-            points[i].p.setPosition(rect.getPosition().x-POINT_SIZE, rect.getPosition().y+yOffset);
-            yOffset += STEP_SIZE;
-        }
-        yOffset = 0.0f;
-        for(uint8_t i = input; i < output; i++) {
-            points[i].p.setRadius(POINT_SIZE);
-            points[i].p.setFillColor(sf::Color::Blue);
-            points[i].p.setOrigin(POINT_SIZE/2, POINT_SIZE/2);
-            points[i].p.setPosition(rect.getPosition().x+rect.getSize().x-POINT_SIZE, rect.getPosition().y+yOffset);
-            yOffset += STEP_SIZE;
-        }
-    }
-    void draw(sf::RenderWindow & window) const;
-    
-    virtual ~node() {}
-};
+// Convert to logic gate program!
 
 struct menu {
     sf::RectangleShape m;
+    std::vector<sf::Text> options{};
+    menu()
+    {
+        m.setSize(sf::Vector2f(150.0f, 250.0f));
+        m.setOrigin(m.getSize().x/2,0.0f);
+        
+        options.resize(4);
+        for(sf::Text t : options) {
+            t.setFont(font);
+            t.setString("TEST");
+        }
+    }
 };
 
-void node::draw(sf::RenderWindow & window) const {
+void gate::draw(sf::RenderWindow & window) const {
     window.draw(rect);
     window.draw(originPoint);
     for(auto i : points)
         window.draw(i.p);
 }
 
-std::vector<node> nodes{};
+std::vector<gate> gates{};
 sf::RenderWindow * win;
 menu MENU;
 
@@ -106,6 +55,13 @@ sf::ConvexShape CreateLine(sf::Color col) {
     return line;
 }
 
+std::array<sf::Vertex, 2> CreateConnection(const sf::Vector2f & p1, const sf::Vector2f & p2) {
+    std::array<sf::Vertex, 2> newLine;
+    newLine[0] = p1;
+    newLine[1] = p2;
+    return newLine;
+}
+
 void TextInput() {
     
 }
@@ -113,20 +69,39 @@ void TextInput() {
 void PopUp(const float zoomLevel) {
     std::cout << sf::Mouse::getPosition(*win).x << '_' << sf::Mouse::getPosition(*win).y << '\n';
     MENU.m.setSize(sf::Vector2f(200.0f * -zoomLevel, 400.0f * -zoomLevel)); // Fix!
-    sf::Vector2f worldPos = win->mapPixelToCoords(sf::Mouse::getPosition());
-    MENU.m.setOrigin(worldPos.x+MENU.m.getSize().x/2, worldPos.y);
-    MENU.m.setPosition(worldPos);
+    //sf::Vector2f worldPos = win->mapPixelToCoords(sf::Mouse::getPosition());
+    MENU.m.setPosition((float)sf::Mouse::getPosition(*win).x, (float)sf::Mouse::getPosition(*win).y);
+    // MENU.m.setOrigin((float)sf::Mouse::getPosition(*win).x + MENU.m.getSize().x/2, (float)sf::Mouse::getPosition(*win).y);
+    // Buttons / text
+    for(unsigned int i = 0; i < MENU.options.size(); i++) {
+        float yOffset = 0.0f;
+        MENU.options[i].setPosition(MENU.m.getPosition().x, MENU.m.getPosition().y + yOffset);
+        yOffset += MENU.options[i].getLocalBounds().height + 5.0f;
+    }
     std::cout << MENU.m.getOrigin().x << '_' << MENU.m.getOrigin().y << '\n';
 }
 
+void Setup() {
+    // Load font
+    if(!font.loadFromFile("Roboto-Light.ttf"))
+        std::cerr << "Failed to load font!\n";
+}
+
 int main(int, char const**) {
-    bool panning = false, hasLine = false, menuActive = false;
+    Setup();
+    bool panning = false, hasLine = false, setLine = true, menuActive = false;
+    bool hasNode = false;
+    bool hightlightMode = false;
     float camX = SCREEN_WIDTH/2, camY = SCREEN_HEIGHT/2;
     float camSpeed = 6.5, zoomLevel = 1.0f;
-    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Node");
+    point * lastPoint = nullptr;
+    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "gate");
+    std::vector<sf::VertexArray> connectors{};
+    std::vector<sf::RectangleShape> highlights{};
     win = &window;
     sf::View cam;
-    sf::ConvexShape activeLine;
+    // sf::ConvexShape activeLine;
+    gate * selectedNode = nullptr;
     std::pair<sf::Text, sf::Text> camPos{};
     
     window.setFramerateLimit(30);
@@ -135,14 +110,16 @@ int main(int, char const**) {
     cam.setSize(SCREEN_WIDTH, SCREEN_HEIGHT); // Pointless?
     cam.zoom(zoomLevel);
     
-    node testNode(12, 3, 6);
-    //node testNode2(10, 4, 6);
-    //node testNode3(8, 0, 6);
-    nodes.push_back(testNode);
-    //nodes.push_back(testNode2);
-    //nodes.push_back(testNode3);
+    sf::RectangleShape background;
+    background.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
+    background.setFillColor(sf::Color::White);
     
-    testNode.rect.setPosition(camX, camY);
+    gate testgate(AND, 12, 3, 6);
+    gate testgate2(OR, 3, 2, 1);
+    gates.push_back(testgate);
+    gates.push_back(testgate2);
+    
+    testgate.rect.setPosition(camX, camY);
     
     while (window.isOpen()) {
         sf::Event event;
@@ -159,33 +136,79 @@ int main(int, char const**) {
                     PopUp(zoomLevel);
                     menuActive = true;
                 }
+                break;
             }
             else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                if(hightlightMode) {
+                    sf::RectangleShape newHighlight;
+                    highlights.push_back(newHighlight);
+                }
                 // std::cout << "Mouse: " << sf::Mouse::getPosition(window).x << '|' << sf::Mouse::getPosition(window).y << '\n';
                 // Do target position
                 // To efficiently check collision:
                 /*
-                    Narrow down search to each node
+                    Narrow down search to each gate
                     Then narrow down to each point
                 */
-                for(unsigned int i = 0; i < nodes.size(); i++) { // Change back to foreach
+                if(hasNode) {
+                    selectedNode->selected = false;
+                    hasNode = false;
+                    selectedNode->rect.setPosition((float)sf::Mouse::getPosition(*win).x,(float)sf::Mouse::getPosition(*win).y);
+                    float xOffset = 0.0f, yOffset = 0.0f;
+                    for(unsigned int i = 0; i < selectedNode->points.size(); i++) {
+                        selectedNode->points[i].p.setPosition(selectedNode->rect.getPosition().x + selectedNode->rect.getSize().x-POINT_SIZE, selectedNode->rect.getPosition().y+yOffset);
+                        yOffset += STEP_SIZE;
+                        // xOffset += STEP_SIZE;
+                    }
+                    continue;
+                }
+                for(unsigned int i = 0; i < gates.size(); i++) { // Change back to foreach
                     // std::cout << "Rect: " << i.rect.getPosition().x << '|' << i.rect.getPosition().y << '\n';
-                    if(mouseCol(nodes[i].rect.getPosition(), nodes[i].rect.getSize())) {
-                        //nodes[i].rect.setFillColor(sf::Color::Red);
-                        // nodes[i].rect.setPosition((float)sf::Mouse::getPosition().x,(float)sf::Mouse::getPosition().y);
-                        nodes[i].selected = true;
-                        for(unsigned int j = 0; j < nodes[i].points.size(); j++) {
-                            if(mouseCol(nodes[i].points[j].p.getPosition(), sf::Vector2f(POINT_SIZE, POINT_SIZE))) {
+                    if(mouseCol(gates[i].rect.getPosition(), gates[i].rect.getSize())) {
+                        //gates[i].rect.setFillColor(sf::Color::Red);
+                        // gates[i].rect.setPosition((float)sf::Mouse::getPosition().x,(float)sf::Mouse::getPosition().y);
+                        for(unsigned int j = 0; j < gates[i].points.size(); j++) {
+                            if(mouseCol(gates[i].points[j].p.getPosition(), sf::Vector2f(POINT_SIZE, POINT_SIZE)) && !hasLine) {
                                 sf::Color newCol;
-                                std::cout << "Color:(" << nodes[i].points[j].p.getFillColor().r << ',' << nodes[i].points[j].p.getFillColor().g << ',' << nodes[i].points[j].p.getFillColor().b << ")\n";
-                                newCol.r = nodes[i].points[j].p.getFillColor().r+5.0f;
-                                newCol.g = nodes[i].points[j].p.getFillColor().g+5.0f;
-                                newCol.b = nodes[i].points[j].p.getFillColor().b+5.0f;
-                                nodes[i].points[j].p.setFillColor(sf::Color::Green); // Get brightness increase working!
-                                std::cout << "Color:(" << nodes[i].points[j].p.getFillColor().r << ',' << nodes[i].points[j].p.getFillColor().g << ',' << nodes[i].points[j].p.getFillColor().b << ")\n";
-                                activeLine = CreateLine(nodes[i].points[j].p.getFillColor());
+                                // std::cout << "Color:(" << gates[i].points[j].p.getFillColor().r << ',' << gates[i].points[j].p.getFillColor().g << ',' << gates[i].points[j].p.getFillColor().b << ")\n";
+                                newCol.r = gates[i].points[j].p.getFillColor().r+5.0f;
+                                newCol.g = gates[i].points[j].p.getFillColor().g+5.0f;
+                                newCol.b = gates[i].points[j].p.getFillColor().b+5.0f;
+                                gates[i].points[j].p.setFillColor(sf::Color::Green); // Get brightness increase working!
+                                // std::cout << "Color:(" << gates[i].points[j].p.getFillColor().r << ',' << gates[i].points[j].p.getFillColor().g << ',' << gates[i].points[j].p.getFillColor().b << ")\n";
+                                hasLine = true;
+                                lastPoint = &gates[i].points[j];
+                                // lastPoint->parent = &gates[i];
+                                break;
+                            }
+                            else if(mouseCol(gates[i].points[j].p.getPosition(), sf::Vector2f(POINT_SIZE, POINT_SIZE)) && hasLine) { // Prevent from connecting to same node!
+                                // connectors.push_back(CreateConnection(lastPoint, gates[i].points[j].p.getPosition()));
+                                sf::VertexArray newLine(sf::Lines, 2);
+                                newLine[0].position.x = lastPoint->p.getPosition().x;
+                                newLine[0].position.y = lastPoint->p.getPosition().y;
+                                newLine[1].position.x = gates[i].points[j].p.getPosition().x;
+                                newLine[1].position.y = gates[i].points[j].p.getPosition().y;
+                                gates[i].points[j].connected = true;
+                                gates[i].points[j].connection = &newLine;
+                                gates[i].isConnected = true;
+                                lastPoint->connected = true;
+                                lastPoint->connection = &newLine;
+                                // lastPoint->parent->isConnected = true;
+                                connectors.push_back(newLine);
+                                hasLine = false;
+                                setLine = true;
+                                break;
                             }
                         }
+                        if(hasLine || setLine) {
+                            setLine = false;
+                            break;
+                        }
+                        gates[i].selected = true;
+                        selectedNode = &gates[i];
+                        hasNode = true;
+                        // hasLine = false;
+                        break;
                     }
                 }
             }
@@ -214,28 +237,70 @@ int main(int, char const**) {
                 cam.zoom(zoomLevel+=0.5f);
                 window.setView(cam);
             }
+            
+            // Highlight
+            if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::LControl) {
+                if(hightlightMode)
+                    hightlightMode = false;
+                else
+                    hightlightMode = true;
+            }
+            
             cam.setCenter(camX, camY);
             // std::cout << "X: " << camX << " | Y: " << camY << '\n';
         }
         
         window.clear();
         
+        // window.draw(background);
+        
+        /*
         if(hasLine) {
             activeLine.setPoint(2, sf::Vector2f((float)sf::Mouse::getPosition(*win).x,(float)sf::Mouse::getPosition(*win).y));
             activeLine.setPoint(3, sf::Vector2f((float)sf::Mouse::getPosition(*win).x,(float)sf::Mouse::getPosition(*win).y));
             window.draw(activeLine);
         }
+        */
         if(menuActive) {
             window.draw(MENU.m);
         }
         
-        for(node i : nodes) {
-            if(i.selected) {
+        for(gate i : gates) {
+            if(i.isConnected)
+                i.SIGNAL();
+            if(i.selected) { // Add pixel conversion
                 // i.rect.setOrigin((float)sf::Mouse::getPosition().x, (float)sf::Mouse::getPosition().y);
-                i.rect.setPosition((float)sf::Mouse::getPosition().x, (float)sf::Mouse::getPosition().y);
+                // sf::vector2F pixelPos = sf::Mouse::getPosition(*win);
+                i.rect.setPosition((float)sf::Mouse::getPosition(*win).x, (float)sf::Mouse::getPosition(*win).y);
+                for(unsigned int j = 0; j < i.points.size(); j++) {
+                    i.points[j].p.setPosition(i.rect.getPosition().x + i.rect.getSize().x, i.rect.getPosition().y + i.rect.getSize().y);
+                    if(i.points[j].connection != nullptr)
+                        // i.points[j].connection[0].operator[](0).position.x = i.points[j].p.getPosition().x;
+                        std::cout << i.points[j].name << '\n';
+                }
             }
             i.draw(window);
         }
+        
+        // Draw connectors
+        sf::VertexArray lineTest(sf::Lines, 2);
+        lineTest[0].position.x = SCREEN_WIDTH / 1.5;
+        lineTest[0].position.y = 400.0f;
+        lineTest[1].position.x = SCREEN_WIDTH / 2.0;
+        lineTest[1].position.y = 400.0f;
+        window.draw(lineTest);
+        
+        for(sf::VertexArray line : connectors) {
+            window.draw(line);
+        }
+        
+        for(sf::RectangleShape h : highlights) {
+            window.draw(h);
+        }
+        
+        //for(std::array<sf::Vertex, 2> c : connectors) {
+          //  window.draw(c, 2, sf::Lines);
+        //}
         
         window.display();
     }

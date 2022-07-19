@@ -20,9 +20,7 @@ std::vector<std::string> corruptedMods{"Multiplied Damage", "Reduced Mana Cost M
 // Temp function until linker works
 
 struct Item {
-    int iLevel = 1;
-    int type = 1;
-    int rarity = 1;
+    int iLevel = 1, type = 1, rarity = 1;
     enum TYPE{SWORD = 0, AXE, SHIELD}; // Make external, not every item needs this!
     enum RARITY{COMMON = 1, MAGIC, RARE, UNIQUE}; // Add more legendaries?
     bool isCorrupted = false;

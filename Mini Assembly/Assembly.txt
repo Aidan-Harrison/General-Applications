@@ -1,0 +1,68 @@
+// Comment
+
+>data
+    personName : str = "Aid";
+    age : i32 = 22;
+
+.fnc() -> null:     
+    PASS;
+
+.Add() -> i32:
+    <- ADD] 5 = 12;
+
+.Sub(i32 x, i32 y) -> i32:
+    <- SUB] x, y;
+
+.LoopExample() -> null:
+    loop(i32 i = 0, @data, +1):
+        PRT, data[i];
+        _;
+    _;
+
+.main() -> i8:
+    PASS;
+
+.main() -> i8:
+    "Test Program"; // Strings can be printed without a PRT] command
+    loop(i32 i = 0, age, +1):
+        PRT] personName;
+    _;
+    Add()
+    branch -> Sub(26,13):
+        less, 10:
+            LESS_THAN_BRANCH; // Branches can be named anything
+        great, 20:
+            RANDOM_NAME_BRANCH;
+        equals, 13:
+            SAME_BRANCH;
+    
+    branch -> less] 5, 10:
+        "True!\n";
+        $
+        "False!\n";
+
+    loop(i=50,0,-2):
+        PRT, i
+    _;
+
+    result : i32;
+    result = random(0,10);
+    branch -> result:
+        > 1 && < 3:
+            "First";
+        > 3 && < 6:
+            "Second";
+        > 6:
+            "Third";
+
+    <- 0; // Exit
+
+// Branches are like function pointers, essentially a function without any of the function calling and syntax
+?LESS_THAN_BRANCH:
+    "Less than";
+
+?SAME_BRANCH:
+    "Equal";
+
+?RANDOM_NAME_BRANCH:
+    "Greater than";

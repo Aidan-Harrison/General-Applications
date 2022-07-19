@@ -33,7 +33,7 @@ void BubbleSortBetter(std::vector<int> &arr) {
     }
 }
 
-void BubbleSortBest(std::vector<int> &arr) { // nIterations isn't changing, update!
+void BubbleSortBest(std::vector<int> &arr) { 
     bool hasSwapped = true;
     int nIterations = 0;
     while(hasSwapped) {
@@ -104,16 +104,16 @@ int Partition(std::vector<int> & arr, int left, int right) {
     int i = left - 1;
     for(unsigned int j = left; j < right; j++) {
         if(arr[j] < arr[right]) { // If element at 'j' is less then pivot
-            i++;
-            Swap(&arr[i], &arr[j]); // Swap left to current
+            i++; // Move left up
+            Swap(&arr[i], &arr[j]); // Swap l and j
         }
     }
-    Swap(&arr[i+1], &arr[right]); // Move pivot (Partition)
+    Swap(&arr[i+1], &arr[right]); // Move pivot (Partition), element is now in correct position
     return i+1;
 }
 
-void QuickSort(std::vector<int> & arr, int left = 0, int right) {
-    if(arr.size() <= 1 || left < 0 || left >= right) 
+void QuickSort(std::vector<int> & arr, int left, int right) {
+    if(arr.size() <= 1 || left < 0 || left >= right || right > arr.size()) 
         return;
     if(left < right) {
         int pivot = Partition(arr,left,right);
@@ -138,15 +138,14 @@ void Merge(std::vector<int> &arr, int l, int m, int r) {
     for(unsigned int j = 0; j < n2; j++)
         M[j] = arr[m + 1 + j];
 
-    int i, j = 0;
-    int k = l;
+    int i{}, j{}; // i = sub-array 1 | j = sub-array 2
+    int k = l; // Main array
 
     while(i < n1 && j < n2) {
-        if(L[i] < M[j]) {
+        if(L[i] <= M[j]) {
             arr[k] = L[i];
             i++;
-        }
-        else {
+        } else {
             arr[k] = M[j];
             j++;
         }
@@ -168,9 +167,9 @@ void Merge(std::vector<int> &arr, int l, int m, int r) {
 
 void MergeSort(std::vector<int> &arr, int l, int r) {
     if (l < r) {
-        int m = l + (r - l) / 2;
+        int m = (l + r) / 2;
 
-        MergeSort(arr, l, m-1);
+        MergeSort(arr, l, m);
         MergeSort(arr, m+1, r);
 
         Merge(arr, l, m, r);
@@ -213,7 +212,7 @@ void HeapSort(std::vector<int> &arr) {
     Heapify(arr);
 }
 
-// COUNTING SORT
+// ======================= COUNTING SORT =======================
 void CountingSort(std::vector<int> &arr) {
     std::vector<int> sorted(arr.size());
     int max = arr[0];
@@ -233,6 +232,10 @@ void CountingSort(std::vector<int> &arr) {
         arr[i] = sorted[i];
 }
 
+// ======================= BUCKET SORT =======================
+void BucketSort() {
+}
+
 // PRINT FUNCTION
 void PrintArray(std::vector<int> &arr) {
     for(int i : arr)
@@ -248,10 +251,10 @@ int main() {
     // BubbleSortBetter(array);
     // SelectionSort(array);
     // InsertionSortSwap(array);
-    // QuickSort(array, 0, array.size());
+    QuickSort(array, 0, array.size());
     // MergeSort(array, 0, array.size()-1); // Fix! Minor issue
     // HeapSort(array);
-    CountingSort(array);
+    //CountingSort(array);
     PrintArray(array);
 
 

@@ -108,6 +108,7 @@ void ReWrite() {
                         newLoc.second = dir.second + j;
                         if(grid[newLoc.first][newLoc.second] == 'X' && !checkGrid[newLoc.first][newLoc.second]) {
                             
+                            
                         }
                     }
                 }

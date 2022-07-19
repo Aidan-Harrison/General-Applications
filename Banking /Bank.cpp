@@ -17,7 +17,13 @@ struct map {
     std::vector<node> vertices{};
 };
 
+enum banks{HSBC, LOLYDS, BankOFAmerica};
 map m;
+
+namespace security {
+    std::vector<std::string> securityQuestions{};
+    std::vector<std::string> securityAnswers{};
+};
 
 void Print(map & m) {
     for(int i = 0; i < m.vertices.size(); i++) {
@@ -72,6 +78,25 @@ uint8_t LuhnsAlgorithm(std::array<int,10> && number) {
     return checkDigit;
 }
 
+void AccessLogin() {
+    int failedAttempts{};
+    std::cout << "ENTER THE PIN: ";
+    std::cout << "Answer these security questions: ";
+    // Security question system
+    std::string answer;
+    std::cin >> answer;
+    int choice = rand() % security::securityQuestions.size();
+    std::cout << security::securityQuestions[choice];
+    // Get appropiate answer
+    while(answer != security::securityAnswers[choice]) {
+        failedAttempts++;
+        std::cout << "Invalid answer, try again!\n";
+        if(failedAttempts > 3)
+            return;
+    }
+    
+}
+
 void Store() {
 
 }
@@ -94,7 +119,11 @@ void Statement() {
 } 
 
 void Interface() {
+    std::cout << "=BANKING=";
+}
 
+void Store() {
+    
 }
 
 int main() {

@@ -12,6 +12,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0D3FB394283E3E5B0089F609 /* components.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = components.h; sourceTree = "<group>"; };
 		0DFE2EBB2826FA0A007ED31F /* Node.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Node.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DFE2EBF2826FA0A007ED31F /* Node-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Node-Info.plist"; path = "../Node-Info.plist"; sourceTree = "<group>"; };
 		0DFE2EC02826FA0A007ED31F /* ResourcePath.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
@@ -54,6 +55,7 @@
 				0DFE2EC32826FA0A007ED31F /* main.cpp */,
 				0DFE2EC52826FA0A007ED31F /* Resources */,
 				0DFE2EBE2826FA0A007ED31F /* Supporting Files */,
+				0D3FB394283E3E5B0089F609 /* components.h */,
 			);
 			path = Node;
 			sourceTree = "<group>";

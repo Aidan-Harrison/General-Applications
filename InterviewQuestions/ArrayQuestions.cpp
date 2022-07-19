@@ -6,6 +6,7 @@
 #include <map>
 #include <set>
 #include <array>
+#include <stack>
 
 void AllPossiblePairs(std::vector<int> &arr) {
     for(unsigned int i = 0; i < arr.size(); i++)
@@ -508,18 +509,15 @@ std::vector<std::vector<int>> MergeOverlappingIntervals(std::vector<std::vector<
 int SunsetViews(std::vector<int> &arr) {
     if(arr.size() == 0)
         return 0;
-    else {
-        int result = 1; // First building will always see sunlight
-        int tallest = arr[0];
-        for(unsigned int i = 1; i < arr.size(); i++) {
-            if(arr[i] > tallest) {
-                result++;
-                tallest = arr[i];
-            }
+    int result = 1; // First building will always see sunlight
+    int tallest = arr[0];
+    for(unsigned int i = 1; i < arr.size(); i++) {
+        if(arr[i] > tallest) {
+            result++;
+            tallest = arr[i];
         }
-        return result;
     }
-    return 0;
+    return result;
 }
 
 void ReverseArray(std::vector<int> &arr) {
@@ -530,11 +528,11 @@ void ReverseArray(std::vector<int> &arr) {
     }
 }
 
-int SmallestDifference(std::vector<int> &arr) {
+int SmallestDifference(std::vector<int> &arr) { 
     int curDiff = 0;
     int smallDiff = INT_MAX;
     for(unsigned int i = 0; i < arr.size()-1; i++) {
-        if(arr[i] > arr[i+1])
+        if(arr[i] > arr[i+1]) // Cheaper then abs()
             curDiff = arr[i] - arr[i+1];
         else
             curDiff = arr[i+1] - arr[i];
@@ -542,6 +540,20 @@ int SmallestDifference(std::vector<int> &arr) {
             smallDiff = curDiff;
     }
     return smallDiff;
+}
+
+// Gets the differences of all adjacent values
+std::vector<int> differences(std::vector<int> & arr) {
+    int curDiff{};
+    std::vector<int> diffs{};
+    for(unsigned int i = 0; i < arr.size()-1; i++) {
+        if(arr[i] > arr[i+1])
+            curDiff = arr[i] - arr[i+1];
+        else
+            curDiff = arr[i+1] - arr[i];
+        diffs.push_back(curDiff);
+    }
+    return diffs;
 }
 
 int NonAdjacentMaxSum(std::vector<int> &arr) {
@@ -615,14 +627,36 @@ void Pivot(std::vector<int> &arr, const int value, const int threshold) {
     }
 }
 
-void SplitArray(std::vector<int> &arr, const int threshold) {
-    std::vector<int> splitArr{};
-    for(unsigned int i = 0; i < arr.size(); i++) {
-        if(arr[i] > threshold)
-            return;
-        else
-            return;
+// Returns second half of array and shaves off from first
+std::vector<int> SplitArray(std::vector<int> &arr, const int split) {
+    std::vector<int> half{};
+    for(unsigned int i = split; i < arr.size(); i++)
+        half.push_back(arr[i]);
+    for(unsigned int i = arr.size(); i > split; i--)
+        arr.pop_back();
+    return half;
+}
+
+// Split array into x amount of other arrays | Do!
+void FractionArray(std::vector<int> & arr, const int fraction) {
+    std::vector<std::vector<int>> fractions{};
+    if(fraction == 1)
+        return;
+    // Find fraction size
+    int fracSize{};
+    if(fracSize * fraction == arr.size()) {
+        for(int i = 0; i < arr.size(); i++) {
+            if(i % fraction == 0) {
+
+            }
+        }
     }
+
+    // 1 = return
+    // 2 = half
+    // 3 = third
+    // etc.
+
 }
 
 // Blip
@@ -684,6 +718,7 @@ void BetterBlip(std::vector<std::vector<int>> &arr, const int n) {
             Numbers in first blip increased by 1
             Numbers in fourth blip increased by 4
         */
+
 void SegmentedBlip(std::vector<int> & arr, const int n) {
     if(n * 2 > arr.size()) // Minimum segment size of 2
         return;
@@ -700,6 +735,17 @@ void SegmentedBlip(std::vector<int> & arr, const int n) {
         }
         else if(counter > segmentSize)
             counter = 0;
+    }
+}
+
+void DoubleBlip(std::vector<int> & a1, std::vector<int> & a2) { // Fix!
+    for(unsigned int i = 0; i < a2.size(); i++) {
+        int leftBlip = a2[i] - a2[i] - 1;
+        int rightBlip = a2[i] + a2[i] - 1;
+        if(leftBlip < 0 || rightBlip > a1.size())
+            continue;
+        a1[leftBlip] += a2[i];
+        a1[rightBlip] += a2[i];
     }
 }
 
@@ -746,6 +792,223 @@ std::string toCamelCase(std::string str) {
     return str;
 }
 
+bool overTwentyOne(const std::vector<char> && cards) {
+	int score = 0;
+	bool hasA = false;
+	for(int i = 0; i < cards.size(); i++) {
+		if(cards[i] == 'A') {
+		    hasA = true;
+		    continue;
+		}
+		else if(cards[i] == 'K' || cards[i] == 'J') {
+			score += 10;
+			continue;
+		}
+		score += (int)cards[i];
+	}
+	if(hasA) {
+    	if(score + 11 > 21)
+    		score++;
+    	else
+    		score += 11;
+        score = score + 11 > 21 ? score++ : score += 11;
+	}
+	if(score > 21)
+	    return true;
+	return false;
+}
+
+bool MiniSuduko(const std::vector<std::vector<int>> & grid) { // Re-do!
+    int w = grid[0].size();
+    int h = grid.size();
+    std::vector<std::pair<int,int>> directions{{0,1},{1,0},{0,-1},{-1,0}};
+    auto bounds=[&](const int x, const int y) { return x > 0 && x < w && y > 0 && y < h; };
+    for(int i = 0; i < grid.size(); i++) {
+        for(int j = 0; j < grid[0].size(); j++) {
+            if(grid[i][j] < 1 || grid[i][j] > 9)
+                return false;
+            // DFS
+            std::stack<std::pair<int,int>> s;
+            s.push({i,j});
+            while(!s.empty()) {
+                std::pair<int,int> newPos = s.top();
+                s.pop();
+                std::pair<int,int> lastPos = newPos;
+                for(std::pair<int,int> dir : directions) {
+                    int newX = lastPos.first + dir.first;
+                    int newY = lastPos.second + dir.second;
+                    if(grid[newX][newY] == grid[i][j])
+                        return false;
+                    s.push({newX,newY});
+                    lastPos.first = newX;
+                    lastPos.second = newY;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+bool MiniSuduko2(const std::vector<std::vector<int>> & grid) { // Fix, correct positions!
+    for(int i = 0; i < grid.size(); i++) {
+        for(int j = 0; j < grid[0].size(); j++) {
+            if(grid[i][j] < 1 || grid[i][j] > 9)
+                return false;
+            int k = i, l = j; // Position
+            bool doneVert = false;
+            while(k <= grid.size() && j <= grid[0].size()) {
+                std::cout << grid[k][l] << '-';
+                if(grid[k][l] == grid[i][j] && k != i && l != j)
+                    return false;
+                if(!doneVert) {
+                    k++;
+                    if(k == grid.size()) {
+                        doneVert = true;
+                        k = i;
+                    }
+                }
+                else {
+                    l++;
+                    if(l == grid[0].size())
+                        break;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+// Non-zeroed input
+void RemoveElement(std::vector<int> & a, int index) {
+    if(index <= 0 || index > a.size())
+        return;
+    a[index-1] = a[index];
+    for(int i = index; i < a.size()-1; i++)
+        a[i] = a[i+1];
+    a.pop_back();
+}
+
+// Terrain generator
+void Propogate(std::vector<std::vector<int>> & arr, std::pair<int,int> & pos) {
+    uint8_t distance = 1; // Scale factor
+    uint8_t fillDist{};
+    // Axis
+    auto boundsCheck = [&](const int x, const int y) {
+        return x >= 0 && x < arr[0].size() && y >= 0 && y < arr.size();
+    };
+    for(unsigned int i = 0; i < 3; i++) {
+        if(boundsCheck(pos.first+i, pos.second))
+            arr[pos.first+distance+i][pos.second] = 1+i;
+        if(boundsCheck(pos.first, pos.second-distance-i))
+            arr[pos.first][pos.second-distance-i] = 1+i;
+        if(boundsCheck(pos.first-distance-i, pos.second))
+            arr[pos.first-distance-i][pos.second] = 1+i;
+        if(boundsCheck(pos.first, pos.second+distance+i))
+            arr[pos.first][pos.second+distance+i] = 1+i;
+        // Diagonals
+        if(boundsCheck(pos.first+distance+i, pos.second+distance+i))
+            arr[pos.first+distance+i][pos.second+distance+i] = 1+i;
+        if(boundsCheck(pos.first+distance+i, pos.second-distance-i))
+            arr[pos.first+distance+i][pos.second-distance-i] = 1+i;
+        if(boundsCheck(pos.first-distance-i, pos.second+distance+i))
+            arr[pos.first-distance-i][pos.second+distance+i] = 1+i;
+        if(boundsCheck(pos.first-distance-i, pos.second-distance-i))
+            arr[pos.first-distance-i][pos.second-distance-i] = 1+i;
+        // distance++;
+        fillDist++;
+    }
+}
+
+void NoisePass(std::vector<std::vector<int>> & arr) {
+    for(int i = 0; i < arr.size(); i++) {
+        for(int j = 0; j < arr[0].size(); j++) {
+            if(arr[i][j] > 0) {
+                int chance = rand() % 2;
+                if(chance >= 1)
+                    arr[i][j]++;
+            }
+            else if(arr[i][j] == 0) {
+                int chance = rand() % 10;
+                if(chance > 6)
+                    arr[i][j]++;
+            }
+        }
+    }
+}
+
+void Terrain(std::vector<std::vector<int>> & arr) { // Convert to 1D
+    // Generate indexes
+    std::vector<std::pair<int,int>> anchorPoints(4, {0,0});
+    for(std::pair<int,int> &p : anchorPoints) {
+        p.first = rand() % arr.size();
+        p.second = rand() % arr.size();
+    }
+    // Branch out from locations
+    for(int i = 0; i < arr.size(); i++) {
+        for(int j = 0; j < arr[0].size(); j++) {
+            for(std::pair<int,int> p : anchorPoints) {
+                if(p.first == i && p.second == j) {
+                    arr[p.first][p.second] = 1;
+                    Propogate(arr, p);
+                }
+            }
+        }
+    }
+    NoisePass(arr);
+}
+
+// Reverse for smallest
+std::vector<int> N_Largest(std::vector<int> & array, const int n) {
+    std::vector<int> top{}, marked{};
+    while(top.size() != n) {
+        int max = INT_MIN;
+        for(int i = 0; i < array.size(); i++) {
+            bool found = false;
+            if(array[i] > max) {
+                for(int j = 0; j < marked.size(); j++) // Check if already found
+                    if(i == marked[j])
+                        found = true;
+                if(found) {
+                    continue;
+                }
+                max = array[i];
+            }
+        }
+        for(int i = 0; i < array.size(); i++)
+            if(array[i] == max)
+                marked.push_back(i);
+        top.push_back(max);
+    }
+    return top;
+}
+
+std::vector<int> ObtainLargest(std::vector<int> & a1, std::vector<int> & a2) {
+    std::vector<int> a3;
+    if(a1.size() != a2.size())
+        return a3;
+    for(unsigned int i = 0; i < a1.size(); i++)
+        a3.push_back(std::max(a1[i],a2[i]));
+    return a3;
+}
+
+void Scramble(std::vector<int> & a1) {
+    int x, y;
+    for(int i = 0; i < a1.size(); i++)
+        Swap(&a1[x = rand() % a1.size()],&a1[y = rand() % a1.size()]);
+}
+
+void CountingSort(std::vector<int> & a1) {
+    int max = INT_MIN;
+    for(int i = 0; i < a1.size(); i++) {
+        if(a1[i] > max)
+            max = a1[i];
+    }
+    std::vector<int> countArray(max);
+    for(int i = 0; i < a1.size(); i++) {
+        
+    }
+}
+
 int main() {
     std::vector<int> testArray{1,2,3,4,5,6,7,8,9,10};
     std::cout << "Reverse Array:\n";
@@ -779,9 +1042,9 @@ int main() {
 	putchar('\n');
 
 	std::vector<int> data2{-2, 1, 4, 8, 11};
-	std::vector<int> sArray = SortedSquaredArray(data2);
-	for(auto i : sArray)
-		std::cout << i << ", ";
+	// std::vector<int> sArray = SortedSquaredArray(data2);
+	// for(auto i : sArray)
+		// std::cout << i << ", ";
 
 	putchar('\n');
     std::cout << "Valid Sub-Sequence:\n";
@@ -837,7 +1100,7 @@ int main() {
     std::cout << SunsetViews(buildings);
 
     std::cout << "\nStaircase Traversal:\n";
-    std::cout << StaircaseTraversal(4);
+    // std::cout << StaircaseTraversal(4);
 
     // Cycle count
     std::cout << isRepeatingCycle({1, 2, 3, 1, 2, 3, 1},3);
@@ -845,6 +1108,16 @@ int main() {
     // Snake and Camel
     std::cout << toSnakeCase("helloWorldVariable");
     std::cout << toCamelCase("hello_world_test_sentence");
+
+    putchar('\n');
+
+    // Suduko
+    std::vector<std::vector<int>> grid{
+        {1,2,3},
+        {5,5,6},
+        {7,8,9}
+    };
+    std::cout << MiniSuduko2(grid);
 
 	return 0;
 }

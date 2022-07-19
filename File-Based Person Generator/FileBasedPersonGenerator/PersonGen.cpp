@@ -1,153 +1,239 @@
+// File based person generator
+// Aidan Harrison
+/*
+    Temporary storage (6 people)
+    Can write to .txt file
+*/
+
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
-#include <ctime>
-#include <unordered_map>
 
-std::vector<std::string> STANDARD_FILES{"Names.txt", "Surnames.txt", "Location.txt", "Occupation.txt", "Hobbies.txt"};
-std::vector<std::string> FANTASY_FILES{};
-
-std::ifstream fileHandler;
+std::fstream fileHandler, fileWriter;
 enum setting{STANDARD = 1, FANTASY};
-int setting = 0;
 
-std::string line = "";
-int totalLines = 0;
 std::vector<std::string> contents{};
-int curLine = 0;
-int amountOfHobbies = 0;
-int age = 0;
-bool isMarried = false;
-std::unordered_map<int,std::string> map;
+std::vector<std::string> fNames{};
+std::vector<std::string> sNames{};
+std::vector<std::string> occupations{};
+std::vector<std::string> locations{};
 
-void FileParser(const std::string &filePath, const bool display) {
-    fileHandler.open(filePath);
+void clear_screen() {
+    #ifdef _WIN64
+        system("cls");
+    #elif __APPLE__ || __MACH__
+        system("clear"); 
+    #endif
+}
+
+struct person {
+    int age = 1;
+    std::string fName;
+    std::string sName;
+    std::string occupation;
+    std::string location;
+    bool married = false;
+
+    void print() const {
+        std::cout << fName << sName << '\n';
+        std::cout << age << '\n';
+        std::cout << occupation << '\n';
+        std::cout << location << '\n';
+    }
+};
+
+std::vector<person> tempPeople{};
+
+void FileParser(const int set, bool display = false) {
+    std::string curFile ="";
+    switch(set) {
+        case 0: curFile = "StandardGen.txt"; break;
+        case 1: curFile = "FantasyGen.txt"; break;
+    }
+    fileHandler.open(curFile);
     if(fileHandler.fail()) {
-        std::cerr << "Failed to open " << filePath << " either corrupt or missing\n";
+        std::cerr << "Failed to open " << curFile << " either corrupt or missing\n";
         exit(1);
     }
-    else {
-        int amount = 0;
-        std::string statistic = "";
-        std::cout << filePath << " Opened successfully!\n";
-        if(display) {
-            while(!fileHandler.eof()) {
-                fileHandler >> statistic;
-                std::cout << "| " << statistic << "\n";
-            }
+    int amount = 0;
+    std::string statistic = "";
+    std::cout << curFile << " Opened successfully!\n";
+    if(display) {
+        while(!fileHandler.eof()) {
+            fileHandler >> statistic; // Check!
+            std::cout << "| " << statistic << "\n";
         }
-        std::cout << filePath << " contains: " << amount << " of lines\n";
-        fileHandler.close();
+        std::cout << curFile << " contains: " << amount << " of lines\n";
     }
 }
 
-bool CheckExemptJob(const std::string &str) {
-    if(str == "MMA")                  return false;
-    else if(str == "Boxer")           return false;
-    else if(str == "Athlete")         return false;
-    else if(str == "ESports Athlete") return false;
-    else if(str == "Gymnast")         return false;
-    else if(str == "Dancer")          return false;
-    return true;
-}
-
-void GenerateStatistic(const std::string &file) {
-    srand(time(0));
-    fileHandler.open(file);
+// Adds data to a specified file but checks if field already exists
+void AddField() {
+    std::string field, line;
+    std::cin >> field;
     while(std::getline(fileHandler, line)) {
-        totalLines++;
-        contents.push_back(line);
-    }
-    // Push contents to map?
-    curLine = rand() % totalLines;
-    if(file == "Names.txt")
-        std::cout << "Name: " << contents[curLine] << " ";
-    else if(file == "Surnames.txt") {
-        std::cout << contents[curLine] << "\n";
-        age = rand() % 60;
-        age += 16;
-        std::cout << "Age: " << age << "\n";
-    }
-    else if(file == "Location.txt")
-        std::cout << "Location: " << contents[curLine] << "\n";
-    else if(file == "Occupation.txt") {
-        std::cout << "Occuptation: " << contents[curLine] << "\n";
-        // Prevent certain jobs from occuring, re-roll | e.g. 70 year old can't be a MMA fighter
-        if(age > 60 || age < 18) {
-            while(!CheckExemptJob(contents[curLine]))
-                curLine = rand() % totalLines;      
+        while(line.find(field) != std::string::npos) {
+            std::cout << "Identical field found\nInput: ";
+            std::cin >> field;
         }
     }
-    else if(file == "Hobbies.txt") {
-        amountOfHobbies = rand() % 4;
-        amountOfHobbies++;
-        for(unsigned int i = 0; i < amountOfHobbies; i++) {
-            std::cout << "Hobby: " << contents[curLine] << "\n";
-            curLine = rand() % totalLines;
-        }
-    }
-    else if (file == "Gender.txt") {
-        // Match to name (Chance based, more likely to be associated to male and female, 'other' is a low chance)
-    }
-
-    contents.clear();
-    totalLines = 0;
-    fileHandler.close();
+    fileHandler << field; // Check where it is added!
 }
 
-// Opens and checks files
-void FileSetup(const int set, const bool display) {
-    if(set == STANDARD)
-        for(auto i : STANDARD_FILES)
-            FileParser(i, display);
-    else if(set == FANTASY) 
-        for(auto i : FANTASY_FILES)
-            FileParser(i, display); 
-    std::cout << "\nEverything successfully loaded\n";
-    std::cout << "Press enter to generate:\n"; 
-    if(set == STANDARD) {
-        while(1) {
-            std::cin.get();
-            for(auto i : STANDARD_FILES)
-                GenerateStatistic(i);
-            std::cout << "=================================\n";
-        }
+// If 'exemptChecker' is set to true, checks if certain generations don't make sense
+    // e.g. 99 year old MMA fighter or 17 year old CEO
+// Codes:
+/*
+    -1: Success
+    0: Change job
+    1: Change age
+    2: Change Location
+*/
+int ExemptionCheck(person & p) {
+    if(p.age < 16) { 
+        p.occupation = "Unemployed";
+    } else if(p.age > 16 && p.age < 21) { // Unlikely to have certain jobs, thus just exempt them
+        while(p.occupation == "CEO" || p.occupation == "")
+            p.occupation = occupations[rand() % occupations.size()];
+    } else if(p.age > 60) {
+        if(p.occupation == "MMA" || p.occupation == "Boxer")
+            return 1;
     }
-    else if(set == FANTASY) {
-        while(1) {
-            std::cin.get();
-            for(auto i : FANTASY_FILES)
-                GenerateStatistic(i);
-            std::cout << "=================================\n";
-        }
+    // Location checks
+        // e.g. CEO in central africa
+    if(p.location == "Central Africa") {
+        while(p.occupation == "CEO")
+            p.occupation = occupations[rand() % occupations.size()];
     }
+    return -1;
+}
+
+// Sorts each section of the given file in alphabetical order
+void SortFile() {
+    std::sort(contents.begin(), contents.end());
+    for(std::string i : contents)
+        fileWriter << i; // Store to appropiate section 
+}
+
+void Save(bool choose = false) {
+    person *saveP = &tempPeople[tempPeople.size()-1];
+    fileWriter.open("People.txt");
+    fileWriter << saveP->fName << " " << saveP->sName;
+    fileWriter << saveP->age;
+    fileWriter << saveP->occupation;
+    fileWriter << saveP->location;
+    fileWriter << "=====================";
+    tempPeople.pop_back();
+}
+
+person GeneratePerson() {
+    person newPerson;
+    newPerson.fName = fNames[rand() % fNames.size()];
+    newPerson.sName = sNames[rand() % sNames.size()];
+    newPerson.age = rand() % 100;
+    newPerson.occupation = occupations[rand() % occupations.size()];
+    newPerson.location = locations[rand() % locations.size()];
+    switch(ExemptionCheck(newPerson)) {
+        case 0: break;
+        case 1: break;
+        case 2: break;
+    }
+    return newPerson;
+}
+
+// Stores data from .txt file appropiately
+void Store(bool sort = false) {
+    std::string line;
+    int sectionCounter = 0;
+    std::string firstname, surname, occupation, location;
+    while(std::getline(fileHandler, line)) {
+        if(line == "#FirstNames" || line == "#SurNames" || line == "#Jobs" || line == "#Locations") {
+            if(contents.size() != 0) {
+                switch (sectionCounter) {
+                    case 0: {
+                        for(std::string l : contents)
+                            fNames.push_back(l);
+                        break;
+                    } case 1: {
+                        for(std::string l : contents) 
+                            sNames.push_back(l);
+                        break;
+                    } case 2: {
+                        for(std::string l : contents)
+                            occupations.push_back(l);
+                        break;
+                    } case 3: {
+                        for(std::string l : contents)
+                            locations.push_back(l);
+                        break;
+                    }
+                }
+                contents.clear();
+                printf("%d\n", sectionCounter);
+            }
+            sectionCounter++;
+        } 
+        else
+            contents.push_back(line);
+    }
+    if(sort)
+        SortFile();
 }
 
 void Setup() {
     char input = ' ';
+    int set{};
     std::cout << "Skip setup (Default settings) Y/N\n"; 
     std::cin >> input;
     char c = std::tolower(input);
-    switch (c) {
-        case 'y': FileSetup(1, true); break;
-        case 'n': break;
+    while(c != 'y')  {
+        std::cout << "Please enter a valid input (You entered " << c << "): ";
+        std::cin >> c;
+        c = std::tolower(c);
     }
-    system("cls");
-    std::cout << "Pick a settting\n\t" << "1) Standard (Modern-Day)  2) Fantasy\n";
-    std::cin >> setting;
-    std::cout << "Display file contents?  Y/N\n";
-    std::cin >> input;
-    char d = std::tolower(input);
-    switch (d) {
-        case 'y': FileSetup(setting, true); break;
-        case 'n': FileSetup(setting, false); break;
+    if(c == 'y') {
+        std::cout << "Select type: STANDARD | FANTASY\n";
+        std::cin >> set;
+        while(set < 0 || set > 2) {
+            std::cout << "Invalid input " << set << ", try again: ";
+            std::cin >> set;
+        }
+    }
+    FileParser(set);
+    while(1) {
+        clear_screen();
+        if(tempPeople.size() > 0)
+            for(person p : tempPeople)
+                p.print();
+        Store();
+        tempPeople.push_back(GeneratePerson());
+        std::cout << "Do you want to store last person?\nInput(Y/N): ";
+        std::cin >> input; 
+        c = std::tolower(input);
+        while(c != 'y' || c != 'n')  {
+            std::cout << "Please enter a valid input (You entered " << c << "): ";
+            std::cin >> input;
+        }
+        if(c == 'y')
+            Save();
+        else {
+            std::cout << "Do you want to store another person?\n";
+            std::cin >> input; 
+            c = std::tolower(input);
+            while(c != 'y' || c != 'n')  {
+                std::cout << "Please enter a valid input (You entered " << c << "): ";
+                std::cin >> input;
+            }
+            if(c == 'y')
+                Save(true);
+        }
     }
 }
 
 int main() {
     Setup();
 
+    fileHandler.close();
     return 0;
 }
-

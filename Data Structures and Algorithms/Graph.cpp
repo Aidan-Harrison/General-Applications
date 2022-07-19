@@ -141,13 +141,15 @@ struct listGraph {
     void DFS() { // Fix and improve!
         std::stack<listNode*> s{};
         s.push(graph[0]);
+        graph[0]->visited = true;
         while(!s.empty()) {
             listNode * curVertex = s.top();
             s.pop();
             listNode * traverseNode = curVertex;
             while(traverseNode != nullptr) {
-                if(traverseNode->visited = false)
+                if(!traverseNode->visited)
                     traverseNode->visited = true;
+                    s.push(traverseNode);
                 traverseNode = traverseNode->next;
             }
         }

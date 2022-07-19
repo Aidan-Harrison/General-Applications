@@ -807,6 +807,138 @@ std::string WordsToSentence(std::vector<std::string> & words) {
     return sentence;
 }
 // Do best version of Ceaser
+int BracketPair(const std::string & str) {
+    int pairCount{};
+    std::vector<bool> found{};
+    found.resize(str.length());
+    for(unsigned int i = 0; i < str.length(); i++) {
+        if(str[i] == '(') {
+            for(unsigned int j = i; j < str.length(); j++) {
+                if(str[j] == ')' && !found[j]) {
+                    int marcher = j;
+                    found[marcher] = true;
+                    while(marcher >= 0) {
+                        if(str[marcher] == '(') {
+                            pairCount++;
+                            break;
+                        }
+                        marcher--;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    return pairCount;
+}
+
+// Takes scrambled bracket pairs and puts them in order, any non pairs get pushed to end
+std::string BracketOrganiser(std::string & str) {
+    std::string newString = "";
+    std::vector<bool> found{};
+    found.resize(str.length());
+    for(unsigned int i = 0; i < str.length(); i++) {
+        if(str[i] == '(') {
+            for(unsigned int j = i; j < str.length(); j++) {
+                if(str[j] == ')' && !found[j]) {
+                    int marcher = j;
+                    found[marcher] = true;
+                    while(marcher >= 0) {
+                        if(str[marcher] == '(') {
+                            newString.append("()");
+                            break;
+                        }
+                        marcher--;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    return newString;
+}
+
+// In-place, edits argument string
+void BracketOrganiserEdit(std::string & str) {
+    int pairCount{};
+    std::vector<bool> found{};
+    found.resize(str.length());
+    for(unsigned int i = 0; i < str.length(); i++) {
+        if(str[i] == '(') {
+            for(unsigned int j = i; j < str.length(); j++) {
+                if(str[j] == ')' && !found[j]) {
+                    int marcher = j;
+                    found[marcher] = true;
+                    while(marcher >= 0) {
+                        if(str[marcher] == '(') {
+                            pairCount++;
+                            break;
+                        }
+                        marcher--;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+}
+
+const std::string UNOdecision(std::vector<std::string> && hand, const std::string && face) {
+	const std::string colours[4] = {"yellow", "blue", "red", "green"};
+	for(unsigned int i = 0; i < hand.size(); i++) {
+		for(unsigned int j = 0; j < 4; j++) {
+			if(hand[i].find(colours[j]) != std::string::npos) {
+			    int right = 5; // Longest colour is yellow
+			    while(hand[i].at(right) == ' ')
+			        right--;
+			    std::string colour = hand[i].substr(0,right);
+				if(hand[i].back() == face.back() || face.find(colour) != std::string::npos) { // Fix!
+					hand.erase(hand.begin()+i);
+				} 
+				break;
+			}
+		}
+	}
+	if(hand.size() == 1)
+	    return "Uno!";
+	else if(hand.size() == 0)
+	    return "You WIN!\n";
+	return "Keep playing!";
+}
+
+void sectionString(std::string str, const int n) {
+    // Get division of n to l (Where l = str)
+    for(int i = 0; i < str.length(); i++) {
+        if(i & n == 0)
+            str.insert(i, "|"); // Fix!
+    }
+}
+
+// Given a string, split it into sections, then swap the sections around randomly
+void shiftSections(std::string str, const int n) {
+    bool hasSwapped = false;
+    for(int i = 0; i < str.length(); i++) {
+        int counter = 0; // Used for swapping
+        std::vector<char> tempSection{};
+        if(i % n == 0) {
+            for(int j = i; j < i+n; j++) { // Store section
+                if(j == str.length()-1)
+                    break;
+                tempSection.push_back(j);
+            }
+        }
+        // Swap
+        if(i+n*2 < str.length()) {
+            for(int k = i+n; k < i+n*2; i++) {
+                Swap(&str[k], &str[tempSection[counter]]);
+            }
+            counter++;
+        }
+        if(hasSwapped)
+            tempSection.clear();
+    } 
+    std::cout << "Result: " << str << '\n';
+}
 
 int main() {
     std::cout << "Get Duplicates:\n";
