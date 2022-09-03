@@ -10,18 +10,19 @@
 // Use move semantics heavily!
 using namespace RoR2;
 
-// Internal Prototypes
-void RoR2Main(Characters &character);
-void StatCalculation(Characters &character);
-// External Prototypes
-void CommonChest(Characters &character);
-void RareChest(Characters &character);
-void LunarPod(Characters &character);
-void EquipmentChest(Characters &character);
-void Scrapper(Characters &character);
+void RoR2Main(Character & character);
+void StatCalculation(Character & character);
+void CommonChest(Character & character);
+void RareChest(Character & character);
+void LunarPod(Character & character);
+void EquipmentChest(Character & character);
+void Scrapper(Character & character);
 
-// Continue this!
-void StatCalculation(Characters &character) { // Too slow | Use Map
+void StatCalculation(Character &character) { // Too slow | Use Map
+    for(unsigned int i = 0; i < character.playerInventory.size(); i++) { // Re-write
+        
+    }
+
     for(unsigned int i = 0; i < character.playerInventory.size(); i++) {
         if(character.playerInventory[i]->m_ItemName == "Soldiers Syringe")
             character.m_AttackSpeed += 10;
@@ -67,7 +68,7 @@ void StatCalculation(Characters &character) { // Too slow | Use Map
             character.m_Health /= 2;
         }
         else if(character.playerInventory[i]->m_ItemName == "Beads of Fealty")
-            character.toSecret = true;
+            return;
         else if(character.playerInventory[i]->m_ItemName == "Transcendence") {
             character.m_Shield = character.m_Health;
             character.m_Health = 0;
@@ -75,7 +76,7 @@ void StatCalculation(Characters &character) { // Too slow | Use Map
     }
 }
 
-void RoR2Main(Characters &character) {
+void RoR2Main(Character & character) {
     system("cls");
     PrintOptions();
     while(!gameOver) {
@@ -92,7 +93,8 @@ void RoR2Main(Characters &character) {
             case 9: gameOver = false;               return;
         }
     }
-    std::cout << "Ended!"; std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    // Add deletion when game over!
+    std::cout << "Ended!"; 
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
     return;
 }

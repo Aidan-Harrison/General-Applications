@@ -46,40 +46,72 @@ struct stdStack { // std::list implementation | Pointless??? The same as a vecto
 };
 
 // Custom List - Stack
-struct LinkedList { // Implemented as a doubly-linked list 
+struct LinkedList { // Doubly-linked list 
     struct node {
         int data;
-        node *next;
-        node *prev;
-        node() :next(nullptr) {}
+        node * next;
+        node * prev;
+        node() :data(0), next(nullptr), prev(nullptr) {}
         node(int d) :data(d), next(nullptr), prev(nullptr) {}
-        ~node() {}
     };
 
-    int size;
-    node *head;
-    node *tail;
+    int size{};
+    node * head = nullptr;
+    node * tail = nullptr;
 
-    int Peek() {
+    int Peek() { 
         return tail->data;
     }
 
     int GetSize() {
-        node *newNode = head;
-        while(newNode != nullptr) {
-            newNode = newNode->next;
-            size++;
-        }
         return size;
     }
 
     void Print() const {
-        node *tempNode = head;
+        node * tempNode = head;
         while(tempNode != nullptr) {
             std::cout << tempNode->data;
             tempNode = head->next;
         }
-        delete tempNode;
+    }
+
+    void add(const int pos, const int val) { // Add a node at a given position
+        int counter{};
+        node * tNode;
+        while(tNode != nullptr) {
+            if(counter == pos) {
+                node * newNode;
+                newNode->data = val;
+                newNode->next = tNode->next;
+                newNode->prev = tNode;
+                tNode->next = newNode;
+            }
+            counter++;
+        }
+    }
+
+    void append(node * n) { // Adds node to end
+        size++; 
+        if(head == nullptr) {
+            head= n;
+            return;
+        }
+        if(tail == nullptr) {
+            tail = n;
+            head->next = tail;
+            return;
+        }
+        tail->next = n;
+        tail = n;
+        n->next = nullptr; // Ensure valid tail
+    }
+
+    node * pop() { // Returns end node
+        node poppedNode = node(tail->data);
+        tail = tail->prev;
+        tail->next = nullptr;
+        size--;
+        return &poppedNode;
     }
 
     LinkedList() {}
@@ -109,7 +141,7 @@ struct CusStack { // Custom list implementation
             LinkedList *copyList = l;
             LinkedList::node* newNode = new LinkedList::node(data);
             while(copyList->head != nullptr) {
-                 copyList->head = copyList->head->next;
+                copyList->head = copyList->head->next;
             }
             copyList->head->next = newNode;
             l = copyList;

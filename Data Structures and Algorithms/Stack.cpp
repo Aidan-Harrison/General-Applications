@@ -1,52 +1,57 @@
 #include <iostream>
+#include <vector>
 
 struct stack {
-    int items[10]; // Can also use vectors
-    int top = -1; // Dictates the size of the stack
+    std::vector<int> items;
+    int top = -1, SIZE{};
 
-    bool IsFull();
-    bool IsEmpty();
-    void Push(int item);
+    int size() const { return top; }
+
+    bool IsFull() const;
+    bool IsEmpty() const;
+    void Push(const int item);
+    void multpush(std::vector<int> && arr);
     int Pop();
 
     void Print() const;
+
+    stack(int s = 10) 
+    { 
+        items.resize(s); 
+        SIZE = s;
+    }
 };
 
-bool stack::IsFull() {
-    return (top == 10) ? true : false;
-}
+bool stack::IsFull()  const{ return (top == SIZE) ? true : false; }
+bool stack::IsEmpty() const{ return (top == -1) ? true : false;   }
 
-bool stack::IsEmpty() {
-    return (top == -1) ? true : false;
-}
-
-void stack::Push(int item) {
-    if(IsFull()) {
-        std::cerr << "Stack is full, cannot push!" << std::endl;
+void stack::Push(const int item) {
+    if(IsFull())
         return;
-    }
-    else {
+    top++;
+    items[top] = item;
+}
+
+void stack::multpush(std::vector<int> && arr) {
+    for(int i : arr) {
+        if(IsFull())
+            return;
+        items[top] = i;
         top++;
-        items[top] = item;
     }
 }
 
 int stack::Pop() {
-    if(IsEmpty()) {
-        std::cerr << "Their is nothing to pop!" << std::endl;
-        return;
-    }
-    else {
-        int item = items[top];
-        items[top] = 0;
-        top--;
-        return item;
-    }
-    return -1;
+    if(IsEmpty())
+        return INT_MIN;
+    int item = items[top];
+    items[top] = 0;
+    top--;
+    return item;
 }
 
 void stack::Print() const {
-    for(int i = 0; i <= top; i++)
+    for(int i = 0; i < top; i++)
         std::cout << items[i] << '|';
 }
 
@@ -65,6 +70,12 @@ int main() {
 
     s.Print();
 
+    for(int i = 0; i <= 3; i++)
+        s.Pop();
+    
+    s.Print();
+    s.multpush({1,2,3,4,5,6,7});
+    s.Print();
 
     return 0;
 }

@@ -5,6 +5,7 @@
 #include <utility>
 #include <map>
 #include <unordered_map>
+#include <stack>
 
 // Returns all duplicate characters in string format (Case insensitive)
 std::string GetDuplicates(const std::string &&str) {
@@ -939,6 +940,28 @@ void shiftSections(std::string str, const int n) {
     } 
     std::cout << "Result: " << str << '\n';
 }
+
+// Brackets
+    // Assuming only "()[]{}" and no nested brackets
+void EasyBracket(const std::string && str) {
+    std::stack<char> s;
+    int count = 0;
+    for(auto i : str) {
+        if(i == '(' || i == '[' || i == '{')
+            s.push(i);
+        else {
+            if(s.size() == 0)
+                continue;
+            else if(i == ')' && s.top() == '(' || i == ']' && s.top() == '[' || i == '}' && s.top() == '{') {
+                count++;
+                s.pop();
+            }
+        }
+    }
+    std::cout << count;
+}
+
+
 
 int main() {
     std::cout << "Get Duplicates:\n";

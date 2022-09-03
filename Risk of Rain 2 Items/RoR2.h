@@ -10,7 +10,6 @@ namespace RoR2 {
     extern int userInput;
     extern std::string stringInput;
 
-    extern void PrintCharacters();
     extern void PrintOptions();
 }
 

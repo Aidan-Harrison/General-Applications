@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": true,
+      "externalConsole": false,
+      "cwd": "/Users/aid/Documents/Programming/C++/General-Applications/Battery",
+      "program": "/Users/aid/Documents/Programming/C++/General-Applications/Battery/build/Debug/outDebug",
+      "MIMode": "gdb"
+    }
+  ]
+}

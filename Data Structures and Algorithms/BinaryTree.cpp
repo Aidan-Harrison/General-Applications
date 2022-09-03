@@ -4,8 +4,8 @@
 
 struct node {
     int data;
-    node *lChild;
-    node *rChild;
+    node * lChild;
+    node * rChild;
     node(const int d) :data(d), lChild(nullptr), rChild(nullptr) {}
     node(const int d, node *left) :data(d), lChild(left), rChild(nullptr) {}
     node(const int d, node *left, node *right) :data(d), lChild(left), rChild(right) {}

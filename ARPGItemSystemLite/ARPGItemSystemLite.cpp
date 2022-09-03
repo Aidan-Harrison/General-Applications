@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <set>
+#include <memory>
 
 #include "Player.h"
 
@@ -31,7 +32,7 @@ typedef std::pair<std::string, int> itemBase;
 #define _THIRD  std::get<2>
 
 namespace Global {
-    Keyboard *keyboard;
+    Keyboard *keyboard = nullptr;
     int choice = 0;
     std::fstream fileHandler;   
 }
@@ -46,11 +47,22 @@ namespace Mutations {
 void Interface();
 
 void clear_screen() {
+    #ifdef _WIN64 
+        system("cls");
+    #elif __APPLE__ || __MACH__
+        system("clear");
+    #endif 
 }
 
 int random(int range) { return rand() % range; }
 
-bool FileParser(const std::string &filePath, bool printContents) {
+int input(const std::string && msg) {
+    std::cout << msg;
+    std::cin >> Global::choice;
+    return Global::choice;
+}
+
+bool FileParser(const std::string & filePath, bool printContents) {
     if(filePath.length() == 0) {
         std::cerr << "File path is empty!\n";
         return false;
@@ -87,29 +99,32 @@ void MutationModifier() {
 }
 
 namespace Characters {
-    Player curPlayer;
+    Player * curPlayer;
     std::vector<Player*> allChars{}; // Change, not cache friendly
 }
 
 namespace CraftingItems {
-    AgonyOrb aOrb("Agony Orb");
-    DivineOrb dOrb("Divine Orb");
-    LamentGem lGem("Lament Gem");
-    MoltenCore mCor("Molten Core");
-    Mirror mir("Mirror");
+    AgonyOrb aOrb;
+    DivineOrb dOrb;
+    LamentGem lGem;
+    MoltenCore mCor;
+    Mirror mir;
+    ExtensionOrb eOrb;
 }
 
 namespace Prefixes {
-    std::vector<std::string> gPrefixes{"Seething ", "Lamenting ", "Ridden ", "Prismatic ", "Imbued "};
-    std::vector<std::string> swPrefixes{"Sharp ", "Forged ", "Heavy ", "Light "};
-    std::vector<std::string> axPrefixes{"Large ", "Hardened "};
-    std::vector<std::string> shPrefixes{"Sturdy ", "Light ", "Tough "};
+    using namespace std;
+    vector<string> gPrefixes{"Seething ", "Lamenting ", "Ridden ", "Prismatic ", "Imbued "};
+    vector<string> swPrefixes{"Sharp ", "Forged ", "Heavy ", "Light "};
+    vector<string> axPrefixes{"Large ", "Hardened "};
+    vector<string> shPrefixes{"Sturdy ", "Light ", "Tough "};
 }
 
 namespace BaseNames{ // Type system pointless?
-    std::vector<itemBase> swordBases{{"Steel Longsword", 1}, {"Twisted Sword", 1}};
-    std::vector<itemBase> axeBases{{"Great Axe",2}, {"Executioners Axe",2}};
-    std::vector<itemBase> shieldBases{{"Buckler",3}, {"Tower Shield",3}};
+    using namespace std;
+    vector<string> swordBases{"Steel Longsword", "Twisted Sword"};
+    vector<string> axeBases{"Great Axe", "Executioners Axe"};
+    vector<string> shieldBases{"Buckler", "Tower Shield"};
 }
 
 namespace Implicitmods {
@@ -131,19 +146,20 @@ namespace Suffixes {
 // Handle bases and implicits
 namespace Mods {
     // Sword Prefixes
-    std::vector<std::string> swordPrefixes{"Increased attack speed", "Increased physical damage", "Increased pierce rating"};
-    std::vector<std::string> axePrefixes{"Increased attack speed", "Increased physical damage", "Increased bleed chance"};
+    using namespace std;
+    vector<string> swordPrefixes{"Increased attack speed", "Increased physical damage", "Increased pierce rating"};
+    vector<string> axePrefixes{"Increased attack speed", "Increased physical damage", "Increased bleed chance"};
 
-    std::vector<std::string> suffixmods{"Increased Fire Damage", "Increased Cold Damage", "Increased Lightning Damage", "Increased Holy Damage", "Increased Dark Damage", "Increased Void Damage",
+    vector<string> suffixmods{"Increased Fire Damage", "Increased Cold Damage", "Increased Lightning Damage", "Increased Holy Damage", "Increased Dark Damage", "Increased Void Damage",
     "Increased Poison Damage", "Increased Thunder Damage", "STR", "DEX", "INT", "Increased Dodge Rating", "Increased Evasion Rating", "Increased Movement Speed", "Increased Armor", "Increased rarity of items found"};    
 }
 
 // Move to own file
 namespace Uniques {
-    Item *testUnique = new Item(itemName{"","Test Unique",""}, 4); // Check empty space!
-    Item *testUnique2 = new Item(itemName{"","Test Unique 2",""}, 4);
+    Item * testUnique  = new Item(itemName{"","Test Unique",""}, 4); // Check empty space!
+    Item * testUnique2 = new Item(itemName{"","Test Unique 2",""}, 4);
     
-    std::vector<Item*> uniqueItems{testUnique, testUnique2}; 
+    std::vector<Item*> items{testUnique, testUnique2}; 
 }
 
 int const KeyboardParser(const int key) {
@@ -161,14 +177,13 @@ void CopyImp(std::string arr1[], std::string arr2[]) {
 }
 
 // Make printing in-line
-void PrintItem(Item &item) { // Possibly just move to object?
-    system("clear");
+void PrintItem(Item & item) {
     clear_screen();
     switch (item.rarity) {
-        case 1: std::cout << "\tCOMMON\n"; break;
-        case 2: std::cout << "\tMAGIC\n";  break;
-        case 3: std::cout << "\tRARE\n";   break;
-        case 4: std::cout << "\tUNIQUE\n"; break;
+        case COMMON: std::cout << "\tCOMMON\n"; break;
+        case MAGIC:  std::cout << "\tMAGIC\n";  break;
+        case RARE:   std::cout << "\tRARE\n";   break;
+        case UNIQUE: std::cout << "\tUNIQUE\n"; break;
     }
     std::cout << "//// " << item.m_ItemName[0] << item.m_ItemName[1] << item.m_ItemName[2] << " ////\n";
     std::cout << "\t--" << item.iLevel << "--\n";
@@ -182,42 +197,40 @@ void PrintItem(Item &item) { // Possibly just move to object?
 }
 
 // Also have to handle implicits
-void RegenerateType(Item &i) {
+void RegenerateType(Item & i) {
     switch(i.type) {
-        case 1: {
-            Global::choice = rand() % BaseNames::swordBases.size();
-            i.m_ItemName[1] = _FIRST(BaseNames::swordBases[Global::choice]).at(1);
-            while(i.m_ItemName[1] == _FIRST(BaseNames::swordBases[Global::choice])) {
-                Global::choice = rand() % BaseNames::swordBases.size();
-                i.m_ItemName[1] = _FIRST(BaseNames::swordBases[Global::choice]).at(1);
-            }
+        case SWORD: {
+            i.m_ItemName[1] = BaseNames::swordBases[random(BaseNames::swordBases.size())];
+            while(i.m_ItemName[1] == BaseNames::swordBases[Global::choice])
+                i.m_ItemName[1] = BaseNames::swordBases[random(BaseNames::swordBases.size())];
             break;
         }
     }
 }
 
-void Pickup(Item &item) {
+void Pickup(Item * item) {
     bool hasTaken = false;
     char choice = 'a';
-    PrintItem(item);
+    PrintItem(*item);
     std::cout << "\nDo you want to take this item?\n\t (Y/N)\n";
-    std::cout << "Enter: ";
+    // input("Enter: ");
     std::cin >> choice;
     choice = std::tolower(choice);
     // Handle miss-input!
     if(choice == 'y') {
-        std::cout << "You took " << item.m_ItemName[0] << item.m_ItemName[1] << item.m_ItemName[2] << "!\n";
-        // Auto equip if relevent gear slot is empty
-        // Check '&'
-        for(int i = 0; i < Characters::curPlayer.gear.size(); i++) {
-            if(!_THIRD(Characters::curPlayer.gear[i])) { // Do ID matching!
-                _SECOND(Characters::curPlayer.gear[i]) = &item;
+        std::cout << "You took " << item->m_ItemName[0] << item->m_ItemName[1] << item->m_ItemName[2] << "!\n";
+        for(int i = 0; i < Characters::curPlayer->gear.size(); i++) {
+            if(Characters::curPlayer->gear[i] == nullptr && Characters::curPlayer->gearID[i] == item->core) { // Empty slot 
+                Characters::curPlayer->gear[i] = item;
                 hasTaken = true;
+                break;
             }
         }
         if(!hasTaken)
-            Characters::curPlayer.inventory.push_back(&item);
+            Characters::curPlayer->inventory.push_back(item);
     }
+    std::cin.get();
+    std::cin.get();
     Interface();
 }
 
@@ -226,60 +239,58 @@ void Generate() {
     std::array<std::string, 3> name{};
     itemMods mods;
     int prefix = 0, iLevel = 0;
-    bool hasPrefix = rand() % 2, hasSuffix= rand() % 2;
-    int base = rand() % 3;
+    bool hasPrefix = rand() % 2, hasSuffix = rand() % 2;
+    int base = rand() % 3; // Make automatic?
+    base++;
     int rarity = rand() % 100; // If unique, generate from unique pool, else just alter stats and mod count
     int nameSuffixApplied = false;
     // === ilevel ===
-    if(Characters::curPlayer.level > 5)
-        iLevel = rand() % Characters::curPlayer.level - 5;
-    else
-        iLevel = rand() % 5;
+    iLevel = rand() % Characters::curPlayer->level - 5;
     iLevel++;
-    // Rarity | Change
+    // Rarity
     if(rarity > 95) { // Unique
         mods.resize(6);
-        Global::choice = rand() % Uniques::uniqueItems.size();
-        Pickup(*Uniques::uniqueItems[Global::choice]); // Check!
-        rarity = Item::UNIQUE;
+        Pickup(Uniques::items[random(Uniques::items.size())]);
+        rarity = UNIQUE;
         return;
     } else if(rarity > 75 && rarity < 95) {
         mods.resize(6);
-        rarity = Item::RARE;
+        rarity = RARE;
     } else if(rarity > 40 && rarity < 75) {
         mods.resize(4);
-        rarity = Item::MAGIC;
+        rarity = MAGIC;
     } else {
         mods.resize(2);
-        rarity = Item::COMMON;
+        rarity = COMMON;
     }
     // === NAME PREFIXES === 
     if(hasPrefix) {
-        // name[0] = Prefixes::gPrefixes[random(Prefixes::gPrefixes.size())];
         switch(base) {
-            case 0: name[0] = Prefixes::swPrefixes[random(Prefixes::swPrefixes.size())]; break;
-            case 1: name[0] = Prefixes::axPrefixes[random(Prefixes::axPrefixes.size())]; break;
-            case 2: name[0] = Prefixes::shPrefixes[random(Prefixes::shPrefixes.size())]; break;
+            case SWORD: name[0] = Prefixes::swPrefixes[random(Prefixes::swPrefixes.size())]; break; // SWORDS
+            case AXE: name[0] = Prefixes::axPrefixes[random(Prefixes::axPrefixes.size())]; break; // AXES
+            case SHIELD: name[0] = Prefixes::shPrefixes[random(Prefixes::shPrefixes.size())]; break; // SHIELDS
         }
     }
 
-    for(unsigned int i = 0; i < mods.size(); i++) // Set values
+    // === SET VALUES ===
+    for(unsigned int i = 0; i < mods.size(); i++) 
         _FIRST(mods[i]) = random(Mutations::STAT_CAP)+1;
 
     // === BASE/IMPLICIT ===
     std::string setVec[2] = {"",""};
-    if(base == 1) { // SWORDS
-        name[1] = _FIRST(BaseNames::swordBases[random(BaseNames::swordBases.size())]);
-        if(name[1] == "Steel Longsword")    CopyImp(setVec, Implicitmods::steelLongswordImp);  
-        else if(name[1] == "Twisted Sword") CopyImp(setVec, Implicitmods::twistedSwordImp);
-    } else if(base == 2) {  // AXES
-        name[1] = _FIRST(BaseNames::axeBases[random(BaseNames::axeBases.size())]);
-        if(name[1] == "Great Axe")             CopyImp(setVec, Implicitmods::greatAxeImp);
+    std::cout << "Base: " << base << '\n';
+    if(base == SWORD) {
+        name[1] = BaseNames::swordBases[random(BaseNames::swordBases.size())];
+        if(name[1]      == "Steel Longsword")  CopyImp(setVec, Implicitmods::steelLongswordImp);  
+        else if(name[1] == "Twisted Sword")    CopyImp(setVec, Implicitmods::twistedSwordImp);
+    } else if(base == AXE) { 
+        name[1] = BaseNames::axeBases[random(BaseNames::axeBases.size())];
+        if(name[1]      == "Great Axe")        CopyImp(setVec, Implicitmods::greatAxeImp);
         else if(name[1] == "Executioners Axe") CopyImp(setVec, Implicitmods::execAxeImp);
-    } else if(base == 3) {  // SHIELDS
-        name[1] = _FIRST(BaseNames::shieldBases[random(BaseNames::shieldBases.size())]);
-        if(name[1] == "Buckler")           CopyImp(setVec, Implicitmods::bucklerImp);
-        else if(name[1] == "Tower Shield") CopyImp(setVec, Implicitmods::towerShieldImp);
+    } else if(base == SHIELD) { 
+        name[1] = BaseNames::shieldBases[random(BaseNames::shieldBases.size())];
+        if(name[1]      == "Buckler")          CopyImp(setVec, Implicitmods::bucklerImp);
+        else if(name[1] == "Tower Shield")     CopyImp(setVec, Implicitmods::towerShieldImp);
     }
 
     for(int i = 0; i < 2; i++) // Set implicits
@@ -288,8 +299,8 @@ void Generate() {
     for(unsigned int i = 2; i < 4; i++) { // Set prefixes
         using namespace Mods;
         switch(base) {
-            case 1: _SECOND(mods[i]) = swordPrefixes[random(swordPrefixes.size())]; break;
-            case 2: _SECOND(mods[i]) = axePrefixes[random(axePrefixes.size())]; break;
+            case SWORD: _SECOND(mods[i]) = swordPrefixes[random(swordPrefixes.size())]; break;
+            case AXE: _SECOND(mods[i]) = axePrefixes[random(axePrefixes.size())]; break;
         }
     }
 
@@ -311,15 +322,15 @@ void Generate() {
         else
             _THIRD(mods[i]) = 4;
     }
-    Item newItem(base, rarity, iLevel, name, mods); // Heap?
+    Item newItem(base, rarity, iLevel, name, mods);
     newItem.SafetyCheck(); // Intergrate into constructor and generation
-    Pickup(newItem);
+    Pickup(&newItem);
 }
 
 void ChangeGear() { // Format better, have inventory and gear side by side, ncurses?
     int curGearSlot = 0, curInventorySlot = 0;
-    Characters::curPlayer.PrintInventory();
-    Characters::curPlayer.GearScreen();
+    Characters::curPlayer->PrintInventory();
+    Characters::curPlayer->GearScreen();
     std::cout << "\nPick a slot to change (Or enter '0' to exit):\n";
     Global::choice = Global::keyboard->Parse(Global::choice, true);
     // Global::keyboard->Parse(Global::choice);
@@ -329,11 +340,11 @@ void ChangeGear() { // Format better, have inventory and gear side by side, ncur
     std::cout << "Pick an item (Or enter '0' to clear current gear slot):\n";
     Global::choice = Global::keyboard->Parse(Global::choice, true);
     if(Global::choice == 0) {
-        Characters::curPlayer.inventory.push_back(_SECOND(Characters::curPlayer.gear[curGearSlot]));
+        Characters::curPlayer->inventory.push_back(Characters::curPlayer->gear[curGearSlot]);
         // Remove item from gear slot! (DO)
     }
     curInventorySlot = Global::choice;
-    _SECOND(Characters::curPlayer.gear[curGearSlot]) = Characters::curPlayer.inventory[curInventorySlot];
+    Characters::curPlayer->gear[curGearSlot] = Characters::curPlayer->inventory[curInventorySlot];
 }
 
 bool SafetyCheck(Item &item, const std::string &newGen, bool baseCheck = false) {
@@ -349,7 +360,9 @@ bool SafetyCheck(Item &item, const std::string &newGen, bool baseCheck = false) 
     return true;
 }
 
-void ApplyCraftinItem(Item &item, CraftingItem &c, std::vector<std::string> &modifiers) {
+void ApplyCraftingItem(Item & item, CraftingItem & c, std::vector<std::string> & modifiers) {
+    if(item.isCorrupted)
+        return;
     switch(c.type) {
         case 0: { // Agony Orb
             item.isCorrupted = true;
@@ -412,6 +425,17 @@ void ApplyCraftinItem(Item &item, CraftingItem &c, std::vector<std::string> &mod
             // Regenerate to any item of that same type
             // Only alters base and thus implicits, everything else remains the same
             // Store everything but impicits and then paste into everything but implicits
+            int curType = item.type;
+            while(random(3) != curType)
+                item.type = random(3);
+            switch(item.type) {
+                case 0:  
+                    break;
+                case 1: 
+                    break;
+                case 2: 
+                    break;
+            }
             break;
         }
         case 4: { // Use copy constructor instead | Mirror
@@ -428,6 +452,8 @@ void ApplyCraftinItem(Item &item, CraftingItem &c, std::vector<std::string> &mod
             break;
         }
         case 5: { // Extension Orb
+            if(item.rarity != UNIQUE)
+                item.maxMods++;
             break;
         }
     }
@@ -435,7 +461,7 @@ void ApplyCraftinItem(Item &item, CraftingItem &c, std::vector<std::string> &mod
 
 void Craft() { // Remove tempItem?? | Messy but safe | Copy constructor?
     using namespace Characters;
-    if(curPlayer.inventory.size() == 0 && curPlayer.gear.size() == 0) {
+    if(curPlayer->inventory.size() == 0 && curPlayer->gear.size() == 0) {
         std::cout << "You have no items to craft, generate some\n";
         std::cout << "\tPress ENTER to continue: ";
         std::cin.get();
@@ -443,66 +469,69 @@ void Craft() { // Remove tempItem?? | Messy but safe | Copy constructor?
         Interface();
     }
     clear_screen();
-    curPlayer.PrintInventory();
-    std::cout << "\n============================\n";
-    curPlayer.GearScreen();
-    std::cout << "\n============================\n";
-    Item tempItem; // Remove!?
-    std::cout << "Pick an item in your inventory(1) or gear(0) \t Enter '3' to Exit:\n"; // Reformat!
+    curPlayer->PrintInventory();
+    std::cout << "\n<><><><><><><><><><><><><><>\n";
+    // curPlayer->GearScreen();
+    Item * tempItem = nullptr;
+    std::cout << "\nPick an item in your 1) Inventory 2) Gear \t 3) Exit\nInput: ";
     std::cin >> Global::choice;
-    if(Global::choice == 1) {
-        std::cin >> Global::choice;
-        while(curPlayer.inventory[Global::choice-1]->isCorrupted) {
-            std::cout << "This item is corrupted!\nChoose another item\nEnter: ";
-            std::cin >> Global::choice;
+    clear_screen();
+    if(Global::choice == 1 && curPlayer->inventory.size() > 0) {
+        curPlayer->PrintInventory();
+        input("Enter: ");
+        while(curPlayer->inventory[Global::choice]->isCorrupted) {
+            std::cout << "This item is corrupted!\nChoose another item\n";
+            input("Enter: ");
         }
-        tempItem = *curPlayer.inventory[Global::choice-1];
+        tempItem = curPlayer->inventory[input("Enter: ")-1];
     } 
-    else if(Global::choice == 2) {
-        while(_SECOND(curPlayer.gear[Global::choice-1])->isCorrupted) {
-            std::cout << "This item is corrupted!\nChoose another item\nEnter: ";
-            Global::choice = Global::keyboard->Parse(Global::choice, true);
+    else if(Global::choice == 2 && curPlayer->inventory.size() > 0) {
+        curPlayer->GearScreen();
+        input("Enter: ");
+        while(curPlayer->gear[Global::choice-1]->isCorrupted) {
+            std::cout << "This item is corrupted!\nChoose another item\n";
+            input("Enter: ");
         }
-        tempItem = *_SECOND(curPlayer.gear[Global::choice-1]);
+        tempItem = curPlayer->gear[Global::choice-1];
     } else {
         Interface();
     }
-    Global::choice = Global::keyboard->Parse(Global::choice, true);
-    while(Global::choice > curPlayer.inventory.size() || Global::choice <= 0) {
-        std::cout << "You have entered an invalid value!";
-        Global::choice = Global::keyboard->Parse(Global::choice, true);
+    input("Enter: ");
+    while(Global::choice > curPlayer->inventory.size() || Global::choice < 0) {
+        std::cout << "You have entered an invalid value!\n";
+        input("Enter: ");
     }
 
     bool isCrafting = true;
     while(isCrafting) {
         clear_screen();
-        PrintItem(tempItem);
+        PrintItem(*tempItem);
         std::cout << "Apply any of the following crafting items:\n";
         std::cout << "1) Agony Orb  2) Divine Orb  3) Lament Gem\n\t 0) EXIT\n";
         std::cin >> Global::choice;
         switch(Global::choice) {
             case 0: isCrafting = false; break;
-            case 1: tempItem.Apply(CraftingItems::aOrb, Mods::suffixmods);  break;
-            case 2: tempItem.Apply(CraftingItems::dOrb, Mods::suffixmods);  break;
-            case 3: tempItem.Apply(CraftingItems::lGem, Mods::suffixmods);  break;
-            default: tempItem.Apply(CraftingItems::lGem, Mods::suffixmods); break;
+            case 1: tempItem->Apply(CraftingItems::aOrb, Mods::suffixmods);  break;
+            case 2: tempItem->Apply(CraftingItems::dOrb, Mods::suffixmods);  break;
+            case 3: tempItem->Apply(CraftingItems::lGem, Mods::suffixmods);  break;
+            default: tempItem->Apply(CraftingItems::lGem, Mods::suffixmods); break;
         }
     }
 }
 
 void Interface() {
     bool isActive = true;
-    system("clear");
     clear_screen();
     std::cout << "===ARPG ITEM SYSTEM===\n" 
             << "\t1) Generate  2) Craft  3) Exit\n";
     while(isActive) {
         std::cout << "Enter: ";
-        Global::choice = Global::keyboard->Parse(Global::choice, true);
+        //Global::choice = Global::keyboard->Parse(Global::choice, true);
+        std::cin >> Global::choice;
         switch(Global::choice) {
-            case 0: isActive = false; break;
             case 1: Generate(); break;
             case 2: Craft(); break;
+            case 3: isActive = false; break;
         }
     }
     clear_screen();
@@ -510,17 +539,19 @@ void Interface() {
 }
 
 void Setup() { // Add file handling here!
-    Player *newPlayer = new Player(Mutations::BASE_LEVEL, "Default Player"); // Change how players are handled due to having multiple
+    Player * newPlayer = new Player(Mutations::BASE_LEVEL, "Default Player"); // Change how players are handled due to having multiple
+    Characters::curPlayer = newPlayer;
 
     Interface();
     delete newPlayer;
 }
 
 int main() {
-    Keyboard keyboardInit;
-    Global::keyboard = &keyboardInit;
-
     srand(time(0));
+
+    Keyboard *keyboardInit;
+    Global::keyboard = keyboardInit;
+
     Setup();
 
     return 0;

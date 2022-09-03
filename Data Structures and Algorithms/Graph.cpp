@@ -6,13 +6,19 @@
 #include <stack>
 #include <queue>
 
+/*
+    Implementations of the Graph data structure
+*/
+
 // Adjacency Matrix:
 struct MatrixGraph {
     std::array<std::array<int, 5>, 5> adjMatrix{};
+    std::vector<int> adjMat{};
+    int width{}, height{};
 
     void AddEdge(const int x, const int y, bool isDirect = false) {
         if(x == y) {
-            std::cerr << "Same vertex!\n";
+            std::cout << "Same vertex!\n";
             return;
         }
         adjMatrix[x][y] = 1;
@@ -20,9 +26,20 @@ struct MatrixGraph {
             adjMatrix[y][x] = 1;
     }
 
+    void AddEdgeO(const int x, const int y, bool isDirect = false) {
+        if(x == y)
+            return;
+        adjMat[x + y * width] = 1;
+        if(isDirect)
+            adjMat[y + x * width] = 1;
+    }
+
     void DeleteEdge(const int x, const int y, bool isDirect = false) {
         if(adjMatrix[x][y] == 0) {
-            std::cerr << "No edge exists!\n";
+            std::cout << "No edge exists!\n";
+            return;
+        } else if(x == y) {
+            std::cout << "Same vertex!\n";
             return;
         }
         adjMatrix[x][y] = 0;
@@ -30,18 +47,8 @@ struct MatrixGraph {
             adjMatrix[y][x] = 0;
     }
 
-    void DisplayGraph(const int v) const {
-        std::cout << "   ";
-        for(unsigned int i = 0; i < v; i++)
-            std::cout << i << " ";
-        putchar('\n');
-        putchar('\n');
-        for(unsigned int i = 0; i < v; i++) {
-            std::cout << i << "  ";
-            for(unsigned int j = 0; j < v; j++)
-                std::cout << adjMatrix[i][j] << " ";
-            putchar('\n');
-        }
+    void DisplayGraph() const {
+
     }
 
     void DFS(int start, std::vector<bool> visited) {
@@ -54,8 +61,14 @@ struct MatrixGraph {
         }
     }
 
-    void BFS(int start) {
+    void DFS(std::pair<int,int> & pos, std::pair<int,int> & target) { // Iterative conversion
 
+    }
+
+    MatrixGraph(int rows, int cols) 
+        :height(rows), width(cols)
+    {
+        adjMat.resize(height * width);
     }
 };
 
@@ -107,17 +120,15 @@ struct listGraph {
             graph.push_back(newList);
         }
         */
-        else {
-            // Get vertex in list, add to linked list
-            if(graph[index] != nullptr)
-                graph[index]->next = vertex;
-            else
-                graph[index] = vertex;
-        }
+        // Get vertex in list, add to linked list
+        if(graph[index] != nullptr)
+            graph[index]->next = vertex;
+        else
+            graph[index] = vertex;
     }
 
     void Print() const {
-        for(uint8_t i = 0; i < graph.size(); i++) {
+        for(int i = 0; i < graph.size(); i++) {
             listNode * traverseNode = graph[i];
             while(traverseNode != nullptr) {
                 std::cout << traverseNode->data << "->";
@@ -421,7 +432,7 @@ void List_FindSmallest(listGraph &g) {
 
 int main() {
     // Adjacency Matrix-
-    /*ß
+    /*
     std::cout << "\nAdjacency Matrix:\n";
     int vertexCount = 5; 
     MatrixGraph mGraph;

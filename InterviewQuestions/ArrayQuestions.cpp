@@ -958,28 +958,66 @@ void Terrain(std::vector<std::vector<int>> & arr) { // Convert to 1D
 }
 
 // Reverse for smallest
-std::vector<int> N_Largest(std::vector<int> & array, const int n) {
-    std::vector<int> top{}, marked{};
-    while(top.size() != n) {
+    // None sorting method
+std::vector<int> N_Largest(std::vector<int> & arr, const int n) {
+    std::vector<int> marked{};
+    std::vector<int> nValues{};
+    int storedPos = -1;
+    while(nValues.size() != n) {
         int max = INT_MIN;
-        for(int i = 0; i < array.size(); i++) {
-            bool found = false;
-            if(array[i] > max) {
-                for(int j = 0; j < marked.size(); j++) // Check if already found
-                    if(i == marked[j])
+        bool found = false;
+        for(int i = 0; i < arr.size(); i++) {
+            if(arr[i] > max) {
+                for(int j = 0; j < marked.size(); j++) {
+                    if(i == j) {
                         found = true;
-                if(found) {
-                    continue;
+                        break;
+                    }
                 }
-                max = array[i];
+                if(found)
+                    continue;
+                max = arr[i];
+                storedPos = i;
             }
         }
-        for(int i = 0; i < array.size(); i++)
-            if(array[i] == max)
-                marked.push_back(i);
-        top.push_back(max);
+        nValues.push_back(max);
+        marked.push_back(storedPos);
     }
-    return top;
+    return nValues;
+}
+
+void AlternateConcanate(std::vector<int> & a1, std::vector<int> & a2) {
+    std::vector<int> newArray{};
+    int counterF = 0, counterS = 0;
+    bool hasSwapped = false;
+    for(int i = 0; i < a1.size()+a2.size(); i++) {
+        if(!hasSwapped) {
+            newArray.push_back(a1[counterF]);
+            counterF++;
+            hasSwapped = true;
+        }
+        else {
+            newArray.push_back(a2[counterS]);
+            counterS++;
+            hasSwapped = false;
+        }
+    }
+}
+
+std::vector<int> SlidingWindow(std::vector<int> & arr, const int k) {
+    int left = 0, right = k;
+    int result = 0;
+    std::vector<int> sums{};
+    for(int i = 0; i < k; i++)
+        result += arr[i];
+    sums.push_back(result);
+    for(int i = 0; i < arr.size(); i++) {
+        if(left == arr.size() || right == arr.size())
+            break;
+        result = result - arr[left++] + arr[right++];
+        sums.push_back(result);
+    }
+    return sums;
 }
 
 std::vector<int> ObtainLargest(std::vector<int> & a1, std::vector<int> & a2) {
