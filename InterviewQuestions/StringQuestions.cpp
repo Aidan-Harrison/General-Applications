@@ -941,9 +941,7 @@ void shiftSections(std::string str, const int n) {
     std::cout << "Result: " << str << '\n';
 }
 
-// Brackets
-    // Assuming only "()[]{}" and no nested brackets
-void EasyBracket(const std::string && str) {
+void BracketPairs(const std::string && str) {
     std::stack<char> s;
     int count = 0;
     for(auto i : str) {
@@ -961,7 +959,42 @@ void EasyBracket(const std::string && str) {
     std::cout << count;
 }
 
-
+void Read(const std::string && line) {
+    std::stack<std::pair<int,char>> s;
+    int operation = 1;
+    std::string str = "";
+    bool isPrint = false;
+    char character = 'a';
+    for(unsigned int i = 0; i < line.length(); i++) {
+        bool invalid = false;
+        if(line[i] == '[') {
+            s.push({i,'['});
+        }
+        else if(line[i] == ']') {
+            if(s.top().second == '[') {
+                if(line[i-1] == '[') 
+                    invalid = true;
+                s.pop();
+                if(invalid) { // Move on
+                    continue;
+                }
+            }
+            character++;
+        }
+        else if(line[i] == ' ') {
+            operation = 1;
+            int j = i+1;
+            while(line[j] == ' ') {
+                operation++;
+                j++;
+            }
+            if(operation == 1 && character-1 != '`') {
+                putchar(character-1);
+            }
+            character = 'a';
+        }
+    }
+}
 
 int main() {
     std::cout << "Get Duplicates:\n";

@@ -59,7 +59,7 @@ struct Player {
     }
 
     void CharacterScreen() const;
-    void GearScreen() const;
+    void GearScreen();
     void PrintInventory() const;
 
     ~Player() {}
@@ -71,14 +71,14 @@ void Player::CharacterScreen() const {
         std::cout << stats[i].first << " | " << stats[i].second << '\n';
 }
 
-void Player::GearScreen() const {
+void Player::GearScreen() {
     std::cout << "====== GEAR ======\n";
     for(int i = 0; i < gear.size(); i++) {
         if(i % 4 == 0 && i != 0)
             putchar('\n');
         if(gear[i] != nullptr) {
-            for(int i = 0; i <= gear[i]->m_ItemName.size(); i++ )
-                std::cout << gear[i]->m_ItemName[i];
+            for(int j = 0; j <= gear[i]->m_ItemName.size(); j++ )
+                std::cout << gear[j]->m_ItemName[i];
             putchar('\t');
         }
         else 
@@ -86,12 +86,14 @@ void Player::GearScreen() const {
     }
 }
 
-// Fix printing!
+// Fix!!
 void Player::PrintInventory() const {
     std::cout << "====== INVENTORY ======\n";
+    /*
     for(int i = 0; i < inventory.size(); i++) {
         std::cout << i+1 << "| " << inventory[i]->m_ItemName[0] << inventory[i]->m_ItemName[1] << inventory[i]->m_ItemName[2] << '\n';
     }
+    */
 }
 
 #endif

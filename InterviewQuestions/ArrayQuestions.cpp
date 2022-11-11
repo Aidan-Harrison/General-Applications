@@ -1047,6 +1047,108 @@ void CountingSort(std::vector<int> & a1) {
     }
 }
 
+void Worm() {
+    std::vector<int> w{1,2,3,4,5,6,7,8,9};
+    std::vector<int> grid{
+    0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,
+    };
+    for(unsigned int i = 0; i < 9; i++) {
+        for(unsigned int j = 0; j < 9; j++) {
+            grid[i+j*9] = w[counter];
+        }
+    }
+}
+
+// 'h','e','l','l,'o'
+// "hello"
+
+// ^   ^
+// l   r
+
+// Fix duplicate letter issue
+bool WordSearch(std::vector<char> && arr, const std::string && word) {
+    int left = 0, right = 1;
+    for(int i = 0; i < arr.size(); i++) {
+        int correct = 0;
+        int k = 0;
+        for(int j = left; j <= right; j++) {
+            std::cout << arr[j];
+            if(correct == word.length())
+                return true;
+            if(arr[j] != word[k]) {
+                if(j == left)
+                    left++;
+                break;
+            }
+            else
+                correct++;
+            k++;
+        }
+        putchar('\n');
+        right++;
+    }
+    return false;
+}
+
+// Given an array of characters, match symbols to their appropiate partner set
+    // Symbol table
+        /*
+            ':' = A,B,C,D,E,F,G
+            '?' = H,I,J,K,L,M,N
+            '%' = O,P,Q,R,S,T,U
+            '^' = V,W,X,Y,Z
+        */
+    // Example:
+        // {'a', 'd', 'h', 'b', 'b', 't'}
+        // Result: ":abbd, ?h, %t"
+std::string SymbolOrdering(std::vector<char> && arr) {
+    std::string result = "";
+    bool symFlags[4] = {false,false,false,false};
+    for(int i = 0; i < arr.size(); i++) {
+        bool found = false;
+        char lower = std::tolower(arr[i]);
+        for(char c = 'a'; c <= 'g'; c++) {
+            if(c == lower) {
+                if(!symFlags[0]) {
+                    result += ':';
+                    symFlags[0] = true;
+                }
+                result.insert(result.begin()+1, c); // Sort properly, ideally at insertion
+                // result += c;
+                found = true;
+                break;
+            }
+        }
+        if(found) // Found a valid value, skip over checking anything else
+            continue;
+        for(char c = 'h'; c <= 'n'; c++) {
+            if(c == lower) {
+                if(!symFlags[1]) {
+                    result += '?';
+                    symFlags[1] = true;
+                }
+                result += c;
+                found = true;
+                break;
+            }
+        }
+        if(found)
+            continue;
+    }
+    return result;
+}
+
+// Fix comma placement
+// Fix char placement
+
 int main() {
     std::vector<int> testArray{1,2,3,4,5,6,7,8,9,10};
     std::cout << "Reverse Array:\n";

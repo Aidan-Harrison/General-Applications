@@ -101,11 +101,12 @@ std::vector<int> InsertionSortFast(std::vector<int> &arr) { // Not using 'Swap'
 
 // ======================= Quick Sort =======================
 int Partition(std::vector<int> & arr, int left, int right) {
+    int pivot = arr[right];
     int i = left - 1;
     for(unsigned int j = left; j < right; j++) {
-        if(arr[j] < arr[right]) { // If element at 'j' is less then pivot
+        if(arr[j] < pivot) { // If element at 'j' is less then pivot
             i++; // Move left up
-            Swap(&arr[i], &arr[j]); // Swap l and j
+            Swap(&arr[i], &arr[j]); // Swap l and j, only matters if different
         }
     }
     Swap(&arr[i+1], &arr[right]); // Move pivot (Partition), element is now in correct position
@@ -125,7 +126,7 @@ void QuickSort(std::vector<int> & arr, int left, int right) {
 }
 
 // ======================= Merge Sort =======================
-void Merge(std::vector<int> &arr, int l, int m, int r) {
+void Merge(std::vector<int> & arr, int l, int m, int r) {
     int n1 = m - l + 1; // First sub array
     int n2 = r - m;
 
@@ -165,8 +166,8 @@ void Merge(std::vector<int> &arr, int l, int m, int r) {
     }
 }
 
-void MergeSort(std::vector<int> &arr, int l, int r) {
-    if (l < r) {
+void MergeSort(std::vector<int> & arr, int l, int r) {
+    if(l < r) {
         int m = (l + r) / 2;
 
         MergeSort(arr, l, m);

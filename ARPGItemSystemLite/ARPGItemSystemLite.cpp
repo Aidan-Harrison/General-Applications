@@ -7,6 +7,12 @@
 #include <memory>
 
 #include "Player.h"
+#include "Helper.h"
+
+/*
+    ARPG Item system
+    random() function is for code clarity
+*/
 
 // TO_DO:
 // Fix certain crafting items and add new ones
@@ -31,8 +37,10 @@ typedef std::pair<std::string, int> itemBase;
 #define _SECOND std::get<1>
 #define _THIRD  std::get<2>
 
+#define LOWER 1
+
 namespace Global {
-    Keyboard *keyboard = nullptr;
+    Keyboard * keyboard = nullptr;
     int choice = 0;
     std::fstream fileHandler;   
 }
@@ -45,22 +53,6 @@ namespace Mutations {
 
 // Change from 'Player' to 'Character'
 void Interface();
-
-void clear_screen() {
-    #ifdef _WIN64 
-        system("cls");
-    #elif __APPLE__ || __MACH__
-        system("clear");
-    #endif 
-}
-
-int random(int range) { return rand() % range; }
-
-int input(const std::string && msg) {
-    std::cout << msg;
-    std::cin >> Global::choice;
-    return Global::choice;
-}
 
 bool FileParser(const std::string & filePath, bool printContents) {
     if(filePath.length() == 0) {
@@ -90,8 +82,7 @@ bool FileParser(const std::string & filePath, bool printContents) {
 void MutationModifier() {
     if(FileParser("Mutations.txt", false))  {
         std::cout << "'Mutation.txt' loaded successfully!\n" << "\tPress ENTER to continue: ";
-        std::cin.get();
-        std::cin.get();
+        Enter();
     }  else {
         std::cout << "'Mutations.txt' failed to load, either corrupt or missing!\n";
         return;
@@ -210,48 +201,50 @@ void RegenerateType(Item & i) {
 
 void Pickup(Item * item) {
     bool hasTaken = false;
-    char choice = 'a';
     PrintItem(*item);
     std::cout << "\nDo you want to take this item?\n\t (Y/N)\n";
-    // input("Enter: ");
-    std::cin >> choice;
-    choice = std::tolower(choice);
-    // Handle miss-input!
+    char choice = char_input("Enter: ", LOWER);
     if(choice == 'y') {
-        std::cout << "You took " << item->m_ItemName[0] << item->m_ItemName[1] << item->m_ItemName[2] << "!\n";
-        for(int i = 0; i < Characters::curPlayer->gear.size(); i++) {
-            if(Characters::curPlayer->gear[i] == nullptr && Characters::curPlayer->gearID[i] == item->core) { // Empty slot 
+        std::cout << "You took " << item->m_ItemName[0] << item->m_ItemName[1] << item->m_ItemName[2] << '\n';
+        for(auto i : Characters::curPlayer->gear) {
+            if(i == nullptr) { // Empty gear slot
+                i = item;
+                hasTaken = true;
+                break;
+            }
+        }
+        /*
+        for(unsigned int i = 0; i < Characters::curPlayer->gear.size(); i++) {
+            if(Characters::curPlayer->gear[i] == nullptr) { //&& Characters::curPlayer->gearID[i] == item->core) { // Empty slot 
                 Characters::curPlayer->gear[i] = item;
                 hasTaken = true;
                 break;
             }
         }
+        */
         if(!hasTaken)
             Characters::curPlayer->inventory.push_back(item);
+        Enter();
     }
-    std::cin.get();
-    std::cin.get();
     Interface();
 }
 
 // Make safe, currently able to generate duplicate modifiers
 void Generate() {
     std::array<std::string, 3> name{};
-    itemMods mods;
+    itemMods mods; // ItemMods datatype is in Item.h
     int prefix = 0, iLevel = 0;
-    bool hasPrefix = rand() % 2, hasSuffix = rand() % 2;
-    int base = rand() % 3; // Make automatic?
-    base++;
-    int rarity = rand() % 100; // If unique, generate from unique pool, else just alter stats and mod count
+    bool hasPrefix = random(2), hasSuffix = random(2);
+    int base = NonZeroRand(3);
+    int rarity = random(100); // If unique, generate from unique pool, else just alter stats and mod count
     int nameSuffixApplied = false;
     // === ilevel ===
-    iLevel = rand() % Characters::curPlayer->level - 5;
-    iLevel++;
+    iLevel = NonZeroRand(Characters::curPlayer->level - 5);
     // Rarity
     if(rarity > 95) { // Unique
         mods.resize(6);
-        Pickup(Uniques::items[random(Uniques::items.size())]);
         rarity = UNIQUE;
+        Pickup(Uniques::items[random(Uniques::items.size())]);
         return;
     } else if(rarity > 75 && rarity < 95) {
         mods.resize(6);
@@ -461,45 +454,43 @@ void ApplyCraftingItem(Item & item, CraftingItem & c, std::vector<std::string> &
 
 void Craft() { // Remove tempItem?? | Messy but safe | Copy constructor?
     using namespace Characters;
-    if(curPlayer->inventory.size() == 0 && curPlayer->gear.size() == 0) {
+    if(curPlayer->inventory.size() == 0 && curPlayer->gear.size() == 0) { // Incorrect, resized
         std::cout << "You have no items to craft, generate some\n";
         std::cout << "\tPress ENTER to continue: ";
-        std::cin.get();
-        std::cin.get();
+        Enter();
         Interface();
     }
     clear_screen();
     curPlayer->PrintInventory();
     std::cout << "\n<><><><><><><><><><><><><><>\n";
-    // curPlayer->GearScreen();
+    curPlayer->GearScreen();
     Item * tempItem = nullptr;
-    std::cout << "\nPick an item in your 1) Inventory 2) Gear \t 3) Exit\nInput: ";
-    std::cin >> Global::choice;
+    Global::choice = int_input("\nPick an item in your 1) Inventory 2) Gear \t 3) Exit\nInput: ");
     clear_screen();
     if(Global::choice == 1 && curPlayer->inventory.size() > 0) {
         curPlayer->PrintInventory();
-        input("Enter: ");
+        input("Enter: ", &Global::choice);
         while(curPlayer->inventory[Global::choice]->isCorrupted) {
             std::cout << "This item is corrupted!\nChoose another item\n";
-            input("Enter: ");
+            input("Enter: ", &Global::choice);
         }
-        tempItem = curPlayer->inventory[input("Enter: ")-1];
+        tempItem = curPlayer->inventory[return_input("Enter: ", &Global::choice)-1];
     } 
     else if(Global::choice == 2 && curPlayer->inventory.size() > 0) {
         curPlayer->GearScreen();
-        input("Enter: ");
+        input("Enter: ", &Global::choice);
         while(curPlayer->gear[Global::choice-1]->isCorrupted) {
             std::cout << "This item is corrupted!\nChoose another item\n";
-            input("Enter: ");
+            input("Enter: ", &Global::choice);
         }
         tempItem = curPlayer->gear[Global::choice-1];
     } else {
         Interface();
     }
-    input("Enter: ");
+    input("Enter: ", &Global::choice);
     while(Global::choice > curPlayer->inventory.size() || Global::choice < 0) {
         std::cout << "You have entered an invalid value!\n";
-        input("Enter: ");
+        input("Enter: ", &Global::choice);
     }
 
     bool isCrafting = true;
@@ -508,7 +499,7 @@ void Craft() { // Remove tempItem?? | Messy but safe | Copy constructor?
         PrintItem(*tempItem);
         std::cout << "Apply any of the following crafting items:\n";
         std::cout << "1) Agony Orb  2) Divine Orb  3) Lament Gem\n\t 0) EXIT\n";
-        std::cin >> Global::choice;
+        input("Enter: ", &Global::choice);
         switch(Global::choice) {
             case 0: isCrafting = false; break;
             case 1: tempItem->Apply(CraftingItems::aOrb, Mods::suffixmods);  break;
@@ -525,9 +516,7 @@ void Interface() {
     std::cout << "===ARPG ITEM SYSTEM===\n" 
             << "\t1) Generate  2) Craft  3) Exit\n";
     while(isActive) {
-        std::cout << "Enter: ";
-        //Global::choice = Global::keyboard->Parse(Global::choice, true);
-        std::cin >> Global::choice;
+        input("Enter: ", &Global::choice);
         switch(Global::choice) {
             case 1: Generate(); break;
             case 2: Craft(); break;
@@ -549,7 +538,7 @@ void Setup() { // Add file handling here!
 int main() {
     srand(time(0));
 
-    Keyboard *keyboardInit;
+    Keyboard * keyboardInit;
     Global::keyboard = keyboardInit;
 
     Setup();

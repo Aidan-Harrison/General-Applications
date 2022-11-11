@@ -33,7 +33,7 @@ struct Item {
     itemName m_ItemName{"", "", ""};
     itemMods m_Mods{};
     Item() = default;
-    Item(const itemName && name, const int rarity = 1) noexcept // Check! Might not want to do rvalue
+    Item(const itemName && name, int rarity = 1) noexcept // Check! Might not want to do rvalue
         : m_ItemName(name)
     {
     }
@@ -154,12 +154,14 @@ void Item::Apply(CraftingItem & cItem, std::vector<std::string> & modifiers) {
         // Store everything but impicits and then paste into everything but implicits
     }
     else if(cItem.type == 4) { // Mirror
-        Item * copyItem = this;
+        Item * copyItem = this; // Just do copy semantics
+        copyItem->m_ItemName = m_ItemName;
         for(unsigned int i = 0; i < m_Mods.size(); i++) {
-
+            
         }
     }
     else if(cItem.type == 5) { // Extension Orb
+
     }
 }
 

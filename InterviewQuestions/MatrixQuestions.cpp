@@ -3,6 +3,7 @@
 #include <thread>
 #include <map>
 #include <utility>
+#include <array>
 
 // Replace river sizes with new one, bloated solution
 std::vector<std::vector<int>> GetUnvisitedNeighbours(int i, int j, std::vector<std::vector<int>> &visited, std::vector<std::vector<int>> &river) {
@@ -81,13 +82,9 @@ std::pair<int,int> SearchSortedMatrix(std::vector<std::vector<int>> &matrix, int
 
 std::vector<int> SpiralTraversalSimple(std::vector<std::vector<int>> &mat) { // Replace with Depth first search!!!!!
     std::vector<int> traversal{};
-    if(mat.size() * mat[0].size() == 0) //?
+    if(mat.size() * mat[0].size() == 0)
         return traversal;
     std::vector<std::vector<bool>> visited{};
-
-    // Each for loop is a direction reaching the end of what can be added
-    // Repeat until done with matrix
-    // REPLACE WITH DFS | REMOVE BELOW
     int i = 0;
     int j = 0;
     while(visited.size() * visited[0].size() != mat.size() * mat[0].size()) {
@@ -117,10 +114,38 @@ void SpiralTraversalOther(std::vector<std::vector<int>> & arr) {
     }
 }
 
-void LineTraversal(std::vector<std::vector<int>> & arr) {
-    for(int i = 0; i < arr[0].size(); i++) {
-        for(int j = 0; j < arr.size(); j++) {
-            std::cout << arr[i][j];
+void LineTraversal(std::vector<int> & arr, const int x, const int y, char dir = 'r') { // Given a point, traverse in given direction until end
+    int width = 8, height = 8;
+    int counter = 0;
+    switch(dir) {
+        case 'r': {
+            while(counter < width) {
+                arr[y+x+counter*width] += counter;
+                counter++;
+            } 
+            break;
+        }
+        case 'l': {
+            counter = width;
+            while(counter > 0) {
+                arr[y+x-counter*width] += counter;
+                counter--;
+            } 
+            break;
+        }
+        case 'u': {
+            while(counter < width) {
+                arr[y+x+counter*width] += counter;
+                counter++;
+            } 
+            break;
+        }
+        case 'd': {
+            while(counter < width) {
+                arr[y+x+counter*width] += counter;
+                counter++;
+            } 
+            break;
         }
     }
 }
@@ -134,29 +159,33 @@ void Blip(std::vector<std::vector<int>> &arr, const int n) {
                 arr[i+1][j]++;
                 arr[i][j-1]++;
                 arr[i][j+1]++;
+                // Diagonals
+                arr[i+1][j+1]++;
+                arr[i+1][j-1]++;
+                arr[i-1][j+1]++;
+                arr[i-1][j-1]++;
             }
         }
     }
 }
 
-// Fix and Optimise!
-void BlipOther(std::vector<std::vector<int>> &arr, const int n, const char direction) {
+void BlipOther(std::vector<std::vector<int>> & arr, const int n, char dir = 'l') {
     for(unsigned int i = 0; i < arr.size(); i++) {
         for(unsigned int j = 0; j < arr[0].size(); j++) {
             if(arr[i][j] == n) {
-                switch(direction) {
+                switch(dir) {
                     case 'l':  {
-                        for(int left = j; left > 0; left--)
+                        for(int left = j; left >= 0; left--)
                             arr[i][left]++;
                         break;
                     }
                     case 'r':  {
-                        for(int right = j; right < arr.size(); right++)
+                        for(int right = j; right <= arr.size(); right++)
                             arr[i][right]++;
                         break;
                     }
                     case 'u':  {
-                        for(int up = i; up > 0; up--)
+                        for(int up = i; up >= 0; up--)
                             arr[up][j]++;
                         break;
                     }
@@ -265,6 +294,26 @@ void BridgeGenerator(std::vector<std::vector<char>> & arr, std::vector<std::vect
     }    
 }
 
+void BridgeGeneratorRedo(std::vector<char> & arr) {
+    int height = 8, width = 8;
+    std::vector<std::pair<int,int>> bridgePos{};
+    for(int i = 0; i < height; i++) {
+        for(int j = 0; j < width; j++) {
+            if(arr[i+j*width] == 'X')
+                bridgePos.push_back({i, j});
+        }
+    }
+
+    // Calculate possible bridge connections
+    for(int i = 0; i < bridgePos.size(); i++) {
+        if(bridgePos[i].first == bridgePos[i+1].first) { // Horizontal
+            for(int i = bridgePos[i].second; i < bridgePos[i].second; i++) {
+                arr[bridgePos[i].first+i*width] += 10;
+            }
+        }
+    }
+}
+
 void PrintMatrix(std::vector<std::vector<int>> & arr) {
     for(int i = 0; i < arr.size(); i++) {
         for(int j = 0; j < arr.size(); j++)
@@ -308,13 +357,86 @@ std::vector<int> PresentDelivery(const std::string & directions, int sX, int sY,
     return result;
 }
 
+// Given a valid path, traverse it
+const bool WallCheck(std::array<int, 4> && walls, const int x, const int y) {
+    if(y == walls[0])
+        return false;
+    else if(y == walls[1])
+        return false;
+    if(x == walls[2])
+        return false;
+    else if(x == walls[3])
+        return false;
+    return true;
+}
+
+void Traverser(std::vector<char> & arr) {
+    int tX, tY;
+    int height = arr.size()/2, width = arr.size()/2;
+    for(int i = 0; i < height; i++) {
+        for(int j = 0; j < width; j++) {
+            if(arr[i+j*width] == '>' && WallCheck({i-1+j*width, i+1+j*width, i+j-1*width, i+j+1*width}, i, j))      { tX++; } // Right
+            else if(arr[i+j*width] == '<' && WallCheck({i-1+j*width, i+1+j*width, i+j-1*width, i+j+1*width}, i, j)) { tX--; } // Left
+            else if(arr[i+j*width] == '^' && WallCheck({i-1+j*width, i+1+j*width, i+j-1*width, i+j+1*width}, i, j)) { tY--; } // Up
+            else if(arr[i+j*width] == '_' && WallCheck({i-1+j*width, i+1+j*width, i+j-1*width, i+j+1*width}, i, j)) { tY++; } // Down
+            else if(arr[i+j*width] == 'X') {
+                std::cout << "FOUND!\n";
+                return;
+            }
+        }
+    }
+    TravDisplay(arr);
+}
+
+void TravDisplay(std::vector<char> & arr) {
+    int width = arr.size()/2, height = arr.size()/2;
+    for(int i = 0; i < height; i++) {
+        putchar('[');
+        for(int j = 0; j < width; j++) 
+            printf("%d ,", arr[i+j*width]);
+        putchar(']');
+        putchar('\n');
+    }
+}
+
+// 1D to 2D
+std::vector<std::vector<int>> Convert1DBrute(std::vector<int> & arr, int r, int c) {
+    if(r*c != arr.size())
+        return {};
+    std::vector<std::vector<int>> newArr(r, std::vector<int>(c));
+    int k = 0;
+    for(int i = 0; i < r; i++) {
+        for(int j = 0; j < c; j++) {
+            newArr[i][j] = arr[k++];
+        }
+    }
+    return newArr;
+}
+
+std::vector<std::vector<int>> Convert1D(std::vector<int> & arr, int r, int c) {
+    if(r*c != arr.size())
+        return {};
+    std::vector<std::vector<int>> newArr{};
+    for(int i = 0; i < r*c; i+=c) {
+        newArr.push_back(std::vector<int>(arr.begin()+i, arr.begin()+i*c));
+    }
+    return newArr;
+}
+
 int main() {
     std::vector<std::vector<int>> matrix2{{1, 2, 3, 4, 5},
                                         {6, 7, 8, 9, 10},
                                         {11,12,13,14,15},
                                         {16,17,18,19,20},
                                         {21,22,23,24,25}};
-    std::vector<std::vector<int>> 
+    std::vector<char> travMatrix{
+                                '>','>','>','>','>','_',
+                                '0','0','0','0','0','_',
+                                '_','<','0','_','<','<',
+                                '_','^','<','<','0','0',
+                                '>','>','>','>','>','X',
+                                };
+    Traverser(travMatrix);
     /*
     std::tuple<int,int> result = SearchSortedMatrix(matrix2, 19);
 

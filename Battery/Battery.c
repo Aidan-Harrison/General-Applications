@@ -48,35 +48,49 @@ const int boundsCheck(const int w, const int h, const int pos) {
 }
 
 void Run(battery * b) {
+    // Spiral bounds
+    int spiralX = 1, spiralY = 1; // Size
+    int sStepX, sStepY;
+
     b->charge -= b->draw;
     int w = b->width, h = b->height;
+    float falloff = 0.0f;
     for(unsigned int i = 0; i < b->width; i++) {
         for(unsigned int j = 0; j < b->height; j++) {
             if(b->battArr[i+j*b->width]) {
-                // Propogate heat
+                sStepX = j; sStepY = i-1;
+                b->surface[sStepX+sStepY*b->width] += b->transferAmount;
+                spiralY+=1;
+                if(sStepX < spiralX) {
+                    sStepX+=1;
+                }
+
                 b->surface[i+j*b->width] += b->transferAmount;
-                if(boundsCheck(w,h,i-1+j*b->width) && b->battArr[i-1+j*b->width] != 1) { 
-                    b->surface[i-1+j*b->width] += b->transferAmount;
+                
+
+                if(boundsCheck(w,h,i-1+j*b->width) && b->battArr[i-1+j*b->width] == 1) { 
+                    b->surface[i-1+j*b->width] += b->transferAmount-falloff;
                     if(b->surface[i-1+j*b->width])
                         printf("Temperature warning at point: %d : %d\n", i-1, j);
                 }
-                if(boundsCheck(w,h,i+1+j*b->width) && b->battArr[i+1+j*b->width] != 1) {
-                    b->surface[i-1+j*b->width] += b->transferAmount;
+                if(boundsCheck(w,h,i+1+j*b->width) && b->battArr[i+1+j*b->width] == 1) {
+                    b->surface[i-1+j*b->width] += b->transferAmount-falloff;
                     if(b->surface[i+1+j*b->width])
                         printf("Temperature warning at point: %d : %d\n", i+1, j);
                 }
-                if(boundsCheck(w,h,i+j-1*b->width) && b->battArr[i+j-1*b->width] != 1) {
-                    b->surface[i-1+j*b->width] += b->transferAmount;
+                if(boundsCheck(w,h,i+j-1*b->width) && b->battArr[i+j-1*b->width] == 1) {
+                    b->surface[i-1+j*b->width] += b->transferAmount-falloff;
                     if(b->surface[i+j-1*b->width])
                         printf("Temperature warning at point: %d : %d\n", i, j-1);
                 }
-                if(boundsCheck(w,h,i+j+1*b->width) && b->battArr[i+j+1*b->width] != 1) {
-                    b->surface[i-1+j*b->width] += b->transferAmount;
+                if(boundsCheck(w,h,i+j+1*b->width) && b->battArr[i+j+1*b->width] == 1) {
+                    b->surface[i-1+j*b->width] += b->transferAmount-falloff;
                     if(b->surface[i+j+1*b->width])
                         printf("Temperature warning at point: %d : %d\n", i, j+1);
                 }
             }
 
+            falloff += 0.1f;
             // Heat Prop algo test 1 | Make radial!
             for(int k = 0; k < b->width; k++)
                 b->surface[i+k*b->width] += b->transferAmount * k/10;

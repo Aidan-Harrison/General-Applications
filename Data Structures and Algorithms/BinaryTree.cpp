@@ -85,14 +85,14 @@ void bTree::Print(node *n) const { // Handle both children!!!!! | Fix
         std::cout << n->rChild->data;
 }
 
-// Another implementation | Purely node based ============================================== || ???
+// Purely node based ==============================================
 struct bstNode {
     int data;
-    bstNode *left;
-    bstNode *right;
+    bstNode * left;
+    bstNode * right;
     bstNode(const int d) :data(d), left(nullptr), right(nullptr) {}
 
-    bool const Search(int value); // Check const return!
+    bool const Search(int value); 
     void Insert(int value);
     void Print() const;
 
@@ -103,18 +103,14 @@ struct bstNode {
 
 void bstNode::Insert(const int value) {
     if(value <= data) {
-        if(left == nullptr) {
-            bstNode *newNode = new bstNode(value);
-            left = newNode;
-        }
+        if(left == nullptr) 
+            left = new bstNode(value);
         else
             left->Insert(value);
     }
     else {
-        if(right == nullptr) {
-            bstNode *newNode = new bstNode(value);
-            right = newNode;
-        }
+        if(right == nullptr) 
+            right = new bstNode(value);
         else
             right->Insert(value);
     }
@@ -168,7 +164,7 @@ void bstNode::PostOrder() const {
 
 }
 
-// Array
+// Array based
 std::vector<int> binaryTree{11,12,-3,4,5,-11,7,8,2};
 
 inline int GetLeft(const int index) { return (2*index)+1; }
@@ -212,13 +208,13 @@ int main() {
 
     // Purely Node based:
     std::cout << "===Node Based===\n";
-    bstNode *root = new bstNode(10);
-    bstNode *n2 = new bstNode(9);
-    bstNode *n3 = new bstNode(12);
-    bstNode *n4 = new bstNode(8);
-    bstNode *n5 = new bstNode(14);
-    bstNode *n6 = new bstNode(13);
-    bstNode *n7 = new bstNode(22);
+    bstNode * root = new bstNode(10);
+    bstNode * n2 = new bstNode(9);
+    bstNode * n3 = new bstNode(12);
+    bstNode * n4 = new bstNode(8);
+    bstNode * n5 = new bstNode(14);
+    bstNode * n6 = new bstNode(13);
+    bstNode * n7 = new bstNode(22);
 
     root->left = n2;
     root->right= n3;
@@ -236,7 +232,7 @@ int main() {
     std::cout << root->Search(34) << '\n';
     root->Print();
 
-    std::cout << "Traversal:\n";
+    std::cout << "\nTraversal:\n";
     root->InOrder();
     putchar('\n');
     root->PreOrder();
