@@ -915,6 +915,21 @@ void sectionString(std::string str, const int n) {
     }
 }
 
+void BlockString(std::string && str, const int n) {
+    auto stringInsert[&](const char, const int pos) {
+        str.push_back(' ');
+        for(int i = pos; i < str.length(); i++) {
+            str[i+1] = str[i];
+        }
+        str[pos] = char;
+    };
+    for(unsigned int i = 0; i < str.length(); i++) {
+        if(i % 2 == 0)
+            str.insert('|', i);
+    }
+    std::cout << str << '\n';
+}
+
 // Given a string, split it into sections, then swap the sections around randomly
 void shiftSections(std::string str, const int n) {
     bool hasSwapped = false;
